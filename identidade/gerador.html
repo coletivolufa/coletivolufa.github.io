@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerador de Posts · Coletivo Lufã</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="../assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css?v=9">
+  <style>
+    body { margin: 0; }
+    .ger-topo { background: var(--vermelho); color: var(--branco); padding: 22px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; border-bottom: 6px solid var(--amarelo); }
+    .ger-topo h1 { font-size: clamp(34px, 5vw, 52px); }
+    .ger-topo a { color: var(--amarelo); font-weight: 700; }
+    .ger { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 32px; padding: 28px clamp(16px, 4vw, 48px) 60px; align-items: start; }
+    .ger-form { background: var(--branco); padding: 24px; border-top: 8px solid var(--vermelho); }
+    .ger-previa { position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .ger-previa canvas { width: min(100%, 520px); height: auto; box-shadow: 10px 10px 0 var(--preto); background: #ddd; }
+    .ger-previa canvas.alto { width: min(100%, 380px); }
+    .ger-acoes { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .slides { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .slides button { font-family: var(--titulo); font-size: 18px; letter-spacing: .05em; padding: 6px 12px 3px; border: 2px solid var(--preto); background: var(--branco); cursor: pointer; }
+    .slides button[aria-pressed="true"] { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); }
+    .slides-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 18px; }
+    .slides-acoes button { font: inherit; font-size: 14px; padding: 6px 10px; border: 2px solid var(--cinza); background: transparent; cursor: pointer; }
+    .dica { font-size: 14px; color: var(--cinza); background: var(--papel); padding: 10px 14px; border-left: 4px solid var(--amarelo); }
+    @media (max-width: 860px) { .ger { grid-template-columns: 1fr; } .ger-previa { position: static; order: -1; } }
+  </style>
+</head>
+<body>
+  <header class="ger-topo">
+    <div><h1>Gerador de Posts</h1><span>Escreva, confira a prévia e baixe o PNG pronto para o Instagram.</span></div>
+    <a href="index.html">Ver o guia de identidade →</a>
+  </header>
+
+  <div class="ger">
+    <div class="ger-form">
+      <div class="abas" role="tablist" id="abas">
+        <button type="button" role="tab" data-modo="citacao" aria-selected="true">Frase e citação</button>
+        <button type="button" role="tab" data-modo="carrossel" aria-selected="false">Carrossel</button>
+        <button type="button" role="tab" data-modo="reels" aria-selected="false">Capa de Reels</button>
+      </div>
+      <div id="carrossel-controles" hidden>
+        <div class="slides" id="slides"></div>
+        <div class="slides-acoes">
+          <button type="button" id="add-slide">+ Slide de conteúdo</button>
+          <button type="button" id="mover-esq">← Mover</button>
+          <button type="button" id="mover-dir">Mover →</button>
+          <button type="button" id="remover-slide">Remover slide</button>
+        </div>
+      </div>
+      <form id="campos" onsubmit="return false"></form>
+      <p class="dica">Dica: no título, coloque uma palavra entre *asteriscos* para ela sair em destaque amarelo.</p>
+    </div>
+
+    <div class="ger-previa">
+      <canvas id="previa" width="1080" height="1350" aria-label="Prévia do post"></canvas>
+      <div class="ger-acoes">
+        <button class="botao botao--vermelho" type="button" id="baixar">Baixar PNG</button>
+        <button class="botao" type="button" id="baixar-tudo" hidden>Baixar carrossel completo (.zip)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="posts.js?v=1"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let modo = "citacao";
+    const estado = {
+      citacao: { modelo: "citacao", valores: {} },
+      reels: { modelo: "reels", valores: {} },
+    };
+    const carrossel = { atual: 0, slides: [
+      { modelo: "carrosselCapa", valores: {} },
+      { modelo: "carrosselSlide", valores: {} },
+      { modelo: "carrosselSlide", valores: { numero: "02", titulo: "O patrão fica com a diferença", texto: "O que o trabalhador produz a mais não volta para ele em salário. Vira lucro, que é reinvestido para gerar ainda mais lucro.\n\nPor isso a riqueza se concentra nas mãos de poucos." } },
+      { modelo: "carrosselFim", valores: {} },
+    ] };
+
+    const atual = () => (modo === "carrossel" ? carrossel.slides[carrossel.atual] : estado[modo]);
+    const nomeSlide = (s, i) => s.modelo === "carrosselCapa" ? "Capa" : s.modelo === "carrosselFim" ? "Fim" : `Slide ${i}`;
+
+    function paginar() {
+      const total = carrossel.slides.length;
+      carrossel.slides.forEach((s, i) => { if (s.modelo === "carrosselSlide") s.valores.pagina = `${i + 1}/${total}`; });
+    }
+
+    function montarSlides() {
+      paginar();
+      $("slides").innerHTML = carrossel.slides.map((s, i) =>
+        `<button type="button" data-i="${i}" aria-pressed="${i === carrossel.atual}">${nomeSlide(s, i)}</button>`).join("");
+    }
+
+    function montarCampos() {
+      const item = atual(), m = MODELOS[item.modelo];
+      $("campos").innerHTML = m.campos.map((f) => {
+        const val = item.valores[f.id] !== undefined ? item.valores[f.id] : f.padrao;
+        if (f.tipo === "area") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><textarea id="f-${f.id}" data-campo="${f.id}" style="min-height:120px;font-family:var(--texto)">${esc(val)}</textarea></div>`;
+        if (f.tipo === "opcoes") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><select id="f-${f.id}" data-campo="${f.id}">${Object.entries(f.opcoes).map(([k, n]) => `<option value="${k}"${k === val ? " selected" : ""}>${n}</option>`).join("")}</select></div>`;
+        if (f.tipo === "imagem") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" type="file" accept="image/*"><small>${item.valores[f.id] ? "Imagem carregada. Escolha outra para trocar." : "Para a capa de Reels, use uma figura recortada (PNG sem fundo) para ficar como na série."}</small></div>`;
+        return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" value="${esc(val)}"></div>`;
+      }).join("");
+    }
+
+    let agendado;
+    function redesenhar() {
+      clearTimeout(agendado);
+      agendado = setTimeout(async () => {
+        const item = atual(), c = await desenharModelo(item.modelo, item.valores), p = $("previa");
+        p.width = c.width; p.height = c.height; p.classList.toggle("alto", c.height > 1500);
+        p.getContext("2d").drawImage(c, 0, 0);
+      }, 80);
+    }
+
+    function trocarModo(m) {
+      modo = m;
+      document.querySelectorAll("#abas button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.modo === m)));
+      $("carrossel-controles").hidden = m !== "carrossel";
+      $("baixar-tudo").hidden = m !== "carrossel";
+      if (m === "carrossel") montarSlides();
+      montarCampos(); redesenhar();
+    }
+
+    function nomeArquivo(item, i) {
+      const base = (item.valores.titulo || item.valores.texto || item.valores.chamada || MODELOS[item.modelo].nome || "post");
+      return "lufa-" + (i !== undefined ? String(i + 1).padStart(2, "0") + "-" : "") +
+        String(base).replace(/\*/g, "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40).replace(/-$/, "") + ".png";
+    }
+    function baixarBlob(blob, nome) {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nome; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+
+    $("abas").addEventListener("click", (e) => { const b = e.target.closest("[data-modo]"); if (b) trocarModo(b.dataset.modo); });
+    $("campos").addEventListener("input", (e) => {
+      const el = e.target.closest("[data-campo]"); if (!el || el.type === "file") return;
+      atual().valores[el.dataset.campo] = el.value; redesenhar();
+    });
+    $("campos").addEventListener("change", (e) => {
+      const el = e.target.closest("[data-campo]");
+      if (!el) return;
+      if (el.type === "file") {
+        const f = el.files[0]; if (!f) return;
+        const img = new Image();
+        img.onload = () => { atual().valores[el.dataset.campo] = img; redesenhar(); };
+        img.src = URL.createObjectURL(f);
+      } else { atual().valores[el.dataset.campo] = el.value; redesenhar(); }
+    });
+    $("slides").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-i]"); if (!b) return;
+      carrossel.atual = Number(b.dataset.i); montarSlides(); montarCampos(); redesenhar();
+    });
+    $("add-slide").addEventListener("click", () => {
+      const pos = carrossel.slides.length - 1;
+      const n = carrossel.slides.filter((s) => s.modelo === "carrosselSlide").length + 1;
+      carrossel.slides.splice(pos, 0, { modelo: "carrosselSlide", valores: { numero: String(n).padStart(2, "0"), titulo: "Novo slide", texto: "Escreva aqui o conteúdo deste slide." } });
+      carrossel.atual = pos; montarSlides(); montarCampos(); redesenhar();
+    });
+    $("remover-slide").addEventListener("click", () => {
+      const s = carrossel.slides[carrossel.atual];
+      if (s.modelo !== "carrosselSlide") { alert("A capa e o fechamento não podem ser removidos."); return; }
+      carrossel.slides.splice(carrossel.atual, 1); carrossel.atual = Math.max(1, carrossel.atual - 1);
+      montarSlides(); montarCampos(); redesenhar();
+    });
+    function mover(d) {
+      const i = carrossel.atual, j = i + d, s = carrossel.slides;
+      if (s[i].modelo !== "carrosselSlide" || !s[j] || s[j].modelo !== "carrosselSlide") return;
+      [s[i], s[j]] = [s[j], s[i]]; carrossel.atual = j; montarSlides(); montarCampos(); redesenhar();
+    }
+    $("mover-esq").addEventListener("click", () => mover(-1));
+    $("mover-dir").addEventListener("click", () => mover(1));
+
+    $("baixar").addEventListener("click", async () => {
+      const item = atual(), c = await desenharModelo(item.modelo, item.valores);
+      c.toBlob((b) => baixarBlob(b, nomeArquivo(item, modo === "carrossel" ? carrossel.atual : undefined)), "image/png");
+    });
+    $("baixar-tudo").addEventListener("click", async () => {
+      const botao = $("baixar-tudo"); botao.disabled = true; botao.textContent = "Gerando…";
+      const zip = new JSZip(); paginar();
+      for (let i = 0; i < carrossel.slides.length; i++) {
+        const s = carrossel.slides[i], c = await desenharModelo(s.modelo, s.valores);
+        zip.file(nomeArquivo(s, i), await new Promise((ok) => c.toBlob(ok, "image/png")));
+      }
+      baixarBlob(await zip.generateAsync({ type: "blob" }), "carrossel-coletivo-lufa.zip");
+      botao.disabled = false; botao.textContent = "Baixar carrossel completo (.zip)";
+    });
+
+    function esc(t) { return String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+    trocarModo("citacao");
+  </script>
+</body>
+</html>

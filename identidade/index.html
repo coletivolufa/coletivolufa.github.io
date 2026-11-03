@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Identidade Visual · Coletivo Lufã</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="../assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css?v=9">
+  <style>
+    body { margin: 0; }
+    .g-capa { background: var(--vermelho); color: var(--branco); padding: 64px clamp(20px, 6vw, 88px) 56px; position: relative; overflow: hidden; border-bottom: 8px solid var(--amarelo); }
+    .g-capa::before { content: ""; position: absolute; inset: -40%; background: repeating-conic-gradient(from 0deg at 80% 40%, rgba(255,255,255,.06) 0 6deg, transparent 6deg 18deg); }
+    .g-capa > * { position: relative; max-width: 1040px; margin: 0 auto; }
+    .g-capa h1 { font-size: clamp(60px, 10vw, 128px); line-height: .88; }
+    .g-capa p { font-size: 20px; max-width: 640px; }
+    .g-capa a { color: var(--amarelo); font-weight: 700; }
+    .g { max-width: 1040px; margin: 0 auto; padding: 0 clamp(20px, 6vw, 88px); }
+    .g section { padding: 56px 0; border-bottom: 3px solid var(--preto); }
+    .g h2 { font-size: clamp(44px, 6vw, 68px); color: var(--vermelho); margin-bottom: 14px; }
+    .g h3 { font-size: 30px; margin: 24px 0 8px; }
+    .g p, .g li { font-size: 17px; }
+    .cores { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+    .cor { border: 2px solid var(--preto); }
+    .cor div { height: 110px; }
+    .cor p { margin: 0; padding: 10px 12px; font-size: 14px; background: var(--branco); }
+    .cor b { font-family: var(--titulo); font-weight: 400; font-size: 24px; letter-spacing: .03em; display: block; }
+    .proporcao { display: flex; height: 34px; border: 2px solid var(--preto); margin-top: 14px; }
+    .tipos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .tipo { background: var(--branco); padding: 20px; border-top: 6px solid var(--vermelho); }
+    .tipo .amostra { font-size: 64px; line-height: 1; margin: 6px 0 10px; }
+    .exemplos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; align-items: start; }
+    .exemplos figure { margin: 0; }
+    .exemplos img { width: 100%; box-shadow: 6px 6px 0 var(--preto); background: #ddd; }
+    .exemplos figcaption { font-family: var(--titulo); font-size: 22px; letter-spacing: .04em; margin-top: 10px; }
+    .regras { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .regras > div { padding: 18px 22px; background: var(--branco); }
+    .regras .sim { border-left: 8px solid #2f7d32; } .regras .nao { border-left: 8px solid var(--vermelho); }
+    .regras h3 { margin-top: 0; }
+    .logos { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; }
+    .logos img { width: 150px; border-radius: 50%; }
+    .logos .anel { border: 7px solid var(--amarelo); box-shadow: 7px 8px 0 var(--preto); }
+    code { background: var(--branco); padding: 1px 6px; }
+    @media (max-width: 700px) { .regras { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="g-capa">
+    <div>
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Guia para os posts</span>
+      <h1>Identidade Visual</h1>
+      <p>Como o Coletivo Lufã aparece no Instagram: cores, fontes, logo e modelos prontos. Para criar um post, use o <a href="gerador.html">Gerador de Posts →</a></p>
+    </div>
+  </header>
+
+  <main class="g">
+    <section>
+      <h2>A ideia</h2>
+      <p><b>Cartaz de luta, feito para o celular.</b> A identidade do coletivo é prima da d'O Camarada: as duas vêm do cartaz soviético e construtivista, com raios de sol, faixas diagonais, estrelas e papel impresso. A diferença é que o Lufã é <b>mais vermelho, mais direto e mais quente</b>. O vermelho domina, o amarelo destaca e a pomba assina.</p>
+      <p>O Camarada fala como documentário, sobre fundo bege. O Lufã fala como cartaz de assembleia, sobre fundo vermelho. Quem segue os dois perfis percebe o parentesco sem confundir um com o outro.</p>
+    </section>
+
+    <section>
+      <h2>Cores</h2>
+      <div class="cores">
+        <div class="cor"><div style="background:#cc2220"></div><p><b>Vermelho Lufã</b>#CC2220 · fundo principal</p></div>
+        <div class="cor"><div style="background:#eab426"></div><p><b>Amarelo</b>#EAB426 · destaques, faixas e estrela</p></div>
+        <div class="cor"><div style="background:#fbf6ec"></div><p><b>Papel</b>#FBF6EC · fundo dos textos longos</p></div>
+        <div class="cor"><div style="background:#1e1916"></div><p><b>Tinta</b>#1E1916 · tarjas, sombras e fechamento</p></div>
+        <div class="cor"><div style="background:#9e1715"></div><p><b>Vermelho escuro</b>#9E1715 · raios e sobreposição em fotos</p></div>
+      </div>
+      <p style="margin-top:18px">Proporção ideal num post: muito vermelho, um pouco de papel ou tinta e o amarelo só no que importa.</p>
+      <div class="proporcao"><span style="flex:6;background:#cc2220"></span><span style="flex:2;background:#fbf6ec"></span><span style="flex:1.2;background:#1e1916"></span><span style="flex:.8;background:#eab426"></span></div>
+    </section>
+
+    <section>
+      <h2>Fontes</h2>
+      <div class="tipos">
+        <div class="tipo"><div class="amostra" style="font-family:var(--titulo)">BEBAS NEUE</div><p><b>Títulos, etiquetas e @.</b> Sempre em caixa alta. É a mesma fonte do site.</p></div>
+        <div class="tipo"><div class="amostra" style="font-family:var(--leitura);font-style:italic;font-size:46px">Literata itálica</div><p><b>Citações e frases.</b> Dá voz de livro às citações de Marx, Rosa, Lênin…</p></div>
+        <div class="tipo"><div class="amostra" style="font-family:var(--texto);font-size:40px;font-weight:700">Archivo</div><p><b>Textos explicativos.</b> Nos slides de carrossel e nos subtítulos. Fácil de ler no celular.</p></div>
+      </div>
+      <p style="margin-top:18px">Todas são gratuitas, do Google Fonts. Para destacar uma palavra, deixe-a <b style="color:var(--vermelho)">amarela</b> sobre o vermelho, ou <b style="color:var(--vermelho)">vermelha</b> sobre o papel. No gerador, basta escrever a palavra entre *asteriscos*.</p>
+    </section>
+
+    <section>
+      <h2>Logo e assinatura</h2>
+      <div class="logos">
+        <img class="anel" src="../assets/img/logo.png" alt="Logo com anel amarelo e sombra">
+        <div style="max-width:560px">
+          <p><b>Sobre fundo vermelho:</b> logo redonda com anel amarelo e sombra chapada de tinta, como nas capas de Reels.</p>
+          <p><b>Assinatura pequena:</b> logo mais "COLETIVO LUFÃ" em Bebas, no canto superior esquerdo dos posts de feed.</p>
+          <p><b>Sempre no post:</b> o <b>@coletivolufa</b>, na faixa amarela inclinada (citações), na tarja preta (capa do carrossel) ou no slide final.</p>
+          <p><b>Em parceria com O Camarada:</b> a logo do Lufã vai em cima, centralizada, e a marca d'O Camarada logo abaixo, como na capa do EP. 1.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Elementos</h2>
+      <ul>
+        <li><b>Raios de sol:</b> fundo de quase todos os posts vermelhos, em vermelho escuro ou branco bem transparente.</li>
+        <li><b>Faixa diagonal amarela:</b> leva o @ e as estrelas, inclinada cerca de 3°.</li>
+        <li><b>Estrela de cinco pontas:</b> separador (★) e destaque.</li>
+        <li><b>Tarja de tinta:</b> retângulo preto com texto claro para kickers, como "DESMISTIFICANDO O".</li>
+        <li><b>Número grande vazado:</b> amarelo com contorno preto, para numerar os pontos de um carrossel.</li>
+        <li><b>Grão de papel:</b> textura leve por cima de tudo, para o post parecer impresso. O gerador aplica sozinho.</li>
+        <li><b>Figuras recortadas:</b> pessoas e objetos sem fundo, com sombra chapada de tinta, apoiados na borda de baixo.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Modelos</h2>
+      <p>Todos são feitos no <a href="gerador.html">Gerador de Posts</a>. Os exemplos abaixo foram desenhados por ele, agora.</p>
+      <div class="exemplos" id="exemplos"></div>
+      <h3>Formatos</h3>
+      <ul>
+        <li><b>Feed (frase e carrossel):</b> 1080 × 1350 px (4:5), o maior tamanho que o Instagram mostra no feed.</li>
+        <li><b>Capa de Reels:</b> 1080 × 1920 px (9:16). No grid do perfil aparece só o miolo, então título e logo ficam no centro.</li>
+        <li><b>Carrossel:</b> capa + de 3 a 8 slides + fechamento. A capa faz a pergunta, os slides respondem um ponto cada e o fechamento chama para seguir.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Tom de voz</h2>
+      <ul>
+        <li><b>Direto e popular:</b> frases curtas, palavras do dia a dia e exemplos da vida de quem trabalha.</li>
+        <li><b>Firme sem ser agressivo:</b> criticamos o sistema e as ideias, não pessoas comuns que pensam diferente.</li>
+        <li><b>Com fonte:</b> citação sempre com autor e obra; dado sempre com a origem na legenda.</li>
+        <li><b>Chamando para a ação:</b> todo post termina convidando a estudar, comentar, compartilhar ou se organizar.</li>
+      </ul>
+    </section>
+
+    <section style="border-bottom:0">
+      <h2>Faça e não faça</h2>
+      <div class="regras">
+        <div class="sim"><h3>Faça</h3><ul>
+          <li>Um destaque amarelo por título, no máximo dois.</li>
+          <li>Texto curto: se não cabe no slide, divida em dois.</li>
+          <li>Fotos históricas em domínio público ou do acervo do coletivo, com crédito.</li>
+          <li>Conferir o post no celular antes de publicar.</li>
+        </ul></div>
+        <div class="nao"><h3>Não faça</h3><ul>
+          <li>Esticar, girar ou trocar as cores da logo.</li>
+          <li>Usar outras fontes ou cores fora da paleta.</li>
+          <li>Texto amarelo sobre fundo papel: fica ilegível.</li>
+          <li>Encher o post de efeitos: o cartaz é forte porque é simples.</li>
+        </ul></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="posts.js?v=1"></script>
+  <script>
+    const EXEMPLOS = [
+      ["citacao", "Frase e citação · vermelho", {}],
+      ["citacao", "Frase e citação · papel", { fundo: "claro", texto: "Os filósofos apenas *interpretaram* o mundo de diferentes maneiras; o que importa é transformá-lo.", autor: "Karl Marx", fonte: "Teses sobre Feuerbach, 1845" }],
+      ["carrosselCapa", "Carrossel · capa", {}],
+      ["carrosselSlide", "Carrossel · slide", {}],
+      ["carrosselFim", "Carrossel · fechamento", {}],
+      ["reels", "Capa de Reels", {}],
+    ];
+    (async () => {
+      const alvo = document.getElementById("exemplos");
+      for (const [m, nome, v] of EXEMPLOS) {
+        const c = await desenharModelo(m, v);
+        alvo.insertAdjacentHTML("beforeend", `<figure><img src="${c.toDataURL("image/jpeg", 0.85)}" alt="Exemplo: ${nome}"><figcaption>${nome}</figcaption></figure>`);
+      }
+    })();
+  </script>
+</body>
+</html>

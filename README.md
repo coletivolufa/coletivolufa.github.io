@@ -7,6 +7,7 @@ Site estático (HTML, CSS e JavaScript, sem build) publicado pelo GitHub Pages.
 - `index.html`: início, com o projeto do coletivo e a lista de membros.
 - `artigos.html`: lista de artigos. Com `?a=<slug>`, mostra um artigo.
 - `formacao.html` + `assets/formacao.js`: Formação para Novos Militantes, com séries de vídeo em `data/formacao.json` (vídeos por link do YouTube/Instagram ou arquivo em `formacao/videos/`). Episódios se publicam pela aba Formação da área dos membros.
+- `identidade/`: guia de identidade visual dos posts (`index.html`) e gerador de posts em PNG (`gerador.html`, modelos em `posts.js`).
 - `publicar.html`: área dos membros, para publicar artigos e editar membros. O link fica no rodapé.
 - `biblioteca.html` + `assets/biblioteca.js`: Biblioteca dos Camaradas, com estantes, busca e ficha de cada livro. Links diretos: `biblioteca.html#estante=poesia` e `biblioteca.html#livro=dom-casmurro`.
 
