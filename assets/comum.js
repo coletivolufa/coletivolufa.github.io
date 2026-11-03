@@ -54,7 +54,7 @@ function montarMenu() {
     <footer class="rodape">
       <div class="conteudo">
         <div><strong>Coletivo Lufã</strong><br>Coletivo marxista de esquerda radical.</div>
-        <div>Ideia de Leonardo Duarte · <a href="https://www.instagram.com/_ocamarada/" target="_blank" rel="noopener">@_ocamarada</a><br>
+        <div>Organização sem fins lucrativos · <a href="https://www.instagram.com/coletivolufa/" target="_blank" rel="noopener">@coletivolufa</a><br>
         <a href="publicar.html">Área dos membros</a></div>
       </div>
     </footer>`);
