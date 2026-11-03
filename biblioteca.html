@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Biblioteca dos Camaradas · Coletivo Lufã</title>
-  <meta name="description" content="Clássicos do marxismo em domínio público para ler de graça: Manifesto Comunista, O Capital, O Estado e a Revolução e muito mais.">
+  <meta name="description" content="Biblioteca gratuita de livros em domínio público: marxismo, história, filosofia, feminismo, literatura brasileira e portuguesa, poesia, mitologia e religião.">
   <meta property="og:title" content="Biblioteca dos Camaradas · Coletivo Lufã">
-  <meta property="og:description" content="Clássicos do marxismo em domínio público para ler de graça.">
+  <meta property="og:description" content="Livros em domínio público para ler de graça: de Marx a Machado de Assis, de Homero à Bíblia.">
   <meta property="og:image" content="assets/img/compartilhar.jpg">
   <meta name="theme-color" content="#cc2220">
   <link rel="icon" href="assets/img/favicon.png">
@@ -14,111 +14,46 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=4">
+  <link rel="stylesheet" href="assets/style.css?v=5">
 </head>
 <body data-pagina="biblioteca">
 <main>
   <header class="cabecalho-pagina">
     <div class="conteudo">
-      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Leitura livre</span>
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Leitura livre e gratuita</span>
       <h1>Biblioteca dos Camaradas</h1>
-      <p>Clássicos do marxismo em domínio público, para ler de graça no celular ou no computador.</p>
+      <p>Livros em domínio público para ler de graça, no celular ou no computador. Escolha uma estante, toque num livro e conheça a história dele.</p>
+      <div class="biblio-numeros" id="numeros"></div>
     </div>
   </header>
 
   <section class="secao">
     <div class="conteudo">
-      <div class="biblio-ferramentas">
-        <label class="biblio-busca">
-          <span class="visualmente-oculto">Buscar livro ou autor</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="busca" type="search" placeholder="Buscar livro ou autor…" autocomplete="off">
-        </label>
-        <div class="biblio-filtros" id="filtros" role="group" aria-label="Filtrar por tema"></div>
-      </div>
+      <label class="biblio-busca">
+        <span class="visualmente-oculto">Buscar livro, autor ou assunto</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="busca" type="search" placeholder="Buscar livro, autor ou assunto…" autocomplete="off">
+      </label>
 
-      <div id="estante" aria-live="polite"><p>Carregando a biblioteca…</p></div>
+      <div id="vista" aria-live="polite"><p>Abrindo a biblioteca…</p></div>
 
-      <p class="biblio-nota">
-        Todos os livros são de autores cujas obras já estão em domínio público. Os links levam às traduções em português do
+      <p class="biblio-nota" style="font-size:14px;color:var(--cinza);border-top:1px solid var(--linha);padding-top:18px;margin-top:56px;max-width:760px">
+        Todos os livros estão em domínio público. Os links levam a acervos gratuitos e legais:
         <a href="https://www.marxists.org/portugues/" target="_blank" rel="noopener">Marxists Internet Archive</a>,
-        que publica os textos com autorização dos tradutores.
+        <a href="https://www.gutenberg.org/" target="_blank" rel="noopener">Projeto Gutenberg</a> e
+        <a href="https://pt.wikisource.org/" target="_blank" rel="noopener">Wikisource</a>.
+        Alguns clássicos só têm tradução livre em inglês e estão marcados assim.
       </p>
     </div>
   </section>
 </main>
-<script src="assets/comum.js?v=4"></script>
-<script>
-  const CORES = ["lcapa--vermelha", "lcapa--amarela", "lcapa--preta", "lcapa--creme"];
-  let dados = null, filtro = "todos";
 
-  const normalizar = (t) => String(t).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+<dialog class="ficha" id="ficha" aria-labelledby="ficha-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar>×</button>
+  <div id="ficha-conteudo"></div>
+</dialog>
 
-  function capa(l, i) {
-    return `
-      <a class="livro" href="${esc(l.link)}" target="_blank" rel="noopener">
-        <div class="lcapa ${CORES[i % CORES.length]}" aria-hidden="true">
-          <span class="lcapa__estrela">★</span>
-          <span class="lcapa__titulo">${esc(l.titulo)}</span>
-          <span class="lcapa__autor">${esc(l.autores)}</span>
-          <span class="lcapa__ano">${esc(l.ano)}</span>
-        </div>
-        <div class="livro__info">
-          ${l.destaque ? '<span class="livro__selo">Essencial</span>' : ""}
-          <h3>${esc(l.titulo)}</h3>
-          <div class="livro__autor">${esc(l.autores)} · ${esc(l.ano)}</div>
-          <p>${esc(l.descricao)}</p>
-          <span class="livro__ler">${l.formato === "PDF" ? "Baixar PDF" : "Ler online"} →</span>
-        </div>
-      </a>`;
-  }
-
-  function desenhar() {
-    const termo = normalizar(document.getElementById("busca").value.trim());
-    const estante = document.getElementById("estante");
-    let html = "", total = 0;
-    dados.categorias.forEach((cat) => {
-      if (filtro !== "todos" && filtro !== cat.id) return;
-      const livros = dados.livros.filter((l) => l.categoria === cat.id &&
-        (!termo || normalizar(l.titulo + " " + l.autores).includes(termo)));
-      if (!livros.length) return;
-      total += livros.length;
-      html += `
-        <section class="prateleira">
-          <div class="prateleira__topo">
-            <h2>${esc(cat.nome)}</h2>
-            <p>${esc(cat.descricao)}</p>
-          </div>
-          <div class="livros">${livros.map(capa).join("")}</div>
-        </section>`;
-    });
-    estante.innerHTML = total ? html : '<div class="vazio">Nenhum livro encontrado. Tente outro nome ou autor.</div>';
-  }
-
-  function montarFiltros() {
-    const caixa = document.getElementById("filtros");
-    const opcoes = [{ id: "todos", nome: "Todos" }, ...dados.categorias];
-    caixa.innerHTML = opcoes.map((c) =>
-      `<button type="button" data-filtro="${c.id}" aria-pressed="${c.id === filtro}">${esc(c.nome)}</button>`).join("");
-    caixa.addEventListener("click", (e) => {
-      const b = e.target.closest("button");
-      if (!b) return;
-      filtro = b.dataset.filtro;
-      caixa.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-      desenhar();
-    });
-  }
-
-  (async () => {
-    try {
-      dados = await lerJSON("data/biblioteca.json");
-      montarFiltros();
-      desenhar();
-      document.getElementById("busca").addEventListener("input", desenhar);
-    } catch (e) {
-      document.getElementById("estante").innerHTML = '<div class="vazio">Não foi possível carregar a biblioteca agora.</div>';
-    }
-  })();
-</script>
+<script src="assets/comum.js?v=5"></script>
+<script src="assets/biblioteca.js?v=5"></script>
 </body>
 </html>

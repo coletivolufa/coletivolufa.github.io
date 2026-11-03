@@ -7,12 +7,12 @@ Site estático (HTML, CSS e JavaScript, sem build) publicado pelo GitHub Pages.
 - `index.html`: início, com o projeto do coletivo e a lista de membros.
 - `artigos.html`: lista de artigos. Com `?a=<slug>`, mostra um artigo.
 - `publicar.html`: área dos membros, para publicar artigos e editar membros. O link fica no rodapé.
-- `biblioteca.html`: Biblioteca dos Camaradas, com clássicos em domínio público. A lista fica em `data/biblioteca.json`.
+- `biblioteca.html` + `assets/biblioteca.js`: Biblioteca dos Camaradas, com estantes, busca e ficha de cada livro. Links diretos: `biblioteca.html#estante=poesia` e `biblioteca.html#livro=dom-casmurro`.
 
 ## Onde ficam os dados
 
 - `data/membros.json`: membros (nome, @, rede, função e foto).
-- `data/biblioteca.json`: livros da biblioteca (categoria, título, autores, ano, link e descrição).
+- `data/biblioteca.json`: estantes, biografias dos autores e livros (estantes, título, autor, ano, link, fonte, resumo, idioma e destaque).
 - `data/artigos.json`: lista de artigos (título, autor, data e resumo).
 - `artigos/<slug>.json`: texto completo de cada artigo.
 - `membros/`: fotos enviadas pela área dos membros.

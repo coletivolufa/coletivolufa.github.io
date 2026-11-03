@@ -1,355 +1,2430 @@
 {
-  "fonte": {
-    "nome": "Marxists Internet Archive",
-    "link": "https://www.marxists.org/portugues/"
+ "estantes": [
+  {
+   "id": "comece",
+   "nome": "Comece por aqui",
+   "descricao": "Primeiros passos no marxismo, em textos curtos e diretos.",
+   "simbolo": "★︎"
   },
-  "categorias": [
-    {
-      "id": "comece",
-      "nome": "Comece por aqui",
-      "descricao": "Textos curtos e diretos para quem está chegando agora."
-    },
-    {
-      "id": "economia",
-      "nome": "Economia política",
-      "descricao": "Como o capitalismo funciona: trabalho, valor, salário e lucro."
-    },
-    {
-      "id": "filosofia",
-      "nome": "Filosofia e história",
-      "descricao": "O materialismo histórico e a leitura marxista da história."
-    },
-    {
-      "id": "revolucao",
-      "nome": "Estado e revolução",
-      "descricao": "Estado, partido, organização e estratégia revolucionária."
-    },
-    {
-      "id": "cotidiano",
-      "nome": "Mulheres, família e vida cotidiana",
-      "descricao": "A luta de classes dentro de casa, no trabalho e no tempo livre."
-    }
-  ],
-  "livros": [
-    {
-      "categoria": "comece",
-      "titulo": "Manifesto do Partido Comunista",
-      "autores": "Karl Marx e Friedrich Engels",
-      "ano": 1848,
-      "link": "https://www.marxists.org/portugues/marx/1848/ManifestoDoPartidoComunista/index.htm",
-      "formato": "Ler online",
-      "descricao": "O texto mais famoso do marxismo: a história como luta de classes e o chamado à organização dos trabalhadores.",
-      "destaque": true
-    },
-    {
-      "categoria": "comece",
-      "titulo": "Trabalho Assalariado e Capital",
-      "autores": "Karl Marx",
-      "ano": 1849,
-      "link": "https://www.marxists.org/portugues/marx/1849/04/05.htm",
-      "formato": "Ler online",
-      "descricao": "Uma explicação simples de onde vem o lucro e por que o salário nunca paga todo o trabalho.",
-      "destaque": false
-    },
-    {
-      "categoria": "comece",
-      "titulo": "Salário, Preço e Lucro",
-      "autores": "Karl Marx",
-      "ano": 1865,
-      "link": "https://www.marxists.org/portugues/marx/1865/salario/index.htm",
-      "formato": "Ler online",
-      "descricao": "Palestra para operários que resume a teoria do valor e da mais-valia em linguagem acessível.",
-      "destaque": false
-    },
-    {
-      "categoria": "comece",
-      "titulo": "Do Socialismo Utópico ao Socialismo Científico",
-      "autores": "Friedrich Engels",
-      "ano": 1880,
-      "link": "https://www.marxists.org/portugues/marx/1880/socialismo/index.htm",
-      "formato": "Ler online",
-      "descricao": "Por que o socialismo deixou de ser um sonho e passou a ser uma análise da realidade.",
-      "destaque": false
-    },
-    {
-      "categoria": "comece",
-      "titulo": "Sobre o Papel do Trabalho na Transformação do Macaco em Homem",
-      "autores": "Friedrich Engels",
-      "ano": 1876,
-      "link": "https://www.marxists.org/portugues/marx/1876/mes/macaco.htm",
-      "formato": "Ler online",
-      "descricao": "Texto curto sobre como o trabalho moldou a própria espécie humana.",
-      "destaque": false
-    },
-    {
-      "categoria": "comece",
-      "titulo": "ABC do Comunismo",
-      "autores": "Nikolai Bukharin e Evgeni Preobrajenski",
-      "ano": 1920,
-      "link": "https://www.marxists.org/portugues/bukharin/1920/abc/abc-do-comunismo.pdf",
-      "formato": "PDF",
-      "descricao": "Manual didático escrito para formar militantes logo depois da Revolução Russa.",
-      "destaque": false
-    },
-    {
-      "categoria": "economia",
-      "titulo": "O Capital: Crítica da Economia Política",
-      "autores": "Karl Marx",
-      "ano": 1867,
-      "link": "https://www.marxists.org/portugues/marx/1867/capital/index.htm",
-      "formato": "Ler online",
-      "descricao": "A obra central de Marx: a mercadoria, a mais-valia, a acumulação e as crises do capitalismo.",
-      "destaque": true
-    },
-    {
-      "categoria": "economia",
-      "titulo": "Manuscritos Econômico-Filosóficos",
-      "autores": "Karl Marx",
-      "ano": 1844,
-      "link": "https://www.marxists.org/portugues/marx/1844/manuscritos/index.htm",
-      "formato": "Ler online",
-      "descricao": "Os escritos de juventude sobre trabalho alienado e a relação entre ser humano e natureza.",
-      "destaque": false
-    },
-    {
-      "categoria": "economia",
-      "titulo": "Miséria da Filosofia",
-      "autores": "Karl Marx",
-      "ano": 1847,
-      "link": "https://www.marxists.org/portugues/marx/1847/miseria/index.htm",
-      "formato": "Ler online",
-      "descricao": "A resposta de Marx a Proudhon e um primeiro esboço da sua crítica da economia.",
-      "destaque": false
-    },
-    {
-      "categoria": "economia",
-      "titulo": "O Imperialismo, Fase Superior do Capitalismo",
-      "autores": "Vladimir Lênin",
-      "ano": 1916,
-      "link": "https://www.marxists.org/portugues/lenin/1916/imperialismo/index.htm",
-      "formato": "Ler online",
-      "descricao": "Monopólios, capital financeiro e a disputa das potências pelo mundo.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "Teses sobre Feuerbach",
-      "autores": "Karl Marx",
-      "ano": 1845,
-      "link": "https://www.marxists.org/portugues/marx/1845/tesfeuer.htm",
-      "formato": "Ler online",
-      "descricao": "Onze teses curtas. A última: os filósofos interpretaram o mundo; trata-se de transformá-lo.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "A Ideologia Alemã (capítulo I: Feuerbach)",
-      "autores": "Karl Marx e Friedrich Engels",
-      "ano": 1846,
-      "link": "https://www.marxists.org/portugues/marx/1845/ideologia-alema-oe/index.htm",
-      "formato": "Ler online",
-      "descricao": "Onde nasce a concepção materialista da história.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "O 18 de Brumário de Luís Bonaparte",
-      "autores": "Karl Marx",
-      "ano": 1852,
-      "link": "https://www.marxists.org/portugues/marx/1852/brumario/index.htm",
-      "formato": "Ler online",
-      "descricao": "Como um golpe de Estado acontece: classes, partidos e a farsa que repete a tragédia.",
-      "destaque": true
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "As Lutas de Classes em França de 1848 a 1850",
-      "autores": "Karl Marx",
-      "ano": 1850,
-      "link": "https://www.marxists.org/portugues/marx/1850/11/lutas_class/index.htm",
-      "formato": "Ler online",
-      "descricao": "A revolução de 1848 analisada no calor dos acontecimentos.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "Anti-Dühring",
-      "autores": "Friedrich Engels",
-      "ano": 1878,
-      "link": "https://www.marxists.org/portugues/marx/1877/antiduhring/index.htm",
-      "formato": "Ler online",
-      "descricao": "Uma visão de conjunto do marxismo: filosofia, economia e socialismo.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "A Origem da Família, da Propriedade Privada e do Estado",
-      "autores": "Friedrich Engels",
-      "ano": 1884,
-      "link": "https://www.marxists.org/portugues/marx/1884/origem/index.htm",
-      "formato": "Ler online",
-      "descricao": "Como surgiram a propriedade privada, a opressão das mulheres e o Estado.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "Ludwig Feuerbach e o Fim da Filosofia Clássica Alemã",
-      "autores": "Friedrich Engels",
-      "ano": 1886,
-      "link": "https://www.marxists.org/portugues/marx/1886/mes/fim.htm",
-      "formato": "Ler online",
-      "descricao": "O acerto de contas do marxismo com Hegel e Feuerbach.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "O Papel do Indivíduo na História",
-      "autores": "Gueorgui Plekhanov",
-      "ano": 1898,
-      "link": "https://www.marxists.org/portugues/plekhanov/1898/mes/papel.htm",
-      "formato": "Ler online",
-      "descricao": "Grandes figuras fazem a história? Plekhanov responde a partir do materialismo.",
-      "destaque": false
-    },
-    {
-      "categoria": "filosofia",
-      "titulo": "A Teoria do Materialismo Histórico",
-      "autores": "Nikolai Bukharin",
-      "ano": 1921,
-      "link": "https://www.marxists.org/portugues/bukharin/1921/teoria/index.htm",
-      "formato": "Ler online",
-      "descricao": "Um manual de sociologia marxista escrito para a formação de quadros.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "A Guerra Civil em França",
-      "autores": "Karl Marx",
-      "ano": 1871,
-      "link": "https://www.marxists.org/portugues/marx/1871/guerra_civil/index.htm",
-      "formato": "Ler online",
-      "descricao": "A Comuna de Paris, o primeiro governo operário da história.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "Crítica do Programa de Gotha",
-      "autores": "Karl Marx",
-      "ano": 1875,
-      "link": "https://www.marxists.org/portugues/marx/1875/gotha/index.htm",
-      "formato": "Ler online",
-      "descricao": "De cada um segundo suas capacidades, a cada um segundo suas necessidades.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "Que Fazer?",
-      "autores": "Vladimir Lênin",
-      "ano": 1902,
-      "link": "https://www.marxists.org/portugues/lenin/1902/quefazer/index.htm",
-      "formato": "Ler online",
-      "descricao": "Consciência de classe, jornal operário e o papel do partido revolucionário.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "O Estado e a Revolução",
-      "autores": "Vladimir Lênin",
-      "ano": 1917,
-      "link": "https://www.marxists.org/portugues/lenin/1917/08/estadoerevolucao/index.htm",
-      "formato": "Ler online",
-      "descricao": "O que é o Estado, a quem ele serve e o que fazer com ele.",
-      "destaque": true
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "Esquerdismo, Doença Infantil do Comunismo",
-      "autores": "Vladimir Lênin",
-      "ano": 1920,
-      "link": "https://www.marxists.org/portugues/lenin/1920/esquerdismo/index.htm",
-      "formato": "Ler online",
-      "descricao": "Contra o sectarismo: táticas, alianças e trabalho nas organizações de massa.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "Reforma ou Revolução?",
-      "autores": "Rosa Luxemburgo",
-      "ano": 1899,
-      "link": "https://www.marxists.org/portugues/luxemburgo/1900/ref_rev/index.htm",
-      "formato": "Ler online",
-      "descricao": "Dá para chegar ao socialismo só com reformas? A resposta clássica de Rosa.",
-      "destaque": true
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "Greve de Massas, Partido e Sindicatos",
-      "autores": "Rosa Luxemburgo",
-      "ano": 1906,
-      "link": "https://www.marxists.org/portugues/luxemburgo/1906/mes/40.pdf",
-      "formato": "PDF",
-      "descricao": "As lições da Revolução Russa de 1905 sobre a força da greve.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "A Revolução Russa",
-      "autores": "Rosa Luxemburgo",
-      "ano": 1918,
-      "link": "https://www.marxists.org/portugues/luxemburgo/1918/mes/40.pdf",
-      "formato": "PDF",
-      "descricao": "Apoio e crítica aos bolcheviques, escrito na prisão.",
-      "destaque": false
-    },
-    {
-      "categoria": "revolucao",
-      "titulo": "A Revolução contra O Capital",
-      "autores": "Antonio Gramsci",
-      "ano": 1917,
-      "link": "https://www.marxists.org/portugues/gramsci/1917/04/24.htm",
-      "formato": "Ler online",
-      "descricao": "Texto curto de Gramsci sobre a Revolução de Outubro.",
-      "destaque": false
-    },
-    {
-      "categoria": "cotidiano",
-      "titulo": "O Direito à Preguiça",
-      "autores": "Paul Lafargue",
-      "ano": 1880,
-      "link": "https://www.marxists.org/portugues/lafargue/1883/preg/index.htm",
-      "formato": "Ler online",
-      "descricao": "Uma crítica afiada e bem-humorada ao culto do trabalho. Leitura obrigatória no debate da escala 6x1.",
-      "destaque": true
-    },
-    {
-      "categoria": "cotidiano",
-      "titulo": "O Comunismo e a Família",
-      "autores": "Alexandra Kollontai",
-      "ano": 1920,
-      "link": "https://www.marxists.org/portugues/kollontai/1920/mes/com_fam.htm",
-      "formato": "Ler online",
-      "descricao": "Como o socialismo pode libertar as mulheres do trabalho doméstico.",
-      "destaque": false
-    },
-    {
-      "categoria": "cotidiano",
-      "titulo": "As Relações entre os Sexos e a Luta de Classes",
-      "autores": "Alexandra Kollontai",
-      "ano": 1911,
-      "link": "https://www.marxists.org/portugues/kollontai/1911/mes/luta.htm",
-      "formato": "Ler online",
-      "descricao": "Amor, casamento e moral sexual vistos pela luta de classes.",
-      "destaque": false
-    },
-    {
-      "categoria": "cotidiano",
-      "titulo": "Para a Questão da Habitação",
-      "autores": "Friedrich Engels",
-      "ano": 1873,
-      "link": "https://www.marxists.org/portugues/marx/1873/habita/index.htm",
-      "formato": "Ler online",
-      "descricao": "Por que falta moradia para quem trabalha, e por que o mercado não resolve.",
-      "destaque": false
-    }
-  ]
+  {
+   "id": "marxismo",
+   "nome": "Marxismo e economia",
+   "descricao": "Como o capitalismo funciona: trabalho, valor, lucro e crise.",
+   "simbolo": "⚙︎"
+  },
+  {
+   "id": "revolucao",
+   "nome": "Política e revolução",
+   "descricao": "Estado, partido, organização e estratégia.",
+   "simbolo": "☭︎"
+  },
+  {
+   "id": "historia",
+   "nome": "História",
+   "descricao": "Relatos, crônicas e análises de momentos decisivos.",
+   "simbolo": "⧗︎"
+  },
+  {
+   "id": "filosofia",
+   "nome": "Filosofia",
+   "descricao": "Das perguntas antigas ao materialismo histórico.",
+   "simbolo": "∴︎"
+  },
+  {
+   "id": "feminismo",
+   "nome": "Feminismo e mulheres",
+   "descricao": "A luta das mulheres por igualdade, trabalho e liberdade.",
+   "simbolo": "♀︎"
+  },
+  {
+   "id": "brasil",
+   "nome": "Literatura brasileira",
+   "descricao": "Romances e contos que contam o Brasil.",
+   "simbolo": "✦︎"
+  },
+  {
+   "id": "portugal",
+   "nome": "Literatura portuguesa",
+   "descricao": "Os grandes nomes da prosa em Portugal.",
+   "simbolo": "⚓︎"
+  },
+  {
+   "id": "mundo",
+   "nome": "Clássicos do mundo",
+   "descricao": "Aventuras e romances de outros países, em português.",
+   "simbolo": "◎︎"
+  },
+  {
+   "id": "poesia",
+   "nome": "Poesia",
+   "descricao": "Versos de amor, de revolta e de saudade.",
+   "simbolo": "❦︎"
+  },
+  {
+   "id": "teatro",
+   "nome": "Teatro",
+   "descricao": "Peças para ler (e para montar com os camaradas).",
+   "simbolo": "◐︎"
+  },
+  {
+   "id": "mitologia",
+   "nome": "Mitologia e lendas",
+   "descricao": "Deuses, heróis, lendas indígenas e contos populares.",
+   "simbolo": "☽︎"
+  },
+  {
+   "id": "religiao",
+   "nome": "Religião e espiritualidade",
+   "descricao": "Textos sagrados e o debate sobre a fé.",
+   "simbolo": "☼︎"
+  }
+ ],
+ "autores": {
+  "Karl Marx": "Filósofo, economista e revolucionário alemão (1818-1883). Junto com Engels, fundou o socialismo científico e escreveu O Capital, a crítica mais profunda já feita ao capitalismo.",
+  "Friedrich Engels": "Pensador e revolucionário alemão (1820-1895), parceiro de toda a vida de Marx. Conheceu de perto a miséria operária na Inglaterra e escreveu obras fundamentais sobre história, família e Estado.",
+  "Vladimir Lênin": "Revolucionário russo (1870-1924), líder do Partido Bolchevique e da Revolução de Outubro de 1917. Desenvolveu a teoria do partido de vanguarda e do imperialismo.",
+  "Rosa Luxemburgo": "Revolucionária polaco-alemã (1871-1919), economista e uma das maiores teóricas do marxismo. Defendeu a democracia operária e foi assassinada durante a Revolução Alemã.",
+  "Antonio Gramsci": "Pensador e militante comunista italiano (1891-1937). Preso pelo fascismo, escreveu na cadeia reflexões sobre cultura, hegemonia e o papel dos intelectuais.",
+  "Paul Lafargue": "Militante socialista franco-cubano (1842-1911), genro de Marx. Ficou famoso pelo humor afiado contra o culto do trabalho.",
+  "Alexandra Kollontai": "Revolucionária russa (1872-1952), primeira mulher a integrar um governo na era moderna. Lutou pela libertação das mulheres e por uma nova moral nas relações afetivas.",
+  "Clara Zetkin": "Militante socialista alemã (1857-1933), organizadora do movimento de mulheres trabalhadoras e propositora do Dia Internacional da Mulher.",
+  "Nadejda Krupskaia": "Pedagoga e revolucionária russa (1869-1939). Dedicou-se à educação popular e à emancipação das mulheres trabalhadoras.",
+  "Nikolai Bukharin": "Economista e dirigente bolchevique (1888-1938). Escreveu manuais de formação muito lidos nos primeiros anos da Revolução Russa.",
+  "Gueorgui Plekhanov": "Pensador russo (1856-1918), considerado o pai do marxismo na Rússia e autor de obras clássicas de filosofia materialista.",
+  "John Reed": "Jornalista e militante estadunidense (1887-1920). Testemunhou a Revolução Russa e a contou como uma grande reportagem.",
+  "Machado de Assis": "Escritor carioca (1839-1908), neto de escravizados e fundador da Academia Brasileira de Letras. É considerado o maior nome da literatura brasileira, mestre da ironia.",
+  "José de Alencar": "Romancista cearense (1829-1877), principal nome do Romantismo brasileiro. Escreveu romances indianistas, urbanos e regionais.",
+  "Aluísio Azevedo": "Escritor maranhense (1857-1913), principal nome do Naturalismo no Brasil. Retratou cortiços, preconceito e desigualdade.",
+  "Bernardo Guimarães": "Escritor mineiro (1825-1884), romancista e poeta do Romantismo, conhecido pelos romances de temática abolicionista e regional.",
+  "Lima Barreto": "Escritor carioca (1881-1922), negro e de origem pobre. Denunciou o racismo, a hipocrisia da República e a exclusão nos subúrbios do Rio.",
+  "Raul Pompeia": "Escritor fluminense (1863-1895), abolicionista e republicano, autor de um dos romances mais originais do século XIX.",
+  "Visconde de Taunay": "Escritor e militar carioca (1843-1899). Lutou na Guerra do Paraguai e escreveu sobre o sertão brasileiro.",
+  "Júlia Lopes de Almeida": "Escritora carioca (1862-1934), uma das romancistas mais lidas do seu tempo e defensora da educação e da independência das mulheres.",
+  "Maria Firmina dos Reis": "Escritora e professora maranhense (1822-1917). Mulher negra, publicou em 1859 o primeiro romance abolicionista do Brasil.",
+  "Manuel Antônio de Almeida": "Escritor carioca (1831-1861). Seu único romance retrata com humor o povo do Rio de Janeiro do tempo do rei.",
+  "Joaquim Manuel de Macedo": "Escritor fluminense (1820-1882), autor do primeiro grande sucesso do romance brasileiro.",
+  "Adolfo Caminha": "Escritor cearense (1867-1897), naturalista, que tratou de temas considerados escandalosos em sua época.",
+  "Álvares de Azevedo": "Poeta paulista (1831-1852), principal nome da segunda geração romântica, marcada pela melancolia e pelo fascínio pela morte.",
+  "Mário de Andrade": "Escritor paulista (1893-1945), líder do Modernismo brasileiro, poeta, músico e pesquisador da cultura popular.",
+  "Oswald de Andrade": "Escritor paulista (1890-1954), agitador do Modernismo e autor do Manifesto Antropófago.",
+  "Simões Lopes Neto": "Escritor gaúcho (1865-1916), que recolheu lendas e causos do pampa na fala do gaúcho.",
+  "Euclides da Cunha": "Escritor e engenheiro fluminense (1866-1909). Cobriu a Guerra de Canudos como jornalista e transformou a experiência num livro monumental.",
+  "Joaquim Nabuco": "Político e escritor pernambucano (1849-1910), um dos principais líderes da campanha abolicionista.",
+  "Pero Vaz de Caminha": "Escrivão da frota de Pedro Álvares Cabral (c. 1450-1500), autor do primeiro relato escrito sobre a terra que viria a ser o Brasil.",
+  "André João Antonil": "Jesuíta italiano (1649-1716) que viveu no Brasil colonial e descreveu a economia do açúcar, do tabaco e do ouro.",
+  "Castro Alves": "Poeta baiano (1847-1871), o Poeta dos Escravos. Seus versos inflamados foram uma arma da campanha abolicionista.",
+  "Gonçalves Dias": "Poeta maranhense (1823-1864), principal nome do indianismo romântico e autor da Canção do Exílio.",
+  "Augusto dos Anjos": "Poeta paraibano (1884-1914), dono de uma poesia única, que mistura ciência, morte e angústia.",
+  "Cruz e Sousa": "Poeta catarinense (1861-1898), filho de escravizados e maior nome do Simbolismo brasileiro.",
+  "Tomás Antônio Gonzaga": "Poeta e jurista (1744-1810), participante da Inconfidência Mineira, exilado na África.",
+  "Basílio da Gama": "Poeta mineiro (1741-1795) do Arcadismo, autor de um épico sobre a guerra contra os povos guaranis.",
+  "Santa Rita Durão": "Frade e poeta mineiro (1722-1784), autor de um épico sobre o descobrimento da Bahia.",
+  "Gregório de Matos": "Poeta baiano (1636-1696), o Boca do Inferno, famoso pela sátira contra os poderosos da colônia.",
+  "Eça de Queirós": "Escritor português (1845-1900), maior romancista do Realismo em Portugal, crítico feroz da Igreja e da burguesia.",
+  "Camilo Castelo Branco": "Escritor português (1825-1890), autor de mais de cem livros e mestre do romance passional.",
+  "Almeida Garrett": "Escritor e político português (1799-1854), introdutor do Romantismo em Portugal.",
+  "Alexandre Herculano": "Historiador e escritor português (1810-1877), fundador do romance histórico em Portugal.",
+  "Mário de Sá-Carneiro": "Poeta e escritor português (1890-1916), companheiro de Fernando Pessoa no Modernismo.",
+  "Raul Brandão": "Escritor português (1867-1930), que retratou a pobreza e a angústia humana.",
+  "Luís de Camões": "Poeta português (c. 1524-1580), autor de Os Lusíadas, o grande épico da língua portuguesa.",
+  "Fernando Pessoa": "Poeta português (1888-1935), um dos maiores do século XX, criador dos heterônimos.",
+  "Cesário Verde": "Poeta português (1855-1886), que levou a cidade de Lisboa e seus trabalhadores para a poesia.",
+  "Antero de Quental": "Poeta e pensador português (1842-1891), militante socialista e fundador da secção portuguesa da Internacional.",
+  "Florbela Espanca": "Poetisa portuguesa (1894-1930), voz feminina intensa e pioneira, autora de sonetos sobre amor e dor.",
+  "Camilo Pessanha": "Poeta português (1867-1926), maior nome do Simbolismo em Portugal.",
+  "Guerra Junqueiro": "Poeta português (1850-1923), republicano e anticlerical, famoso pela poesia satírica.",
+  "Gil Vicente": "Dramaturgo português (c. 1465-1536), pai do teatro português.",
+  "William Shakespeare": "Dramaturgo e poeta inglês (1564-1616), o mais encenado do mundo.",
+  "Miguel de Cervantes": "Escritor espanhol (1547-1616), autor de Dom Quixote, considerado o primeiro romance moderno.",
+  "Victor Hugo": "Escritor francês (1802-1885), autor de Os Miseráveis, defensor dos pobres e da república.",
+  "Júlio Verne": "Escritor francês (1828-1905), pai da ficção científica e das grandes viagens extraordinárias.",
+  "Homero": "Poeta grego lendário (séc. VIII a.C.), a quem se atribuem a Ilíada e a Odisseia.",
+  "Virgílio": "Poeta romano (70-19 a.C.), autor da Eneida.",
+  "Valmiki": "Sábio e poeta da Índia antiga, tradicionalmente apontado como autor do Ramayana.",
+  "Thomas Bulfinch": "Escritor estadunidense (1796-1867) que recontou os mitos gregos, romanos e nórdicos para o grande público.",
+  "Esopo": "Contador de fábulas da Grécia antiga (séc. VI a.C.), que, segundo a tradição, teria sido escravizado.",
+  "Vários autores": "Obra de tradição coletiva, transmitida e reescrita por muitas gerações.",
+  "Platão": "Filósofo grego (c. 428-348 a.C.), discípulo de Sócrates e um dos fundadores da filosofia ocidental.",
+  "Thomas More": "Pensador inglês (1478-1535), que imaginou uma ilha sem propriedade privada e criou a palavra utopia.",
+  "Mary Wollstonecraft": "Escritora inglesa (1759-1797), pioneira do feminismo, defensora da educação igual para mulheres.",
+  "John Stuart Mill": "Filósofo inglês (1806-1873), que escreveu com Harriet Taylor uma defesa da igualdade entre os sexos.",
+  "Ana de Castro Osório": "Escritora e feminista portuguesa (1872-1935), fundadora de associações pelos direitos das mulheres.",
+  "Padre Antônio Vieira": "Jesuíta e orador luso-brasileiro (1608-1697), um dos maiores prosadores da língua, defensor dos indígenas.",
+  "Tomás de Kempis": "Monge alemão (1380-1471), autor de um dos livros cristãos mais lidos da história.",
+  "Lao-Tsé": "Sábio chinês (séc. VI a.C.), fundador do taoísmo segundo a tradição."
+ },
+ "livros": [
+  {
+   "estantes": [
+    "comece",
+    "revolucao"
+   ],
+   "titulo": "Manifesto do Partido Comunista",
+   "autor": "Karl Marx e Friedrich Engels",
+   "ano": 1848,
+   "link": "https://www.marxists.org/portugues/marx/1848/ManifestoDoPartidoComunista/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "O texto mais famoso do marxismo. Em poucas páginas, Marx e Engels mostram que a história é a história da luta de classes, explicam como a burguesia revolucionou o mundo e criou seus próprios coveiros, e terminam com o chamado: trabalhadores de todos os países, uni-vos!",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "manifesto-do-partido-comunista",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "comece",
+    "marxismo"
+   ],
+   "titulo": "Trabalho Assalariado e Capital",
+   "autor": "Karl Marx",
+   "ano": 1849,
+   "link": "https://www.marxists.org/portugues/marx/1849/04/05.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Conferências para operários que explicam, de forma simples, o que é o salário, de onde vem o lucro e por que o crescimento do capital aumenta a dependência de quem trabalha.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "trabalho-assalariado-e-capital",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "comece",
+    "marxismo"
+   ],
+   "titulo": "Salário, Preço e Lucro",
+   "autor": "Karl Marx",
+   "ano": 1865,
+   "link": "https://www.marxists.org/portugues/marx/1865/salario/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Palestra feita para a Associação Internacional dos Trabalhadores. Marx resume a teoria do valor e da mais-valia e defende que a luta por salários é necessária, mas não basta.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "salario-preco-e-lucro",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "comece",
+    "filosofia"
+   ],
+   "titulo": "Do Socialismo Utópico ao Socialismo Científico",
+   "autor": "Friedrich Engels",
+   "ano": 1880,
+   "link": "https://www.marxists.org/portugues/marx/1880/socialismo/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Engels conta como o socialismo deixou de ser o sonho de pensadores generosos e passou a ser uma análise científica da sociedade, baseada no materialismo histórico. Uma das melhores introduções ao marxismo.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "do-socialismo-utopico-ao-socialismo-cientifico",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "comece",
+    "filosofia"
+   ],
+   "titulo": "Sobre o Papel do Trabalho na Transformação do Macaco em Homem",
+   "autor": "Friedrich Engels",
+   "ano": 1876,
+   "link": "https://www.marxists.org/portugues/marx/1876/mes/macaco.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Texto curto e surpreendente sobre como o trabalho e o uso das mãos moldaram o cérebro, a linguagem e a própria espécie humana. Termina com um alerta sobre a destruição da natureza pelo lucro.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "sobre-o-papel-do-trabalho-na-transformacao-do-macaco-em-home",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "comece",
+    "revolucao"
+   ],
+   "titulo": "ABC do Comunismo",
+   "autor": "Nikolai Bukharin e Evgeni Preobrajenski",
+   "ano": 1920,
+   "link": "https://www.marxists.org/portugues/bukharin/1920/abc/abc-do-comunismo.pdf",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Manual didático escrito logo depois da Revolução Russa para formar milhares de novos militantes. Explica o capitalismo, o programa comunista e os desafios da construção do socialismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "abc-do-comunismo",
+   "formato": "PDF"
+  },
+  {
+   "estantes": [
+    "marxismo"
+   ],
+   "titulo": "O Capital: Crítica da Economia Política",
+   "autor": "Karl Marx",
+   "ano": 1867,
+   "link": "https://www.marxists.org/portugues/marx/1867/capital/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "A obra central de Marx. Partindo da mercadoria, ele desmonta o funcionamento do capitalismo: o valor, a exploração do trabalho, a mais-valia, a acumulação e as crises. Leitura exigente, mas indispensável.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-capital-critica-da-economia-politica",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "marxismo",
+    "filosofia"
+   ],
+   "titulo": "Manuscritos Econômico-Filosóficos",
+   "autor": "Karl Marx",
+   "ano": 1844,
+   "link": "https://www.marxists.org/portugues/marx/1844/manuscritos/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Escritos de juventude em que Marx desenvolve a ideia de trabalho alienado: no capitalismo, o trabalhador se torna estranho ao que produz, à natureza, aos outros e a si mesmo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "manuscritos-economico-filosoficos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "marxismo"
+   ],
+   "titulo": "Miséria da Filosofia",
+   "autor": "Karl Marx",
+   "ano": 1847,
+   "link": "https://www.marxists.org/portugues/marx/1847/miseria/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Resposta polêmica a Proudhon, em que Marx critica o socialismo pequeno-burguês e apresenta pela primeira vez as bases da sua crítica da economia política.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "miseria-da-filosofia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "marxismo",
+    "revolucao"
+   ],
+   "titulo": "O Imperialismo, Fase Superior do Capitalismo",
+   "autor": "Vladimir Lênin",
+   "ano": 1916,
+   "link": "https://www.marxists.org/portugues/lenin/1916/imperialismo/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Lênin explica como a livre concorrência deu lugar aos monopólios e ao capital financeiro, e como as potências disputam o mundo, levando à guerra. Fundamental para entender a dependência dos países periféricos.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-imperialismo-fase-superior-do-capitalismo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "marxismo"
+   ],
+   "titulo": "Para a Questão da Habitação",
+   "autor": "Friedrich Engels",
+   "ano": 1873,
+   "link": "https://www.marxists.org/portugues/marx/1873/habita/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Por que sempre falta moradia para quem trabalha? Engels mostra que a crise habitacional é produto do capitalismo e não se resolve com soluções de mercado.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "para-a-questao-da-habitacao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao",
+    "historia"
+   ],
+   "titulo": "A Guerra Civil em França",
+   "autor": "Karl Marx",
+   "ano": 1871,
+   "link": "https://www.marxists.org/portugues/marx/1871/guerra_civil/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Escrito no calor dos acontecimentos, celebra a Comuna de Paris, o primeiro governo operário da história, e tira dela lições sobre o Estado e a revolução.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-guerra-civil-em-franca",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "Crítica do Programa de Gotha",
+   "autor": "Karl Marx",
+   "ano": 1875,
+   "link": "https://www.marxists.org/portugues/marx/1875/gotha/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Notas críticas ao programa da social-democracia alemã, onde Marx descreve as fases da sociedade comunista: de cada um segundo suas capacidades, a cada um segundo suas necessidades.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "critica-do-programa-de-gotha",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "Que Fazer?",
+   "autor": "Vladimir Lênin",
+   "ano": 1902,
+   "link": "https://www.marxists.org/portugues/lenin/1902/quefazer/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Debate sobre como organizar a luta: o papel do jornal operário, da consciência de classe e de um partido de revolucionários profissionais.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "que-fazer",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "O Estado e a Revolução",
+   "autor": "Vladimir Lênin",
+   "ano": 1917,
+   "link": "https://www.marxists.org/portugues/lenin/1917/08/estadoerevolucao/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Escrito às vésperas de Outubro, explica o que é o Estado, a quem ele serve e por que os trabalhadores precisam construir um poder próprio.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-estado-e-a-revolucao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "Esquerdismo, Doença Infantil do Comunismo",
+   "autor": "Vladimir Lênin",
+   "ano": 1920,
+   "link": "https://www.marxists.org/portugues/lenin/1920/esquerdismo/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Lênin critica o sectarismo e defende a atuação nos sindicatos, nos parlamentos e em todas as organizações de massa.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "esquerdismo-doenca-infantil-do-comunismo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "Reforma ou Revolução?",
+   "autor": "Rosa Luxemburgo",
+   "ano": 1899,
+   "link": "https://www.marxists.org/portugues/luxemburgo/1900/ref_rev/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Resposta clássica a quem acreditava que o socialismo chegaria aos poucos, só com reformas. Rosa mostra que reformas e revolução não se opõem, mas que as reformas sozinhas não acabam com a exploração.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "reforma-ou-revolucao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "Greve de Massas, Partido e Sindicatos",
+   "autor": "Rosa Luxemburgo",
+   "ano": 1906,
+   "link": "https://www.marxists.org/portugues/luxemburgo/1906/mes/40.pdf",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "A partir da Revolução Russa de 1905, Rosa analisa a força da greve geral e a relação entre espontaneidade das massas e organização.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "greve-de-massas-partido-e-sindicatos",
+   "formato": "PDF"
+  },
+  {
+   "estantes": [
+    "revolucao",
+    "historia"
+   ],
+   "titulo": "A Revolução Russa",
+   "autor": "Rosa Luxemburgo",
+   "ano": 1918,
+   "link": "https://www.marxists.org/portugues/luxemburgo/1918/mes/40.pdf",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Escrito na prisão, defende a Revolução de Outubro e, ao mesmo tempo, critica os bolcheviques em nome da democracia operária.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-revolucao-russa",
+   "formato": "PDF"
+  },
+  {
+   "estantes": [
+    "revolucao"
+   ],
+   "titulo": "A Revolução contra O Capital",
+   "autor": "Antonio Gramsci",
+   "ano": 1917,
+   "link": "https://www.marxists.org/portugues/gramsci/1917/04/24.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Artigo provocador em que o jovem Gramsci celebra a Revolução Russa como uma vitória da vontade coletiva contra leituras mecânicas do marxismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-revolucao-contra-o-capital",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia"
+   ],
+   "titulo": "Os Sertões",
+   "autor": "Euclides da Cunha",
+   "ano": 1902,
+   "link": "https://pt.wikisource.org/wiki/Os_Sert%C3%B5es",
+   "fonte": "Wikisource",
+   "resumo": "Relato monumental da Guerra de Canudos, em que o Exército massacrou a comunidade de Antônio Conselheiro no sertão da Bahia. Dividido em A Terra, O Homem e A Luta, termina como denúncia de um crime.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "os-sertoes",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia"
+   ],
+   "titulo": "O Abolicionismo",
+   "autor": "Joaquim Nabuco",
+   "ano": 1883,
+   "link": "https://pt.wikisource.org/wiki/O_Abolicionismo",
+   "fonte": "Wikisource",
+   "resumo": "Manifesto da campanha abolicionista, escrito no exílio. Nabuco mostra que a escravidão contaminava toda a sociedade brasileira e não bastava libertar: era preciso reparar.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-abolicionismo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia"
+   ],
+   "titulo": "Minha Formação",
+   "autor": "Joaquim Nabuco",
+   "ano": 1900,
+   "link": "https://www.gutenberg.org/ebooks/76030",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Memórias de Nabuco sobre sua educação, suas viagens e sua luta contra a escravidão, com o célebre capítulo Massangana.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "minha-formacao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia"
+   ],
+   "titulo": "Carta de Pero Vaz de Caminha",
+   "autor": "Pero Vaz de Caminha",
+   "ano": 1500,
+   "link": "https://pt.wikisource.org/wiki/Carta_de_Pero_Vaz_de_Caminha",
+   "fonte": "Wikisource",
+   "resumo": "O primeiro documento escrito sobre a terra que viria a ser o Brasil. O escrivão descreve ao rei os povos indígenas e a paisagem com o olhar do colonizador.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "carta-de-pero-vaz-de-caminha",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia",
+    "marxismo"
+   ],
+   "titulo": "Cultura e Opulência do Brasil por suas Drogas e Minas",
+   "autor": "André João Antonil",
+   "ano": 1711,
+   "link": "https://www.gutenberg.org/ebooks/70662",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Retrato detalhado da economia colonial: engenhos de açúcar, plantações de tabaco, minas de ouro e o trabalho escravizado que sustentava tudo. Foi proibido pela Coroa portuguesa logo após publicado.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "cultura-e-opulencia-do-brasil-por-suas-drogas-e-minas",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia",
+    "revolucao"
+   ],
+   "titulo": "Dez Dias que Abalaram o Mundo",
+   "autor": "John Reed",
+   "ano": 1919,
+   "link": "https://www.marxists.org/portugues/reed/1919/dias/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "A grande reportagem da Revolução Russa. Reed esteve nas ruas, nos sovietes e no Palácio de Inverno e conta, dia a dia, como os trabalhadores tomaram o poder.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "dez-dias-que-abalaram-o-mundo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia"
+   ],
+   "titulo": "As Lutas de Classes em França de 1848 a 1850",
+   "autor": "Karl Marx",
+   "ano": 1850,
+   "link": "https://www.marxists.org/portugues/marx/1850/11/lutas_class/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "A revolução de 1848 em Paris analisada classe por classe: como os trabalhadores foram derrotados e a burguesia se reorganizou.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "as-lutas-de-classes-em-franca-de-1848-a-1850",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "historia",
+    "filosofia"
+   ],
+   "titulo": "O 18 de Brumário de Luís Bonaparte",
+   "autor": "Karl Marx",
+   "ano": 1852,
+   "link": "https://www.marxists.org/portugues/marx/1852/brumario/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Como um golpe de Estado acontece. Marx analisa o golpe de Luís Bonaparte e cunha frases célebres, como a da história que se repete, primeiro como tragédia, depois como farsa.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-18-de-brumario-de-luis-bonaparte",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia"
+   ],
+   "titulo": "Teses sobre Feuerbach",
+   "autor": "Karl Marx",
+   "ano": 1845,
+   "link": "https://www.marxists.org/portugues/marx/1845/tesfeuer.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Onze teses curtíssimas. A última virou a frase mais citada de Marx: os filósofos apenas interpretaram o mundo de diferentes maneiras; o que importa é transformá-lo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "teses-sobre-feuerbach",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia"
+   ],
+   "titulo": "A Ideologia Alemã (capítulo I)",
+   "autor": "Karl Marx e Friedrich Engels",
+   "ano": 1846,
+   "link": "https://www.marxists.org/portugues/marx/1845/ideologia-alema-oe/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "O primeiro capítulo, dedicado a Feuerbach, onde nasce a concepção materialista da história: não é a consciência que determina a vida, mas a vida que determina a consciência.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-ideologia-alema-capitulo-i",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia"
+   ],
+   "titulo": "Anti-Dühring",
+   "autor": "Friedrich Engels",
+   "ano": 1878,
+   "link": "https://www.marxists.org/portugues/marx/1877/antiduhring/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Uma visão de conjunto do marxismo, em filosofia, economia e socialismo, escrita como resposta a um professor que pretendia reinventar o socialismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "anti-duhring",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia"
+   ],
+   "titulo": "Ludwig Feuerbach e o Fim da Filosofia Clássica Alemã",
+   "autor": "Friedrich Engels",
+   "ano": 1886,
+   "link": "https://www.marxists.org/portugues/marx/1886/mes/fim.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Engels explica o que o marxismo herdou de Hegel e de Feuerbach e o que precisou superar.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "ludwig-feuerbach-e-o-fim-da-filosofia-classica-alema",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia",
+    "historia"
+   ],
+   "titulo": "O Papel do Indivíduo na História",
+   "autor": "Gueorgui Plekhanov",
+   "ano": 1898,
+   "link": "https://www.marxists.org/portugues/plekhanov/1898/mes/papel.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Grandes líderes fazem a história ou são feitos por ela? Plekhanov responde a partir do materialismo, sem negar o papel das pessoas.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-papel-do-individuo-na-historia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia"
+   ],
+   "titulo": "A Teoria do Materialismo Histórico",
+   "autor": "Nikolai Bukharin",
+   "ano": 1921,
+   "link": "https://www.marxists.org/portugues/bukharin/1921/teoria/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Manual de sociologia marxista escrito para a formação de quadros nos primeiros anos da União Soviética.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-teoria-do-materialismo-historico",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia"
+   ],
+   "titulo": "A República",
+   "autor": "Platão",
+   "ano": -375,
+   "link": "https://www.gutenberg.org/ebooks/150",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O diálogo mais famoso de Platão discute o que é a justiça e imagina uma cidade ideal governada por filósofos. Traz a alegoria da caverna.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "a-republica",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "filosofia",
+    "revolucao"
+   ],
+   "titulo": "Utopia",
+   "autor": "Thomas More",
+   "ano": 1516,
+   "link": "https://www.gutenberg.org/ebooks/2130",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "More imagina uma ilha onde não há propriedade privada nem dinheiro e todos trabalham poucas horas. O livro deu nome a todo sonho de sociedade igualitária.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "utopia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo",
+    "filosofia"
+   ],
+   "titulo": "A Origem da Família, da Propriedade Privada e do Estado",
+   "autor": "Friedrich Engels",
+   "ano": 1884,
+   "link": "https://www.marxists.org/portugues/marx/1884/origem/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Engels investiga como surgiram a propriedade privada, o Estado e a família patriarcal, e mostra que a opressão da mulher tem origem histórica e não natural.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "a-origem-da-familia-da-propriedade-privada-e-do-estado",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "O Comunismo e a Família",
+   "autor": "Alexandra Kollontai",
+   "ano": 1920,
+   "link": "https://www.marxists.org/portugues/kollontai/1920/mes/com_fam.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Kollontai mostra como o socialismo pode libertar as mulheres do trabalho doméstico com refeitórios, lavanderias e creches coletivas, e imagina novas relações baseadas na liberdade.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-comunismo-e-a-familia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "As Relações entre os Sexos e a Luta de Classes",
+   "autor": "Alexandra Kollontai",
+   "ano": 1911,
+   "link": "https://www.marxists.org/portugues/kollontai/1911/mes/luta.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Amor, casamento e moral sexual também são campo da luta de classes. Kollontai critica a ideia da mulher como propriedade.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "as-relacoes-entre-os-sexos-e-a-luta-de-classes",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "Pela Libertação das Mulheres!",
+   "autor": "Clara Zetkin",
+   "ano": 1889,
+   "link": "https://www.marxists.org/portugues/zetkin/1889/07/19.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Discurso no congresso de fundação da Segunda Internacional defendendo que a emancipação da mulher passa pelo trabalho e pelo socialismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "pela-libertacao-das-mulheres",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "Apenas Junto com as Mulheres Proletárias o Socialismo Será Vitorioso",
+   "autor": "Clara Zetkin",
+   "ano": 1896,
+   "link": "https://www.marxists.org/portugues/zetkin/1896/10/16.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Zetkin explica por que a luta das trabalhadoras é diferente da luta das mulheres burguesas e por que o socialismo depende delas.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "apenas-junto-com-as-mulheres-proletarias-o-socialismo-sera-v",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "A Mulher Trabalhadora",
+   "autor": "Nadejda Krupskaia",
+   "ano": 1899,
+   "link": "https://www.marxists.org/portugues/krupskaia/1899/mes/amulhertrabalhadora.pdf",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Folheto escrito no exílio sobre a vida das operárias e camponesas russas e o caminho para sua emancipação.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-mulher-trabalhadora",
+   "formato": "PDF"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "Às Mulheres Portuguesas",
+   "autor": "Ana de Castro Osório",
+   "ano": 1905,
+   "link": "https://www.gutenberg.org/ebooks/63943",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Considerado o primeiro manifesto feminista português, defende a educação, o trabalho e a independência econômica das mulheres.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "as-mulheres-portuguesas",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo"
+   ],
+   "titulo": "A Vindication of the Rights of Woman",
+   "autor": "Mary Wollstonecraft",
+   "ano": 1792,
+   "link": "https://www.gutenberg.org/ebooks/3420",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um dos textos fundadores do feminismo. Wollstonecraft argumenta que as mulheres não são inferiores por natureza, apenas privadas de educação.",
+   "destaque": true,
+   "idioma": "en",
+   "id": "a-vindication-of-the-rights-of-woman",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "feminismo",
+    "filosofia"
+   ],
+   "titulo": "The Subjection of Women",
+   "autor": "John Stuart Mill",
+   "ano": 1869,
+   "link": "https://www.gutenberg.org/ebooks/27083",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Defesa da igualdade legal entre homens e mulheres, escrita a partir das ideias de Harriet Taylor Mill.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "the-subjection-of-women",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "feminismo"
+   ],
+   "titulo": "A Escrava Isaura",
+   "autor": "Bernardo Guimarães",
+   "ano": 1875,
+   "link": "https://www.gutenberg.org/ebooks/74475",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Isaura é uma jovem escravizada, educada como sinhá, perseguida pelo senhor Leôncio, que a deseja. O romance foi um sucesso na campanha abolicionista e virou uma das novelas mais vistas da TV brasileira.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "a-escrava-isaura",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "feminismo"
+   ],
+   "titulo": "Úrsula",
+   "autor": "Maria Firmina dos Reis",
+   "ano": 1859,
+   "link": "https://pt.wikisource.org/wiki/%C3%9Arsula",
+   "fonte": "Wikisource",
+   "resumo": "O primeiro romance abolicionista do Brasil, escrito por uma mulher negra. Além do drama romântico, dá voz a personagens escravizados, como a velha Susana, que lembra a liberdade na África.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "ursula",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Dom Casmurro",
+   "autor": "Machado de Assis",
+   "ano": 1899,
+   "link": "https://www.gutenberg.org/ebooks/55752",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Bentinho, já velho, conta sua história com Capitu, a menina de olhos de ressaca. Traiu ou não traiu? O narrador quer nos convencer, mas o leitor desconfia.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "dom-casmurro",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Memórias Póstumas de Brás Cubas",
+   "autor": "Machado de Assis",
+   "ano": 1881,
+   "link": "https://www.gutenberg.org/ebooks/54829",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um defunto autor narra a própria vida inútil de elite carioca, com ironia e sem pudor. O livro que revolucionou a literatura brasileira.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "memorias-postumas-de-bras-cubas",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Quincas Borba",
+   "autor": "Machado de Assis",
+   "ano": 1891,
+   "link": "https://www.gutenberg.org/ebooks/55682",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Rubião herda a fortuna e a filosofia do louco Quincas Borba, o Humanitismo: ao vencedor, as batatas. Uma sátira da ambição na sociedade carioca.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "quincas-borba",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Esaú e Jacó",
+   "autor": "Machado de Assis",
+   "ano": 1904,
+   "link": "https://www.gutenberg.org/ebooks/56737",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Os gêmeos Pedro e Paulo brigam desde o ventre da mãe: um é monarquista, outro republicano. Os dois amam a mesma moça, enquanto o Império vira República.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "esau-e-jaco",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Memorial de Aires",
+   "autor": "Machado de Assis",
+   "ano": 1908,
+   "link": "https://www.gutenberg.org/ebooks/55797",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O último romance de Machado, em forma de diário de um diplomata aposentado, ambientado no ano da Abolição.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "memorial-de-aires",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "O Alienista",
+   "autor": "Machado de Assis",
+   "ano": 1882,
+   "link": "https://pt.wikisource.org/wiki/O_Alienista",
+   "fonte": "Wikisource",
+   "resumo": "O médico Simão Bacamarte cria um hospício na cidade de Itaguaí e começa a internar todo mundo. Quem é louco, afinal? Uma novela curta e hilária sobre ciência e poder.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-alienista",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Papéis Avulsos",
+   "autor": "Machado de Assis",
+   "ano": 1882,
+   "link": "https://www.gutenberg.org/ebooks/57001",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Coletânea de contos em que estão O Espelho, Teoria do Medalhão e A Sereníssima República, entre outros clássicos.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "papeis-avulsos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Helena",
+   "autor": "Machado de Assis",
+   "ano": 1876,
+   "link": "https://www.gutenberg.org/ebooks/67162",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Romance da primeira fase de Machado: uma jovem é reconhecida como filha num testamento e muda a vida de uma família.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "helena",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Iaiá Garcia",
+   "autor": "Machado de Assis",
+   "ano": 1878,
+   "link": "https://www.gutenberg.org/ebooks/67780",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "História de amor e orgulho entre classes sociais diferentes no Rio de Janeiro do século XIX.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "iaia-garcia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "A Mão e a Luva",
+   "autor": "Machado de Assis",
+   "ano": 1874,
+   "link": "https://www.gutenberg.org/ebooks/53101",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Guiomar, moça pobre criada por uma baronesa, precisa escolher entre três pretendentes.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-mao-e-a-luva",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Histórias sem Data",
+   "autor": "Machado de Assis",
+   "ano": 1884,
+   "link": "https://www.gutenberg.org/ebooks/33056",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Contos de Machado, entre eles A Igreja do Diabo, em que o Diabo resolve fundar a sua própria religião.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "historias-sem-data",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Relíquias de Casa Velha",
+   "autor": "Machado de Assis",
+   "ano": 1906,
+   "link": "https://www.gutenberg.org/ebooks/67935",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Contos e peças reunidos no fim da vida de Machado, como Pai contra Mãe, sobre um caçador de escravizados fugidos.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "reliquias-de-casa-velha",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Contos Fluminenses",
+   "autor": "Machado de Assis",
+   "ano": 1870,
+   "link": "https://pt.wikisource.org/wiki/Contos_Fluminenses",
+   "fonte": "Wikisource",
+   "resumo": "O primeiro livro de contos de Machado, com histórias de amor e interesse na sociedade carioca.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "contos-fluminenses",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "O Cortiço",
+   "autor": "Aluísio Azevedo",
+   "ano": 1890,
+   "link": "https://www.gutenberg.org/ebooks/69187",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O português João Romão enriquece explorando os moradores de um cortiço no Rio de Janeiro. Um retrato cru da desigualdade, do racismo e da exploração.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-cortico",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "O Mulato",
+   "autor": "Aluísio Azevedo",
+   "ano": 1881,
+   "link": "https://pt.wikisource.org/wiki/O_Mulato",
+   "fonte": "Wikisource",
+   "resumo": "Raimundo volta formado da Europa para São Luís e descobre que é filho de uma mulher escravizada. A elite maranhense o rejeita. Um romance contra o racismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-mulato",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "mitologia"
+   ],
+   "titulo": "Iracema",
+   "autor": "José de Alencar",
+   "ano": 1865,
+   "link": "https://www.gutenberg.org/ebooks/67740",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "A virgem dos lábios de mel, indígena tabajara, se apaixona pelo português Martim. Lenda poética sobre a origem do Ceará.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "iracema",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "O Guarani (volume 1)",
+   "autor": "José de Alencar",
+   "ano": 1857,
+   "link": "https://www.gutenberg.org/ebooks/67724",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Aventura no Brasil colonial: o indígena Peri dedica a vida a proteger Ceci, filha de um fidalgo português.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-guarani-volume-1",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "mitologia"
+   ],
+   "titulo": "Ubirajara",
+   "autor": "José de Alencar",
+   "ano": 1874,
+   "link": "https://www.gutenberg.org/ebooks/38496",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Lenda tupi sobre o guerreiro Jaguarê, que vira Ubirajara. Alencar tenta reconstruir o mundo indígena antes da chegada dos portugueses.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "ubirajara",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "feminismo"
+   ],
+   "titulo": "Senhora",
+   "autor": "José de Alencar",
+   "ano": 1875,
+   "link": "https://pt.wikisource.org/wiki/Senhora",
+   "fonte": "Wikisource",
+   "resumo": "Aurélia, rica de repente, compra o marido que a havia trocado por um dote. Uma crítica ao casamento por interesse.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "senhora",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Lucíola",
+   "autor": "José de Alencar",
+   "ano": 1862,
+   "link": "https://pt.wikisource.org/wiki/Luc%C3%ADola",
+   "fonte": "Wikisource",
+   "resumo": "A história de Lúcia, cortesã do Rio de Janeiro, e de seu amor com o jovem Paulo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "luciola",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Cinco Minutos",
+   "autor": "José de Alencar",
+   "ano": 1856,
+   "link": "https://www.gutenberg.org/ebooks/44540",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Romance curto e leve: um atraso de cinco minutos muda a vida de um rapaz apaixonado.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "cinco-minutos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "A Pata da Gazela",
+   "autor": "José de Alencar",
+   "ano": 1870,
+   "link": "https://www.gutenberg.org/ebooks/67831",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um pé pequenino visto de relance desperta uma paixão. Romance urbano e irônico.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-pata-da-gazela",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "A Moreninha",
+   "autor": "Joaquim Manuel de Macedo",
+   "ano": 1844,
+   "link": "https://pt.wikisource.org/wiki/A_Moreninha",
+   "fonte": "Wikisource",
+   "resumo": "Estudantes passam um fim de semana numa ilha e um deles aposta que não vai se apaixonar. O primeiro grande sucesso do romance brasileiro.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-moreninha",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Memórias de um Sargento de Milícias",
+   "autor": "Manuel Antônio de Almeida",
+   "ano": 1854,
+   "link": "https://pt.wikisource.org/wiki/Mem%C3%B3rias_de_um_Sargento_de_Mil%C3%ADcias",
+   "fonte": "Wikisource",
+   "resumo": "As peripécias do malandro Leonardo no Rio de Janeiro do tempo do rei. Um romance popular e cheio de humor.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "memorias-de-um-sargento-de-milicias",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "O Ateneu",
+   "autor": "Raul Pompeia",
+   "ano": 1888,
+   "link": "https://www.gutenberg.org/ebooks/68541",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Sérgio relembra os anos no internato Ateneu, um colégio de elite que funciona como miniatura da sociedade, com seus poderes e violências.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-ateneu",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Inocência",
+   "autor": "Visconde de Taunay",
+   "ano": 1872,
+   "link": "https://www.gutenberg.org/ebooks/68635",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Amor proibido no sertão de Mato Grosso, entre a jovem Inocência e o curandeiro Cirino, contra a vontade do pai.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "inocencia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Triste Fim de Policarpo Quaresma",
+   "autor": "Lima Barreto",
+   "ano": 1915,
+   "link": "https://www.gutenberg.org/ebooks/67535",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O major Quaresma ama o Brasil acima de tudo e quer o tupi como língua oficial. Seu patriotismo ingênuo esbarra na violência da República.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "triste-fim-de-policarpo-quaresma",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Clara dos Anjos",
+   "autor": "Lima Barreto",
+   "ano": 1948,
+   "link": "https://pt.wikisource.org/wiki/Clara_dos_Anjos",
+   "fonte": "Wikisource",
+   "resumo": "Clara, moça negra e pobre do subúrbio, é seduzida e abandonada por um rapaz branco. Lima Barreto denuncia o racismo e o machismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "clara-dos-anjos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Recordações do Escrivão Isaías Caminha",
+   "autor": "Lima Barreto",
+   "ano": 1909,
+   "link": "https://pt.wikisource.org/wiki/Recorda%C3%A7%C3%B5es_do_Escriv%C3%A3o_Isa%C3%ADas_Caminha",
+   "fonte": "Wikisource",
+   "resumo": "Um jovem negro chega ao Rio cheio de sonhos e encontra o preconceito e a imprensa corrupta.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "recordacoes-do-escrivao-isaias-caminha",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "A Normalista",
+   "autor": "Adolfo Caminha",
+   "ano": 1893,
+   "link": "https://pt.wikisource.org/wiki/A_Normalista",
+   "fonte": "Wikisource",
+   "resumo": "Uma estudante de Fortaleza enfrenta o assédio e a hipocrisia da sociedade provinciana.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-normalista",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "feminismo"
+   ],
+   "titulo": "A Falência",
+   "autor": "Júlia Lopes de Almeida",
+   "ano": 1901,
+   "link": "https://www.gutenberg.org/ebooks/69229",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "A ruína de um comerciante de café no Rio obriga as mulheres da família a reinventar a vida. Um romance sobre dinheiro, casamento e autonomia feminina.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-falencia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "feminismo"
+   ],
+   "titulo": "A Intrusa",
+   "autor": "Júlia Lopes de Almeida",
+   "ano": 1908,
+   "link": "https://www.gutenberg.org/ebooks/67594",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Uma governanta entra na casa de um viúvo e desperta a desconfiança de todos.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-intrusa",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil"
+   ],
+   "titulo": "Noite na Taverna",
+   "autor": "Álvares de Azevedo",
+   "ano": 1855,
+   "link": "https://pt.wikisource.org/wiki/Noite_na_Taverna",
+   "fonte": "Wikisource",
+   "resumo": "Numa noite de bebedeira, jovens contam histórias macabras de amor, crime e morte. O lado sombrio do Romantismo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "noite-na-taverna",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "mitologia"
+   ],
+   "titulo": "Macunaíma",
+   "autor": "Mário de Andrade",
+   "ano": 1928,
+   "link": "https://pt.wikisource.org/wiki/Macuna%C3%ADma",
+   "fonte": "Wikisource",
+   "resumo": "O herói sem nenhum caráter nasce na floresta e vai a São Paulo recuperar um amuleto. Uma rapsódia que mistura lendas indígenas, africanas e brasileiras.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "macunaima",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "brasil",
+    "mitologia"
+   ],
+   "titulo": "Contos Gauchescos",
+   "autor": "Simões Lopes Neto",
+   "ano": 1912,
+   "link": "https://pt.wikisource.org/wiki/Contos_Gauchescos",
+   "fonte": "Wikisource",
+   "resumo": "O velho Blau Nunes conta causos do pampa gaúcho, com a fala e o humor do povo do campo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "contos-gauchescos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "Os Maias",
+   "autor": "Eça de Queirós",
+   "ano": 1888,
+   "link": "https://www.gutenberg.org/ebooks/40409",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "A decadência de uma família aristocrática de Lisboa e um amor trágico. Um retrato impiedoso da elite portuguesa.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "os-maias",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "O Primo Basílio",
+   "autor": "Eça de Queirós",
+   "ano": 1878,
+   "link": "https://www.gutenberg.org/ebooks/42942",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Luísa, entediada no casamento, se envolve com o primo Basílio. A empregada Juliana descobre tudo e passa a chantageá-la.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-primo-basilio",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal",
+    "religiao"
+   ],
+   "titulo": "O Crime do Padre Amaro",
+   "autor": "Eça de Queirós",
+   "ano": 1875,
+   "link": "https://www.gutenberg.org/ebooks/31971",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um jovem padre seduz Amélia numa cidade do interior. Uma denúncia da hipocrisia do clero.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-crime-do-padre-amaro",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "A Cidade e as Serras",
+   "autor": "Eça de Queirós",
+   "ano": 1901,
+   "link": "https://www.gutenberg.org/ebooks/18220",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Jacinto, rico e entediado em Paris, cheio de máquinas modernas, descobre a felicidade nas serras de Portugal.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-cidade-e-as-serras",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal",
+    "religiao"
+   ],
+   "titulo": "A Relíquia",
+   "autor": "Eça de Queirós",
+   "ano": 1887,
+   "link": "https://www.gutenberg.org/ebooks/17515",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Teodorico finge devoção para herdar a fortuna da tia beata e viaja a Jerusalém atrás de uma relíquia. Sátira hilária da religiosidade de fachada.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-reliquia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "O Mandarim",
+   "autor": "Eça de Queirós",
+   "ano": 1880,
+   "link": "https://www.gutenberg.org/ebooks/16384",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Se bastasse tocar uma campainha para matar um mandarim na China e herdar sua fortuna, você tocaria? Novela curta e fantástica.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-mandarim",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "A Ilustre Casa de Ramires",
+   "autor": "Eça de Queirós",
+   "ano": 1900,
+   "link": "https://www.gutenberg.org/ebooks/23145",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Gonçalo, fidalgo decadente, escreve um romance sobre os antepassados heroicos enquanto vive de pequenas covardias.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-ilustre-casa-de-ramires",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "Contos (Eça de Queirós)",
+   "autor": "Eça de Queirós",
+   "ano": 1902,
+   "link": "https://www.gutenberg.org/ebooks/31347",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Coletânea com alguns dos melhores contos de Eça, como José Matias e O Tesouro.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "contos-eca-de-queiros",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "Amor de Perdição",
+   "autor": "Camilo Castelo Branco",
+   "ano": 1862,
+   "link": "https://www.gutenberg.org/ebooks/16425",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Simão e Teresa se amam, mas suas famílias são inimigas. O Romeu e Julieta português, escrito na prisão.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "amor-de-perdicao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "Viagens na Minha Terra",
+   "autor": "Almeida Garrett",
+   "ano": 1846,
+   "link": "https://www.gutenberg.org/ebooks/24401",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Relato de viagem que mistura crônica, política e a história de amor de Joaninha, a menina dos rouxinóis.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "viagens-na-minha-terra",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal",
+    "religiao"
+   ],
+   "titulo": "Eurico, o Presbítero",
+   "autor": "Alexandre Herculano",
+   "ano": 1844,
+   "link": "https://www.gutenberg.org/ebooks/45966",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um padre guerreiro luta contra a invasão árabe na Península Ibérica, dividido entre a fé e o amor.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "eurico-o-presbitero",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "A Confissão de Lúcio",
+   "autor": "Mário de Sá-Carneiro",
+   "ano": 1914,
+   "link": "https://www.gutenberg.org/ebooks/68807",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Lúcio, depois de dez anos na prisão, conta o crime que não cometeu. Novela estranha e modernista.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "a-confissao-de-lucio",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "Húmus",
+   "autor": "Raul Brandão",
+   "ano": 1917,
+   "link": "https://www.gutenberg.org/ebooks/39618",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Diário de uma vila onde nada acontece, até que a angústia da vida e da morte invade tudo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "humus",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "portugal"
+   ],
+   "titulo": "Os Pobres",
+   "autor": "Raul Brandão",
+   "ano": 1906,
+   "link": "https://www.gutenberg.org/ebooks/20841",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Retrato comovente da miséria e da dignidade dos pobres de Lisboa.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "os-pobres",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mundo"
+   ],
+   "titulo": "Dom Quixote",
+   "autor": "Miguel de Cervantes",
+   "ano": 1605,
+   "link": "https://pt.wikisource.org/wiki/Dom_Quixote",
+   "fonte": "Wikisource",
+   "resumo": "Um fidalgo enlouquece de tanto ler livros de cavalaria e sai pelo mundo com seu escudeiro Sancho Pança, enfrentando moinhos de vento. Tradução clássica de Castilho.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "dom-quixote",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mundo"
+   ],
+   "titulo": "Os Trabalhadores do Mar",
+   "autor": "Victor Hugo",
+   "ano": 1866,
+   "link": "https://www.gutenberg.org/ebooks/57895",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O pescador Gilliatt enfrenta o oceano para resgatar a máquina de um navio naufragado e conquistar a mulher que ama. Tradução de Machado de Assis.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "os-trabalhadores-do-mar",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mundo"
+   ],
+   "titulo": "Da Terra à Lua",
+   "autor": "Júlio Verne",
+   "ano": 1865,
+   "link": "https://www.gutenberg.org/ebooks/28341",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um clube de artilheiros dos Estados Unidos decide disparar um projétil tripulado até a Lua. Ficção científica cem anos antes da Apollo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "da-terra-a-lua",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mundo"
+   ],
+   "titulo": "Robur, o Conquistador",
+   "autor": "Júlio Verne",
+   "ano": 1886,
+   "link": "https://www.gutenberg.org/ebooks/62101",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um inventor misterioso sequestra seus críticos a bordo de uma máquina voadora gigantesca.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "robur-o-conquistador",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "historia"
+   ],
+   "titulo": "Os Lusíadas",
+   "autor": "Luís de Camões",
+   "ano": 1572,
+   "link": "https://www.gutenberg.org/ebooks/3333",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O grande épico da língua portuguesa canta a viagem de Vasco da Gama às Índias, misturando história, deuses gregos e a famosa fala do Velho do Restelo.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "os-lusiadas",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "O Navio Negreiro",
+   "autor": "Castro Alves",
+   "ano": 1869,
+   "link": "https://pt.wikisource.org/wiki/O_Navio_Negreiro",
+   "fonte": "Wikisource",
+   "resumo": "Poema que descreve o horror do tráfico de pessoas escravizadas e pergunta: Senhor Deus dos desgraçados, dizei-me vós, Senhor Deus!",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-navio-negreiro",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Espumas Flutuantes",
+   "autor": "Castro Alves",
+   "ano": 1870,
+   "link": "https://pt.wikisource.org/wiki/Espumas_Flutuantes",
+   "fonte": "Wikisource",
+   "resumo": "O único livro publicado em vida por Castro Alves, com poemas de amor e de luta.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "espumas-flutuantes",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Os Escravos",
+   "autor": "Castro Alves",
+   "ano": 1883,
+   "link": "https://pt.wikisource.org/wiki/Os_Escravos",
+   "fonte": "Wikisource",
+   "resumo": "Reunião dos poemas abolicionistas de Castro Alves, como Vozes d'África e O Navio Negreiro.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "os-escravos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Lira dos Vinte Anos",
+   "autor": "Álvares de Azevedo",
+   "ano": 1853,
+   "link": "https://pt.wikisource.org/wiki/Lira_dos_Vinte_Anos",
+   "fonte": "Wikisource",
+   "resumo": "Poemas de amor, tédio e morte do jovem poeta que morreu aos 20 anos.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "lira-dos-vinte-anos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Eu",
+   "autor": "Augusto dos Anjos",
+   "ano": 1912,
+   "link": "https://pt.wikisource.org/wiki/Eu_%28Augusto_dos_Anjos%29",
+   "fonte": "Wikisource",
+   "resumo": "O único livro de Augusto dos Anjos: poemas que falam de vermes, de ciência e da miséria humana, como Versos Íntimos.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "eu",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Broquéis",
+   "autor": "Cruz e Sousa",
+   "ano": 1893,
+   "link": "https://pt.wikisource.org/wiki/Broqu%C3%A9is",
+   "fonte": "Wikisource",
+   "resumo": "Livro que inaugurou o Simbolismo no Brasil, com versos musicais e misteriosos.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "broqueis",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "mitologia"
+   ],
+   "titulo": "I-Juca-Pirama",
+   "autor": "Gonçalves Dias",
+   "ano": 1851,
+   "link": "https://pt.wikisource.org/wiki/I-Juca-Pirama",
+   "fonte": "Wikisource",
+   "resumo": "Poema indianista sobre um guerreiro tupi prisioneiro que chora diante da morte e precisa recuperar sua honra.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "i-juca-pirama",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Cantos",
+   "autor": "Gonçalves Dias",
+   "ano": 1857,
+   "link": "https://www.gutenberg.org/ebooks/74854",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Reunião da poesia de Gonçalves Dias, com a Canção do Exílio: minha terra tem palmeiras onde canta o sabiá.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "cantos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Marília de Dirceu",
+   "autor": "Tomás Antônio Gonzaga",
+   "ano": 1792,
+   "link": "https://pt.wikisource.org/wiki/Mar%C3%ADlia_de_Dirceu",
+   "fonte": "Wikisource",
+   "resumo": "Poemas de amor do inconfidente Gonzaga para sua amada Marília, escritos em parte na prisão.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "marilia-de-dirceu",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "historia"
+   ],
+   "titulo": "Cartas Chilenas",
+   "autor": "Tomás Antônio Gonzaga",
+   "ano": 1789,
+   "link": "https://pt.wikisource.org/wiki/Cartas_Chilenas",
+   "fonte": "Wikisource",
+   "resumo": "Poemas satíricos contra o governador de Minas Gerais, que circularam anonimamente às vésperas da Inconfidência.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "cartas-chilenas",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "historia"
+   ],
+   "titulo": "O Uraguai",
+   "autor": "Basílio da Gama",
+   "ano": 1769,
+   "link": "https://pt.wikisource.org/wiki/O_Uraguai",
+   "fonte": "Wikisource",
+   "resumo": "Poema épico sobre a guerra de portugueses e espanhóis contra os indígenas guaranis das missões.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-uraguai",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "historia"
+   ],
+   "titulo": "Caramuru",
+   "autor": "Santa Rita Durão",
+   "ano": 1781,
+   "link": "https://pt.wikisource.org/wiki/Caramuru",
+   "fonte": "Wikisource",
+   "resumo": "Épico sobre Diogo Álvares, o náufrago português que viveu entre os tupinambás da Bahia.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "caramuru",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Poesias Completas (Machado de Assis)",
+   "autor": "Machado de Assis",
+   "ano": 1901,
+   "link": "https://www.gutenberg.org/ebooks/61653",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Toda a poesia de Machado, menos conhecida que seus romances, mas cheia de delicadeza.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "poesias-completas-machado-de-assis",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Poemas de Gregório de Matos (tomo I)",
+   "autor": "Gregório de Matos",
+   "ano": 1882,
+   "link": "https://www.gutenberg.org/ebooks/71724",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Sátiras ferinas contra a elite da Bahia colonial e poemas religiosos e amorosos.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "poemas-de-gregorio-de-matos-tomo-i",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Pau Brasil",
+   "autor": "Oswald de Andrade",
+   "ano": 1925,
+   "link": "https://www.gutenberg.org/ebooks/79326",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Poemas curtos e bem-humorados que reinventam a história do Brasil com linguagem modernista.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "pau-brasil",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "historia"
+   ],
+   "titulo": "Mensagem",
+   "autor": "Fernando Pessoa",
+   "ano": 1934,
+   "link": "https://pt.wikisource.org/wiki/Mensagem_%28Fernando_Pessoa%29",
+   "fonte": "Wikisource",
+   "resumo": "O único livro em português publicado em vida por Pessoa: poemas sobre a história e o mito de Portugal.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "mensagem",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "O Livro de Cesário Verde",
+   "autor": "Cesário Verde",
+   "ano": 1887,
+   "link": "https://www.gutenberg.org/ebooks/8698",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Poemas que levam para o verso as ruas de Lisboa, as vendedoras e os trabalhadores, como O Sentimento dum Ocidental.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "o-livro-de-cesario-verde",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "revolucao"
+   ],
+   "titulo": "Sonetos (Antero de Quental)",
+   "autor": "Antero de Quental",
+   "ano": 1886,
+   "link": "https://www.gutenberg.org/ebooks/19046",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Sonetos filosóficos de um poeta que também foi militante socialista.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "sonetos-antero-de-quental",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "feminismo"
+   ],
+   "titulo": "Livro de Mágoas",
+   "autor": "Florbela Espanca",
+   "ano": 1919,
+   "link": "https://www.gutenberg.org/ebooks/17610",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Primeiro livro de Florbela, com sonetos intensos de amor, solidão e desejo, escritos por uma mulher que desafiou seu tempo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "livro-de-magoas",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "feminismo"
+   ],
+   "titulo": "Livro de Soror Saudade",
+   "autor": "Florbela Espanca",
+   "ano": 1923,
+   "link": "https://www.gutenberg.org/ebooks/68691",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Segundo livro de sonetos de Florbela, ainda mais apaixonado.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "livro-de-soror-saudade",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia"
+   ],
+   "titulo": "Clepsidra",
+   "autor": "Camilo Pessanha",
+   "ano": 1920,
+   "link": "https://www.gutenberg.org/ebooks/22330",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O livro mais importante do Simbolismo português, com poemas sobre o tempo que escorre.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "clepsidra",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "poesia",
+    "religiao"
+   ],
+   "titulo": "Os Simples",
+   "autor": "Guerra Junqueiro",
+   "ano": 1892,
+   "link": "https://www.gutenberg.org/ebooks/17534",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Poemas sobre a vida simples do campo e dos humildes, de um poeta republicano.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "os-simples",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "teatro",
+    "mundo"
+   ],
+   "titulo": "Hamlet",
+   "autor": "William Shakespeare",
+   "ano": 1603,
+   "link": "https://www.gutenberg.org/ebooks/25667",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O príncipe da Dinamarca descobre que o tio matou seu pai para ficar com o trono. Ser ou não ser? Tradução do rei D. Luís I de Portugal.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "hamlet",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "teatro"
+   ],
+   "titulo": "Frei Luís de Sousa",
+   "autor": "Almeida Garrett",
+   "ano": 1844,
+   "link": "https://www.gutenberg.org/ebooks/17591",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Uma família vive em paz até que um peregrino misterioso aparece trazendo notícias de um passado que todos acreditavam morto.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "frei-luis-de-sousa",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "teatro"
+   ],
+   "titulo": "Monólogo do Vaqueiro (Auto da Visitação)",
+   "autor": "Gil Vicente",
+   "ano": 1502,
+   "link": "https://www.gutenberg.org/ebooks/24129",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "A primeira peça do teatro português, apresentada à rainha por um vaqueiro.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "monologo-do-vaqueiro-auto-da-visitacao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia",
+    "poesia"
+   ],
+   "titulo": "Ilíada",
+   "autor": "Homero",
+   "ano": -750,
+   "link": "https://pt.wikisource.org/wiki/Il%C3%ADada_%28Odorico_Mendes%29",
+   "fonte": "Wikisource",
+   "resumo": "A ira de Aquiles na guerra de Troia. O poema mais antigo da literatura ocidental, na tradução do maranhense Odorico Mendes.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "iliada",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia",
+    "poesia"
+   ],
+   "titulo": "Odisseia",
+   "autor": "Homero",
+   "ano": -720,
+   "link": "https://www.gutenberg.org/ebooks/1727",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "A volta de Ulisses para casa depois da guerra de Troia: ciclopes, sereias, feiticeiras e dez anos de aventuras.",
+   "destaque": true,
+   "idioma": "en",
+   "id": "odisseia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia",
+    "poesia"
+   ],
+   "titulo": "Eneida",
+   "autor": "Virgílio",
+   "ano": -19,
+   "link": "https://pt.wikisource.org/wiki/Eneida",
+   "fonte": "Wikisource",
+   "resumo": "O troiano Eneias foge da cidade destruída e viaja até a Itália para fundar o povo romano.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "eneida",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia"
+   ],
+   "titulo": "A Mitologia de Bulfinch (A Idade da Fábula)",
+   "autor": "Thomas Bulfinch",
+   "ano": 1855,
+   "link": "https://www.gutenberg.org/ebooks/3327",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Os mitos gregos e romanos recontados em linguagem simples: deuses do Olimpo, heróis e monstros.",
+   "destaque": true,
+   "idioma": "en",
+   "id": "a-mitologia-de-bulfinch-a-idade-da-fabula",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia"
+   ],
+   "titulo": "A Epopeia de Gilgamesh",
+   "autor": "Vários autores",
+   "ano": -1800,
+   "link": "https://www.gutenberg.org/ebooks/11000",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "A história mais antiga do mundo: o rei Gilgamesh, de Uruk, busca a imortalidade depois da morte do amigo Enkidu.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "a-epopeia-de-gilgamesh",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia"
+   ],
+   "titulo": "A Edda: mitologia nórdica",
+   "autor": "Vários autores",
+   "ano": 1250,
+   "link": "https://www.gutenberg.org/ebooks/13007",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Odin, Thor, Loki e o fim do mundo no Ragnarök, recontados a partir das Eddas islandesas.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "a-edda-mitologia-nordica",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia"
+   ],
+   "titulo": "Saga dos Volsungos",
+   "autor": "Vários autores",
+   "ano": 1270,
+   "link": "https://www.gutenberg.org/ebooks/1152",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Saga nórdica de Sigurd, o matador do dragão Fafnir, que inspirou Wagner e Tolkien.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "saga-dos-volsungos",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia",
+    "religiao"
+   ],
+   "titulo": "Ramayana: a morte de Yajnadatta",
+   "autor": "Valmiki",
+   "ano": -300,
+   "link": "https://www.gutenberg.org/ebooks/31696",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Episódio do grande épico indiano, traduzido para o português por Cândido de Figueiredo.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "ramayana-a-morte-de-yajnadatta",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia",
+    "religiao"
+   ],
+   "titulo": "Mahabharata (livro 1)",
+   "autor": "Vários autores",
+   "ano": -400,
+   "link": "https://www.gutenberg.org/ebooks/7864",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Primeiro livro do maior poema épico do mundo, sobre a guerra entre dois ramos de uma família real na Índia antiga.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "mahabharata-livro-1",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia"
+   ],
+   "titulo": "Lendas do Sul",
+   "autor": "Simões Lopes Neto",
+   "ano": 1913,
+   "link": "https://www.gutenberg.org/ebooks/2837",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "As lendas do Rio Grande do Sul, como o Negrinho do Pastoreio, a Salamanca do Jarau e a Mboitatá.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "lendas-do-sul",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia",
+    "portugal"
+   ],
+   "titulo": "Lendas e Narrativas (tomo I)",
+   "autor": "Alexandre Herculano",
+   "ano": 1851,
+   "link": "https://www.gutenberg.org/ebooks/9654",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Lendas medievais portuguesas recontadas pelo grande historiador, como A Dama Pé-de-Cabra.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "lendas-e-narrativas-tomo-i",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "mitologia"
+   ],
+   "titulo": "Fábulas de Esopo",
+   "autor": "Esopo",
+   "ano": -550,
+   "link": "https://www.gutenberg.org/ebooks/21",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Trezentas fábulas curtas com animais e uma lição no final: a cigarra e a formiga, a lebre e a tartaruga e muitas outras.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "fabulas-de-esopo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao"
+   ],
+   "titulo": "Bíblia Sagrada (tradução de João Ferreira de Almeida)",
+   "autor": "Vários autores",
+   "ano": 1681,
+   "link": "https://www.gutenberg.org/ebooks/62383",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O Antigo e o Novo Testamento na tradução clássica de João Ferreira de Almeida, a mais lida em língua portuguesa.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "biblia-sagrada-traducao-de-joao-ferreira-de-almeida",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao"
+   ],
+   "titulo": "O Alcorão",
+   "autor": "Vários autores",
+   "ano": 632,
+   "link": "https://www.gutenberg.org/ebooks/2800",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O livro sagrado do Islã, que os muçulmanos consideram a palavra de Deus revelada ao profeta Maomé.",
+   "destaque": true,
+   "idioma": "en",
+   "id": "o-alcorao",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao",
+    "filosofia"
+   ],
+   "titulo": "Bhagavad Gita",
+   "autor": "Vários autores",
+   "ano": -200,
+   "link": "https://www.gutenberg.org/ebooks/2388",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "O diálogo entre o guerreiro Arjuna e o deus Krishna antes de uma batalha, um dos textos centrais do hinduísmo.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "bhagavad-gita",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao",
+    "filosofia"
+   ],
+   "titulo": "Tao Te Ching",
+   "autor": "Lao-Tsé",
+   "ano": -400,
+   "link": "https://www.gutenberg.org/ebooks/216",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Os 81 poemas curtos do taoísmo sobre o Tao, o caminho, a simplicidade e a força do que é suave.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "tao-te-ching",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao",
+    "filosofia"
+   ],
+   "titulo": "Dhammapada",
+   "autor": "Vários autores",
+   "ano": -250,
+   "link": "https://www.gutenberg.org/ebooks/2017",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Os versos do caminho, com os ensinamentos atribuídos a Buda sobre a mente, o sofrimento e a libertação.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "dhammapada",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao"
+   ],
+   "titulo": "A Imitação de Cristo",
+   "autor": "Tomás de Kempis",
+   "ano": 1418,
+   "link": "https://www.gutenberg.org/ebooks/1653",
+   "fonte": "Projeto Gutenberg",
+   "resumo": "Um dos livros cristãos mais lidos da história, com conselhos sobre humildade e vida interior.",
+   "destaque": false,
+   "idioma": "en",
+   "id": "a-imitacao-de-cristo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao",
+    "historia"
+   ],
+   "titulo": "Sermão da Sexagésima",
+   "autor": "Padre Antônio Vieira",
+   "ano": 1655,
+   "link": "https://pt.wikisource.org/wiki/Serm%C3%A3o_da_Sexag%C3%A9sima",
+   "fonte": "Wikisource",
+   "resumo": "O sermão em que Vieira discute a própria arte de pregar, um dos textos mais belos da língua portuguesa.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "sermao-da-sexagesima",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao",
+    "historia"
+   ],
+   "titulo": "Contribuição para a História do Cristianismo Primitivo",
+   "autor": "Friedrich Engels",
+   "ano": 1894,
+   "link": "https://www.marxists.org/portugues/marx/1895/mes/cristianismo.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Engels compara os primeiros cristãos aos movimentos operários: também eles eram perseguidos, pobres e anunciavam a libertação.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "contribuicao-para-a-historia-do-cristianismo-primitivo",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "religiao"
+   ],
+   "titulo": "Por Que Crê em Deus a Burguesia",
+   "autor": "Paul Lafargue",
+   "ano": 1906,
+   "link": "https://www.marxists.org/portugues/lafargue/1906/deus/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Lafargue analisa, com seu humor habitual, as raízes sociais da religiosidade das classes dominantes.",
+   "destaque": false,
+   "idioma": "pt",
+   "id": "por-que-cre-em-deus-a-burguesia",
+   "formato": "Ler online"
+  },
+  {
+   "estantes": [
+    "comece",
+    "revolucao"
+   ],
+   "titulo": "O Direito à Preguiça",
+   "autor": "Paul Lafargue",
+   "ano": 1880,
+   "link": "https://www.marxists.org/portugues/lafargue/1883/preg/index.htm",
+   "fonte": "Marxists Internet Archive",
+   "resumo": "Uma crítica afiada e bem-humorada ao culto do trabalho. Lafargue defende que ninguém deveria trabalhar mais de três horas por dia. Leitura obrigatória no debate sobre o fim da escala 6x1.",
+   "destaque": true,
+   "idioma": "pt",
+   "id": "o-direito-a-preguica",
+   "formato": "Ler online"
+  }
+ ]
 }
