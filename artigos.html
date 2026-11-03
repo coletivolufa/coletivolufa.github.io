@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artigos · Coletivo Lufã</title>
+  <meta name="description" content="Artigos do Coletivo Lufã: formação marxista, análise de conjuntura e crítica ao capitalismo.">
+  <meta property="og:title" content="Artigos · Coletivo Lufã">
+  <meta property="og:image" content="assets/img/compartilhar.jpg">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-pagina="artigos">
+<main>
+  <header class="cabecalho-pagina" id="cabecalho">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Escritos do coletivo</span>
+      <h1>Artigos</h1>
+      <p>Formação, análise de conjuntura e crítica ao capitalismo, escritos pelos membros do Coletivo Lufã.</p>
+    </div>
+  </header>
+
+  <section class="secao">
+    <div class="conteudo" id="area" aria-live="polite">
+      <p>Carregando…</p>
+    </div>
+  </section>
+</main>
+<script src="assets/comum.js"></script>
+<script>
+  const area = document.getElementById("area");
+  const slug = new URLSearchParams(location.search).get("a");
+
+  async function mostrarLista() {
+    try {
+      const artigos = (await lerJSON("data/artigos.json")).sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+      if (!artigos.length) {
+        area.innerHTML = '<div class="vazio">Nenhum artigo publicado ainda. Volte em breve.</div>';
+        return;
+      }
+      area.innerHTML = '<div class="lista-artigos">' + artigos.map((a) => `
+        <a class="cartao-artigo" href="artigos.html?a=${encodeURIComponent(a.slug)}">
+          <h2>${esc(a.titulo)}</h2>
+          <div class="meta">Por <strong>${esc(a.autor)}</strong> · ${esc(dataPorExtenso(a.data))}</div>
+          <p>${esc(a.resumo || "")}</p>
+          <span class="ler">Ler artigo →</span>
+        </a>`).join("") + "</div>";
+    } catch (e) {
+      area.innerHTML = '<div class="vazio">Não foi possível carregar os artigos agora.</div>';
+    }
+  }
+
+  async function mostrarArtigo() {
+    document.getElementById("cabecalho").hidden = true;
+    try {
+      const a = await lerJSON("artigos/" + encodeURIComponent(slug) + ".json");
+      document.title = a.titulo + " · Coletivo Lufã";
+      area.innerHTML = `
+        <article class="artigo">
+          <a class="artigo__voltar" href="artigos.html">← Todos os artigos</a>
+          <h1>${esc(a.titulo)}</h1>
+          <div class="meta">Por <strong>${esc(a.autor)}</strong> · ${esc(dataPorExtenso(a.data))}</div>
+          <div class="texto-artigo">${markdown(a.texto)}</div>
+        </article>`;
+      window.scrollTo(0, 0);
+    } catch (e) {
+      area.innerHTML = `<div class="artigo"><a class="artigo__voltar" href="artigos.html">← Todos os artigos</a>
+        <div class="vazio" style="margin-top:24px">Artigo não encontrado. Se ele acabou de ser publicado, espere um ou dois minutos e recarregue a página.</div></div>`;
+    }
+  }
+
+  slug ? mostrarArtigo() : mostrarLista();
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+[
+  {
+    "nome": "Leonardo Duarte",
+    "arroba": "ocamarada",
+    "rede": "instagram",
+    "funcao": "Idealizador",
+    "foto": ""
+  },
+  {
+    "nome": "Nome do membro",
+    "arroba": "perfil",
+    "rede": "instagram",
+    "funcao": "",
+    "foto": "",
+    "exemplo": true
+  },
+  {
+    "nome": "Nome do membro",
+    "arroba": "perfil",
+    "rede": "instagram",
+    "funcao": "",
+    "foto": "",
+    "exemplo": true
+  }
+]

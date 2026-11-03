@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coletivo Lufã</title>
+  <meta name="description" content="Coletivo Lufã: coletivo marxista de esquerda radical, contraponto à direita, à extrema-direita e ao capitalismo.">
+  <meta property="og:title" content="Coletivo Lufã">
+  <meta property="og:description" content="Coletivo marxista de esquerda radical. Contraponto à direita, à extrema-direita e ao capitalismo.">
+  <meta property="og:image" content="assets/img/compartilhar.jpg">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-pagina="inicio">
+<main>
+
+  <section class="capa">
+    <div class="capa__grade">
+      <div>
+        <div class="capa__chamada">★ Coletivo marxista ★</div>
+        <h1>Coletivo <em>Lufã</em></h1>
+        <p>Arte, formação e organização a serviço da classe trabalhadora. Um contraponto à direita, à extrema-direita e ao capitalismo.</p>
+        <a class="botao" href="#projeto">Conheça o projeto</a>
+      </div>
+      <img class="capa__logo" src="assets/img/logo.png" alt="Logo do Coletivo Lufã: pomba branca sobre fundo vermelho, com uma estrela e o nome do coletivo">
+    </div>
+    <div class="faixa" aria-hidden="true"><div>
+      MARXISMO ★ ESQUERDA RADICAL ★ ANTICAPITALISMO ★ ANTIFASCISMO ★ PODER POPULAR ★
+      MARXISMO ★ ESQUERDA RADICAL ★ ANTICAPITALISMO ★ ANTIFASCISMO ★ PODER POPULAR ★
+    </div></div>
+  </section>
+
+  <section class="secao projeto" id="projeto">
+    <div class="conteudo">
+      <span class="rotulo">O projeto</span>
+      <h2>Nosso ideal</h2>
+      <p class="projeto__intro">
+        O <strong>Coletivo Lufã</strong> é um coletivo <strong>marxista</strong> e de <strong>esquerda radical</strong>.
+        Existimos para disputar ideias: fazer o contraponto à direita e à extrema-direita e enfrentar o
+        capitalismo pela raiz, onde ele explora o trabalho, concentra a riqueza e transforma a vida em mercadoria.
+      </p>
+
+      <div class="pilares">
+        <article class="pilar">
+          <div class="pilar__num">01</div>
+          <h3>Formação marxista</h3>
+          <p>Estudar a teoria e a história da luta de classes para entender o presente e transformá-lo.</p>
+        </article>
+        <article class="pilar">
+          <div class="pilar__num">02</div>
+          <h3>Contra a direita</h3>
+          <p>Responder ao avanço da direita e da extrema-direita com argumento, memória histórica e organização.</p>
+        </article>
+        <article class="pilar">
+          <div class="pilar__num">03</div>
+          <h3>Contra o capital</h3>
+          <p>Mostrar, com dados e com a vida real de quem trabalha, que outra forma de organizar a sociedade é necessária.</p>
+        </article>
+        <article class="pilar">
+          <div class="pilar__num">04</div>
+          <h3>Comunicação popular</h3>
+          <p>Cartazes, vídeos, artigos e debates feitos para circular e chegar a quem precisa ouvir.</p>
+        </article>
+      </div>
+
+      <div class="origem">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
+        <p>A criação do coletivo partiu da ideia de <strong>Leonardo Duarte</strong>, criador do perfil
+          <a href="https://www.instagram.com/ocamarada/" target="_blank" rel="noopener">@ocamarada</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao membros" id="membros">
+    <div class="conteudo">
+      <span class="rotulo">Quem somos</span>
+      <h2>Membros</h2>
+      <div class="membros__grade" id="lista-membros" aria-live="polite">
+        <p>Carregando membros…</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+<script src="assets/comum.js"></script>
+<script>
+  (async () => {
+    const alvo = document.getElementById("lista-membros");
+    try {
+      const membros = await lerJSON("data/membros.json");
+      if (!membros.length) { alvo.innerHTML = '<p class="vazio">Em breve, a lista de membros.</p>'; return; }
+      alvo.innerHTML = membros.map((m) => {
+        const arroba = String(m.arroba || "").replace(/^@/, "");
+        const link = linkPerfil(arroba, m.rede);
+        return `
+          <article class="membro${m.exemplo ? " membro--vazio" : ""}">
+            <img src="${esc(m.foto || "assets/img/avatar.svg")}" alt="Foto de ${esc(m.nome)}" loading="lazy"
+                 onerror="this.onerror=null;this.src='assets/img/avatar.svg'">
+            <h3>${esc(m.nome)}</h3>
+            ${m.funcao ? `<div class="membro__funcao">${esc(m.funcao)}</div>` : ""}
+            ${arroba ? `<a href="${esc(link)}" target="_blank" rel="noopener">@${esc(arroba)}</a>` : ""}
+          </article>`;
+      }).join("");
+    } catch (e) {
+      alvo.innerHTML = '<p class="vazio">Não foi possível carregar os membros agora.</p>';
+    }
+  })();
+</script>
+</body>
+</html>

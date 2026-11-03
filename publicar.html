@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Área dos membros · Coletivo Lufã</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-pagina="publicar">
+<main>
+  <header class="cabecalho-pagina">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Acesso restrito</span>
+      <h1>Área dos membros</h1>
+      <p>Publique artigos e cuide da lista de membros. Só entra quem tem permissão no repositório do coletivo.</p>
+    </div>
+  </header>
+
+  <section class="secao">
+    <div class="conteudo">
+      <div id="mensagem" aria-live="polite"></div>
+
+      <!-- ENTRAR -->
+      <div class="painel" id="tela-entrar">
+        <h2>Entrar</h2>
+        <form id="form-entrar">
+          <div class="campo">
+            <label for="chave">Chave de acesso (token do GitHub)</label>
+            <input id="chave" type="password" autocomplete="off" required placeholder="github_pat_…">
+            <small>A chave fica só neste aparelho. Ela é usada para gravar os artigos direto no repositório do coletivo.</small>
+          </div>
+          <label class="check"><input type="checkbox" id="lembrar"> Lembrar neste aparelho</label>
+          <button class="botao botao--vermelho" type="submit">Entrar</button>
+        </form>
+        <details style="margin-top:26px">
+          <summary><strong>Como conseguir a chave de acesso</strong></summary>
+          <ol>
+            <li>Peça ao administrador para te adicionar como colaborador do repositório
+              <code id="nome-repo"></code> no GitHub.</li>
+            <li>Entre no GitHub e abra <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Configurações → Tokens de acesso → Novo token</a>.</li>
+            <li>Em <em>Repository access</em>, escolha <em>Only select repositories</em> e marque o repositório do coletivo.</li>
+            <li>Em <em>Permissions → Repository permissions → Contents</em>, escolha <em>Read and write</em>.</li>
+            <li>Gere o token, copie e cole aqui.</li>
+          </ol>
+        </details>
+      </div>
+
+      <!-- PAINEL -->
+      <div id="tela-painel" hidden>
+        <div class="abas" role="tablist">
+          <button role="tab" aria-selected="true" data-aba="novo">Novo artigo</button>
+          <button role="tab" aria-selected="false" data-aba="publicados">Artigos publicados</button>
+          <button role="tab" aria-selected="false" data-aba="membros">Membros</button>
+          <button type="button" id="sair" style="margin-left:auto">Sair</button>
+        </div>
+
+        <!-- Novo artigo -->
+        <div class="painel" data-painel="novo">
+          <h2 id="titulo-form-artigo">Novo artigo</h2>
+          <form id="form-artigo">
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="a-titulo">Título</label>
+                <input id="a-titulo" required maxlength="160">
+              </div>
+              <div class="campo">
+                <label for="a-autor">Quem escreveu</label>
+                <input id="a-autor" required maxlength="120" list="lista-autores">
+                <datalist id="lista-autores"></datalist>
+              </div>
+            </div>
+            <div class="campo">
+              <label for="a-texto">Texto do artigo</label>
+              <textarea id="a-texto" required></textarea>
+            </div>
+            <div class="ajuda">
+              Deixe uma linha em branco entre os parágrafos. Formatação opcional:
+              <code>## Subtítulo</code> · <code>**negrito**</code> · <code>*itálico*</code> ·
+              <code>&gt; citação</code> · <code>- item de lista</code> · <code>[texto](https://link)</code>
+            </div>
+            <div style="display:flex;gap:14px;flex-wrap:wrap">
+              <button class="botao botao--vermelho" type="submit" id="botao-publicar">Publicar</button>
+              <button class="botao botao--claro" type="button" id="botao-previa">Ver prévia</button>
+              <button class="botao botao--claro" type="button" id="botao-cancelar-edicao" hidden>Cancelar edição</button>
+            </div>
+          </form>
+          <div class="previa" id="previa" hidden style="margin-top:28px"></div>
+        </div>
+
+        <!-- Publicados -->
+        <div class="painel" data-painel="publicados" hidden>
+          <h2>Artigos publicados</h2>
+          <ul class="itens" id="lista-publicados"></ul>
+        </div>
+
+        <!-- Membros -->
+        <div class="painel" data-painel="membros" hidden>
+          <h2>Membros</h2>
+          <ul class="itens" id="lista-membros-admin"></ul>
+          <h2 style="margin-top:36px;font-size:36px" id="titulo-form-membro">Adicionar membro</h2>
+          <form id="form-membro">
+            <div class="linha-campos">
+              <div class="campo"><label for="m-nome">Nome</label><input id="m-nome" required maxlength="80"></div>
+              <div class="campo"><label for="m-arroba">@ nas redes</label><input id="m-arroba" maxlength="60" placeholder="@perfil"></div>
+              <div class="campo">
+                <label for="m-rede">Rede social</label>
+                <select id="m-rede">
+                  <option value="instagram">Instagram</option>
+                  <option value="tiktok">TikTok</option>
+                  <option value="x">X (Twitter)</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="threads">Threads</option>
+                  <option value="bluesky">Bluesky</option>
+                </select>
+              </div>
+              <div class="campo"><label for="m-funcao">Função (opcional)</label><input id="m-funcao" maxlength="60" placeholder="Ex.: Design, Vídeos, Textos"></div>
+            </div>
+            <div class="campo">
+              <label for="m-foto">Foto</label>
+              <input id="m-foto" type="file" accept="image/*">
+              <small>A foto é recortada em quadrado e reduzida automaticamente.</small>
+              <img id="m-foto-previa" class="foto-previa" alt="" hidden>
+            </div>
+            <div style="display:flex;gap:14px;flex-wrap:wrap">
+              <button class="botao botao--vermelho" type="submit" id="botao-membro">Salvar membro</button>
+              <button class="botao botao--claro" type="button" id="botao-cancelar-membro" hidden>Cancelar edição</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/comum.js"></script>
+<script src="assets/publicar.js"></script>
+</body>
+</html>
