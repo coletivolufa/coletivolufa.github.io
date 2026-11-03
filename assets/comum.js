@@ -36,7 +36,7 @@ function montarMenu() {
         <span class="em-breve" aria-disabled="true">${ICONES.breve}Em breve</span>
       </nav>
       <div class="menu__rodape">
-        Siga <a href="https://www.instagram.com/_ocamarada/" target="_blank" rel="noopener">@_ocamarada</a>
+        Siga <a href="https://www.instagram.com/coletivolufa/" target="_blank" rel="noopener">@coletivolufa</a>
       </div>
     </aside>`;
   document.body.insertAdjacentHTML("afterbegin", menu);
