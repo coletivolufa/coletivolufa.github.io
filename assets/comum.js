@@ -3,8 +3,8 @@
 // Onde ficam os dados do site no GitHub. A área de publicação grava aqui.
 // Se mudar o nome do repositório ou do branch principal, altere estes valores.
 const LUFA = {
-  dono: "Coletivo-Lufa",
-  repositorio: "coletivo-lufa.github.io",
+  dono: "coletivolufa",
+  repositorio: "coletivolufa.github.io",
   branch: "main",
   pasta: "",
 };

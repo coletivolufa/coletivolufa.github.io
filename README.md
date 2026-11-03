@@ -24,7 +24,7 @@ Cada gravação no branch `main` dispara o workflow `.github/workflows/site.yml`
 
 Para dar acesso a alguém:
 
-1. Convide a pessoa para a organização Coletivo-Lufa ou adicione como colaboradora deste repositório.
+1. Convide a pessoa para a organização coletivolufa ou adicione como colaboradora deste repositório.
 2. Ela cria um token em https://github.com/settings/personal-access-tokens/new com
    acesso só a este repositório e permissão **Contents: Read and write**.
 3. Ela cola o token na área dos membros.
@@ -40,4 +40,4 @@ Depois abra http://localhost:8000.
 Se o repositório ou o branch principal mudarem de nome, atualize `LUFA` em `assets/comum.js`
 e o branch em `.github/workflows/site.yml`.
 
-Endereço: https://coletivo-lufa.github.io/
+Endereço: https://coletivolufa.github.io/
