@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=14">
+  <link rel="stylesheet" href="assets/style.css?v=15">
 </head>
 <body data-pagina="conta">
 <main>
@@ -68,6 +68,7 @@
 
         <div class="abas" role="tablist" id="abas-dentro">
           <button type="button" role="tab" aria-selected="true" data-aba="perfil">Meu perfil</button>
+          <button type="button" role="tab" aria-selected="false" data-aba="carteirinha" hidden>Minha carteirinha</button>
           <button type="button" role="tab" aria-selected="false" data-aba="artigos" hidden>Meus artigos</button>
           <button type="button" role="tab" aria-selected="false" data-aba="admin" hidden>Administração</button>
         </div>
@@ -92,6 +93,22 @@
             <button class="botao botao--vermelho" type="submit" id="salvar-perfil">Salvar perfil</button>
             <a class="botao" href="carteirinha.html" id="link-carteirinha" hidden style="margin-left:10px">Fazer minha carteirinha</a>
           </form>
+        </div>
+
+        <!-- Carteirinha -->
+        <div class="painel" data-painel="carteirinha" hidden>
+          <h2>Minha carteirinha</h2>
+          <div class="minha-carteira" id="minha-carteira">
+            <img id="carteira-img" alt="Sua carteirinha do Coletivo Lufã" hidden>
+            <div id="carteira-vazia" class="vazio" hidden>
+              <p>Você ainda não fez a sua carteirinha.</p>
+              <a class="botao botao--vermelho" href="carteirinha.html">Fazer minha carteirinha</a>
+            </div>
+            <div class="carteira__acoes" id="carteira-acoes" hidden>
+              <a class="botao botao--vermelho" id="carteira-baixar" download="carteirinha-coletivo-lufa.png">Baixar</a>
+              <a class="botao botao--claro" href="carteirinha.html">Refazer</a>
+            </div>
+          </div>
         </div>
 
         <!-- Artigos -->
@@ -138,6 +155,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=11"></script>
 <script src="assets/supa.js?v=1"></script>
-<script src="assets/conta.js?v=1"></script>
+<script src="assets/conta.js?v=2"></script>
 </body>
 </html>

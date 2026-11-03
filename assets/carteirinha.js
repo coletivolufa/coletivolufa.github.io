@@ -9,7 +9,7 @@ const LINHA = { nome: 690, idade: 782, ocupacao: 871, matricula: 1008, data: 109
 const hoje = new Date();
 const DATA = { d: String(hoje.getDate()).padStart(2, "0"), m: String(hoje.getMonth() + 1).padStart(2, "0"), a: String(hoje.getFullYear()) };
 
-let membros = [], membro = null, foto = null;
+let membros = [], membro = null, foto = null, eu = null;
 const fundo = carregar("carteirinha/fundo.jpg"), carimbo = carregar("carteirinha/carimbo-foto.png");
 
 function carregar(src) { const i = new Image(); i.src = src; return i; }
@@ -150,6 +150,7 @@ $("baixar").addEventListener("click", async () => {
   a.href = URL.createObjectURL(blob); a.download = nomeArquivo(); a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   avisar("Carteirinha baixada! Ela fica salva na pasta de downloads ou na galeria do seu celular.");
+  salvarNaConta(blob);
 });
 if (navigator.canShare) {
   $("compartilhar").hidden = false;
@@ -159,6 +160,14 @@ if (navigator.canShare) {
     if (navigator.canShare({ files: [arq] })) { try { await navigator.share({ files: [arq], title: "Minha carteirinha do Coletivo Lufã" }); } catch (_) {} }
     else avisar("Seu navegador não permite compartilhar arquivos. Use o botão Baixar.");
   });
+}
+
+// guarda a carteirinha na conta de quem está logado (aba "Minha carteirinha")
+async function salvarNaConta(blob) {
+  if (!eu || !membro || membro.matricula !== eu.matricula) return;
+  const { error } = await supa.storage.from("fotos").upload(`${eu.id}/carteirinha.png`, blob, { contentType: "image/png", upsert: true, cacheControl: "60" });
+  avisar(error ? "Carteirinha baixada, mas não foi possível salvar na sua conta: " + mensagemErro(error)
+               : "Carteirinha baixada e salva em Minha conta → Minha carteirinha!");
 }
 
 // ---------- início ----------
@@ -171,12 +180,14 @@ if (navigator.canShare) {
     $("membro").innerHTML = '<option value="">Escolha o seu nome…</option>' +
       membros.map((m) => `<option value="${esc(m.matricula)}">${esc(m.nome)}</option>`).join("");
     // quem está logado e aprovado já entra preenchido
-    const eu = await meuPerfil().catch(() => null);
+    eu = await meuPerfil().catch(() => null);
     if (eu && eu.matricula && APROVADO.includes(eu.papel)) {
+      // filiação = dia em que a conta foi aprovada
+      if (eu.aprovado_em) { const d = new Date(eu.aprovado_em); DATA.d = String(d.getDate()).padStart(2, "0"); DATA.m = String(d.getMonth() + 1).padStart(2, "0"); DATA.a = String(d.getFullYear()); $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`; }
       if (!membros.some((m) => m.matricula === eu.matricula)) membros.push({ nome: eu.nome, matricula: eu.matricula, foto: eu.foto });
       $("membro").value = eu.matricula; escolherMembro();
       if (eu.idade) $("idade").value = eu.idade;
-      avisar("Seus dados vieram da sua conta. Falta só assinar!");
+      avisar("Seus dados vieram da sua conta. Falta só assinar! Ao baixar, ela também fica salva em Minha conta.");
     }
   } catch (e) {
     $("membro").innerHTML = '<option value="">Não foi possível carregar a lista</option>';

@@ -643,3 +643,6 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .pessoas select { font: inherit; font-size: 14px; padding: 6px 8px; border: 2px solid var(--preto); background: var(--papel); }
 .pessoas button.aprovar { background: #2f7d32; border-color: #2f7d32; color: var(--branco); }
 @media (max-width: 600px) { .pessoas li > div { flex-basis: calc(100% - 64px); } }
+.minha-carteira { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.minha-carteira img { width: 100%; max-width: 360px; border-radius: 10px; box-shadow: 10px 12px 0 var(--preto); }
+.minha-carteira .vazio { width: 100%; }

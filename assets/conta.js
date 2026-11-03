@@ -23,6 +23,7 @@ function abrirAba(nome) {
   document.querySelectorAll("[data-aba]").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.aba === nome)));
   document.querySelectorAll("[data-painel]").forEach((p) => (p.hidden = p.dataset.painel !== nome));
   if (nome === "artigos") carregarArtigos();
+  if (nome === "carteirinha") carregarCarteirinha();
   if (nome === "admin") carregarPessoas();
 }
 document.querySelectorAll("[data-aba]").forEach((b) => b.addEventListener("click", () => abrirAba(b.dataset.aba)));
@@ -87,6 +88,7 @@ async function mostrar() {
   $("link-carteirinha").hidden = !APROVADO.includes(perfil.papel);
   $("p-nome").value = perfil.nome; $("p-arroba").value = perfil.arroba; $("p-rede").value = perfil.rede || "instagram";
   $("p-idade").value = perfil.idade || "";
+  document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
   document.querySelector('[data-aba="artigos"]').hidden = !PODE_ESCREVER.includes(perfil.papel);
   document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";
   $("titulo-lista-artigos").textContent = ["editor", "admin"].includes(perfil.papel) ? "Artigos do site" : "Meus artigos";
@@ -128,6 +130,16 @@ $("form-perfil").addEventListener("submit", async (ev) => {
   } catch (e) { avisar(mensagemErro(e), "erro"); }
   ocupado(b, false);
 });
+
+// ---------- carteirinha ----------
+function carregarCarteirinha() {
+  const url = supa.storage.from("fotos").getPublicUrl(`${perfil.id}/carteirinha.png`).data.publicUrl + "?t=" + Date.now();
+  const img = $("carteira-img");
+  img.onload = () => { img.hidden = false; $("carteira-acoes").hidden = false; $("carteira-vazia").hidden = true; };
+  img.onerror = () => { img.hidden = true; $("carteira-acoes").hidden = true; $("carteira-vazia").hidden = false; };
+  img.src = url;
+  fetch(url).then((r) => r.ok ? r.blob() : null).then((b) => { if (b) $("carteira-baixar").href = URL.createObjectURL(b); }).catch(() => {});
+}
 
 // ---------- artigos ----------
 function slug(t) {
