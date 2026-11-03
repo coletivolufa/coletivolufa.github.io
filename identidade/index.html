@@ -120,7 +120,9 @@
       <h3>Formatos</h3>
       <ul>
         <li><b>Feed (frase e carrossel):</b> 1080 × 1350 px (4:5), o maior tamanho que o Instagram mostra no feed.</li>
+        <li><b>Stories:</b> 1080 × 1920 px. Deixe livres os 250 px de cima e de baixo, onde ficam os botões do Instagram; os modelos já respeitam isso.</li>
         <li><b>Capa de Reels:</b> 1080 × 1920 px (9:16). No grid do perfil aparece só o miolo, então título e logo ficam no centro.</li>
+        <li><b>Dado, notícia e meme:</b> sempre com a fonte na arte ou na legenda. Foto de notícia só de agência pública (Agência Brasil, Câmara, Senado) ou com crédito.</li>
         <li><b>Carrossel:</b> capa + de 3 a 8 slides + fechamento. A capa faz a pergunta, os slides respondem um ponto cada e o fechamento chama para seguir.</li>
       </ul>
     </section>
@@ -154,7 +156,7 @@
     </section>
   </main>
 
-  <script src="posts.js?v=1"></script>
+  <script src="posts.js?v=3"></script>
   <script>
     const EXEMPLOS = [
       ["citacao", "Frase e citação · vermelho", {}],
@@ -163,6 +165,12 @@
       ["carrosselSlide", "Carrossel · slide", {}],
       ["carrosselFim", "Carrossel · fechamento", {}],
       ["reels", "Capa de Reels", {}],
+      ["dado", "Dado ou número", {}],
+      ["noticia", "Notícia", {}],
+      ["evento", "Aviso de evento", {}],
+      ["meme", "Meme", {}],
+      ["eventoStory", "Evento · story", {}],
+      ["storyDivulga", "Story de divulgação", {}],
     ];
     (async () => {
       const alvo = document.getElementById("exemplos");

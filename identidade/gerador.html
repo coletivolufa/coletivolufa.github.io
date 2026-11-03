@@ -39,10 +39,23 @@
 
   <div class="ger">
     <div class="ger-form">
-      <div class="abas" role="tablist" id="abas">
-        <button type="button" role="tab" data-modo="citacao" aria-selected="true">Frase e citação</button>
-        <button type="button" role="tab" data-modo="carrossel" aria-selected="false">Carrossel</button>
-        <button type="button" role="tab" data-modo="reels" aria-selected="false">Capa de Reels</button>
+      <div class="campo">
+        <label for="modo">Modelo</label>
+        <select id="modo" style="font-family:var(--titulo);font-size:24px;letter-spacing:.04em">
+          <optgroup label="Feed (1080 × 1350)">
+            <option value="citacao">Frase e citação</option>
+            <option value="carrossel">Carrossel explicativo</option>
+            <option value="dado">Dado ou número</option>
+            <option value="noticia">Notícia</option>
+            <option value="evento">Aviso de evento</option>
+            <option value="meme">Meme</option>
+          </optgroup>
+          <optgroup label="Stories e Reels (1080 × 1920)">
+            <option value="reels">Capa de Reels</option>
+            <option value="eventoStory">Evento · story</option>
+            <option value="storyDivulga">Story de divulgação (artigo, episódio, livro)</option>
+          </optgroup>
+        </select>
       </div>
       <div id="carrossel-controles" hidden>
         <div class="slides" id="slides"></div>
@@ -67,14 +80,12 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="posts.js?v=1"></script>
+  <script src="posts.js?v=3"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     let modo = "citacao";
-    const estado = {
-      citacao: { modelo: "citacao", valores: {} },
-      reels: { modelo: "reels", valores: {} },
-    };
+    const estado = {};
+    Object.keys(MODELOS).forEach((k) => { if (!MODELOS[k].grupo) estado[k] = { modelo: k, valores: {} }; });
     const carrossel = { atual: 0, slides: [
       { modelo: "carrosselCapa", valores: {} },
       { modelo: "carrosselSlide", valores: {} },
@@ -102,7 +113,7 @@
         const val = item.valores[f.id] !== undefined ? item.valores[f.id] : f.padrao;
         if (f.tipo === "area") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><textarea id="f-${f.id}" data-campo="${f.id}" style="min-height:120px;font-family:var(--texto)">${esc(val)}</textarea></div>`;
         if (f.tipo === "opcoes") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><select id="f-${f.id}" data-campo="${f.id}">${Object.entries(f.opcoes).map(([k, n]) => `<option value="${k}"${k === val ? " selected" : ""}>${n}</option>`).join("")}</select></div>`;
-        if (f.tipo === "imagem") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" type="file" accept="image/*"><small>${item.valores[f.id] ? "Imagem carregada. Escolha outra para trocar." : "Para a capa de Reels, use uma figura recortada (PNG sem fundo) para ficar como na série."}</small></div>`;
+        if (f.tipo === "imagem") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" type="file" accept="image/*"><small>${item.valores[f.id] ? "Imagem carregada. Escolha outra para trocar." : (item.modelo === "reels" ? "Use uma figura recortada (PNG sem fundo) para ficar como na série." : "JPG ou PNG.")}</small></div>`;
         return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" value="${esc(val)}"></div>`;
       }).join("");
     }
@@ -119,7 +130,7 @@
 
     function trocarModo(m) {
       modo = m;
-      document.querySelectorAll("#abas button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.modo === m)));
+      $("modo").value = m;
       $("carrossel-controles").hidden = m !== "carrossel";
       $("baixar-tudo").hidden = m !== "carrossel";
       if (m === "carrossel") montarSlides();
@@ -127,7 +138,7 @@
     }
 
     function nomeArquivo(item, i) {
-      const base = (item.valores.titulo || item.valores.texto || item.valores.chamada || MODELOS[item.modelo].nome || "post");
+      const base = (item.valores.titulo || item.valores.manchete || item.valores.numero || item.valores.cima || item.valores.texto || item.valores.chamada || MODELOS[item.modelo].nome || "post");
       return "lufa-" + (i !== undefined ? String(i + 1).padStart(2, "0") + "-" : "") +
         String(base).replace(/\*/g, "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40).replace(/-$/, "") + ".png";
     }
@@ -136,7 +147,7 @@
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     }
 
-    $("abas").addEventListener("click", (e) => { const b = e.target.closest("[data-modo]"); if (b) trocarModo(b.dataset.modo); });
+    $("modo").addEventListener("change", (e) => trocarModo(e.target.value));
     $("campos").addEventListener("input", (e) => {
       const el = e.target.closest("[data-campo]"); if (!el || el.type === "file") return;
       atual().valores[el.dataset.campo] = el.value; redesenhar();

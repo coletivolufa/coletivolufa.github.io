@@ -302,6 +302,220 @@ const MODELOS = {
       grao(ctx, W, H, 0.08); vinheta(ctx, W, H, 0.3);
     },
   },
+  // 4) Aviso de evento — feed 1080×1350
+  evento: {
+    nome: "Aviso de evento", w: 1080, h: 1350,
+    campos: [
+      { id: "tipo", rotulo: "Tipo", padrao: "REUNIÃO ABERTA" },
+      { id: "titulo", rotulo: "Nome do evento (use *asteriscos* para destacar)", tipo: "area", padrao: "Roda de leitura do *Manifesto*" },
+      { id: "dia", rotulo: "Dia", padrao: "15" },
+      { id: "mes", rotulo: "Mês", padrao: "NOV" },
+      { id: "semana", rotulo: "Dia da semana", padrao: "SÁBADO" },
+      { id: "hora", rotulo: "Horário", padrao: "16h" },
+      { id: "local", rotulo: "Local", padrao: "Praça da Liberdade · ou online" },
+      { id: "extra", rotulo: "Informação extra (opcional)", padrao: "Gratuito e aberto a todos · inscrição no link da bio" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1350;
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, H);
+      raios(ctx, W * 0.85, H * 0.32, 22, "rgba(255,255,255,.06)", 0.1);
+      assinatura(ctx, 90, 130, COR.branco, 40);
+      etiqueta(ctx, ("AGENDA · " + v.tipo).toUpperCase(), 90, 300, 46, COR.amarelo, COR.preto);
+      const r = caber(ctx, v.titulo.toUpperCase(), 900, 380, 170, 80, 0.92, FONTE.titulo);
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 370 + r.tam * 0.82 + i * r.tam * 0.92, COR.branco, COR.amarelo));
+      // bloco de data, como um carimbo de calendário
+      const y = 820;
+      ctx.fillStyle = "rgba(30,25,22,.9)"; ctx.fillRect(102, y + 12, 300, 330);
+      ctx.fillStyle = COR.papel; ctx.fillRect(90, y, 300, 330);
+      ctx.fillStyle = COR.preto; ctx.fillRect(90, y, 300, 70);
+      fonte(ctx, 50); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.mes.toUpperCase(), 240, y + 54);
+      fonte(ctx, 210); ctx.fillStyle = COR.vermelho; ctx.fillText(v.dia, 240, y + 280);
+      fonte(ctx, 40); ctx.fillStyle = COR.preto; ctx.fillText(v.semana.toUpperCase(), 240, y + 318);
+      ctx.textAlign = "left";
+      fonte(ctx, 120); ctx.fillStyle = COR.amarelo; ctx.fillText(v.hora, 450, y + 120);
+      fonte(ctx, 46, FONTE.texto, "700"); ctx.fillStyle = COR.branco;
+      quebrar(ctx, v.local, 540).slice(0, 2).forEach((l, i) => ctx.fillText(l, 450, y + 200 + i * 56));
+      if (v.extra.trim()) { fonte(ctx, 30, FONTE.texto); ctx.fillStyle = COR.papel; quebrar(ctx, v.extra, 560).slice(0, 2).forEach((l, i) => ctx.fillText(l, 450, y + 310 + i * 40)); }
+      faixa(ctx, 1260, 70, -2, COR.amarelo, ARROBA.toUpperCase(), COR.preto, W);
+      grao(ctx, W, H);
+    },
+  },
+
+  // 5) Evento em story — 1080×1920 (deixa espaço livre em cima e embaixo para os botões do Instagram)
+  eventoStory: {
+    nome: "Evento · story", w: 1080, h: 1920,
+    campos: [
+      { id: "tipo", rotulo: "Tipo", padrao: "ATO" },
+      { id: "titulo", rotulo: "Nome do evento", tipo: "area", padrao: "Pelo fim da *escala 6x1*" },
+      { id: "dia", rotulo: "Dia", padrao: "20" },
+      { id: "mes", rotulo: "Mês", padrao: "NOV" },
+      { id: "semana", rotulo: "Dia da semana", padrao: "QUINTA" },
+      { id: "hora", rotulo: "Horário", padrao: "17h" },
+      { id: "local", rotulo: "Local", padrao: "Em frente à prefeitura" },
+      { id: "chamada", rotulo: "Chamada final", padrao: "Chame quem trabalha com você" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1920, CX = 540;
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, H);
+      raios(ctx, CX, 760, 24, "rgba(138,20,17,.55)", 0);
+      logo(ctx, CX, 330, 170);
+      etiqueta(ctx, v.tipo.toUpperCase(), CX, 520, 58, COR.preto, COR.papel, "center");
+      const r = caber(ctx, v.titulo.toUpperCase(), 940, 420, 220, 100, 0.9, FONTE.titulo);
+      r.linhas.forEach((l, i) => {
+        const y = 590 + r.tam * 0.82 + i * r.tam * 0.9;
+        ctx.save(); ctx.translate(7, 7); linhaDestacada(ctx, l.replace(/\*/g, ""), CX, y, COR.preto, COR.preto, "center"); ctx.restore();
+        linhaDestacada(ctx, l, CX, y, COR.papel, COR.amarelo, "center");
+      });
+      const y = 1120;
+      ctx.fillStyle = "rgba(30,25,22,.9)"; ctx.fillRect(132, y + 14, 840, 300);
+      ctx.fillStyle = COR.papel; ctx.fillRect(120, y, 840, 300);
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(120, y, 300, 300);
+      fonte(ctx, 46); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.mes.toUpperCase(), 270, y + 62);
+      fonte(ctx, 190); ctx.fillStyle = COR.branco; ctx.fillText(v.dia, 270, y + 236);
+      fonte(ctx, 36); ctx.fillStyle = COR.papel; ctx.fillText(v.semana.toUpperCase(), 270, y + 280);
+      ctx.textAlign = "left"; fonte(ctx, 120); ctx.fillStyle = COR.vermelho; ctx.fillText(v.hora, 460, y + 130);
+      fonte(ctx, 40, FONTE.texto, "700"); ctx.fillStyle = COR.preto;
+      quebrar(ctx, v.local, 470).slice(0, 3).forEach((l, i) => ctx.fillText(l, 460, y + 195 + i * 48));
+      if (v.chamada.trim()) { fonte(ctx, 58); ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1560, 960); }
+      fonte(ctx, 44); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText("★  " + ARROBA.toUpperCase() + "  ★", CX, 1640);
+      grao(ctx, W, H, 0.08); vinheta(ctx, W, H, 0.3);
+    },
+  },
+
+  // 6) Story de divulgação — artigo novo, episódio novo, livro da semana
+  storyDivulga: {
+    nome: "Story de divulgação", w: 1080, h: 1920,
+    campos: [
+      { id: "tipo", rotulo: "Tipo", tipo: "opcoes", opcoes: { "NOVO ARTIGO": "Novo artigo", "EPISÓDIO NOVO": "Episódio novo", "LIVRO DA SEMANA": "Livro da semana", "NO SITE": "Outro" }, padrao: "NOVO ARTIGO" },
+      { id: "titulo", rotulo: "Título", tipo: "area", padrao: "Por que o fim da *escala 6x1* é urgente" },
+      { id: "texto", rotulo: "Resumo curto", tipo: "area", padrao: "Trabalhar seis dias para descansar um não é natural: é uma escolha de quem lucra com o nosso tempo." },
+      { id: "autor", rotulo: "Autor(a) (opcional)", padrao: "por Leonardo Duarte" },
+      { id: "imagem", rotulo: "Imagem (capa do episódio ou do livro, opcional)", tipo: "imagem" },
+      { id: "chamada", rotulo: "Chamada", padrao: "LEIA NO LINK ↓" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1920, CX = 540;
+      ctx.fillStyle = COR.papel; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, 760);
+      raios(ctx, CX, 760, 22, "rgba(255,255,255,.06)", 0);
+      assinatura(ctx, 90, 300, COR.branco, 44);
+      etiqueta(ctx, v.tipo, 90, 430, 70, COR.amarelo, COR.preto);
+      let y = 560;
+      if (v.imagem) {
+        const iw = 330, ih = Math.min(500, iw * v.imagem.height / v.imagem.width);
+        ctx.fillStyle = COR.preto; ctx.fillRect(CX - iw / 2 + 14, y + 14, iw, ih);
+        imagemCobrindo(ctx, v.imagem, CX - iw / 2, y, iw, ih);
+        y += ih + 70;
+      } else y = 860;
+      const r = caber(ctx, v.titulo.toUpperCase(), 900, v.imagem ? 220 : 330, 120, 64, 0.95, FONTE.titulo);
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.82 + i * r.tam * 0.95, COR.vermelho, COR.preto));
+      y += r.tam * 0.82 + (r.linhas.length - 1) * r.tam * 0.95 + 40;
+      if (v.autor.trim()) { fonte(ctx, 40); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.autor.toUpperCase(), 90, y + 10); y += 50; }
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(90, y + 10, 90, 8); y += 70;
+      const rb = caber(ctx, v.texto, 900, Math.max(130, 1590 - y), 42, 28, 1.4, FONTE.texto);
+      rb.linhas = rb.linhas.slice(0, Math.max(2, Math.floor((1600 - y) / (rb.tam * 1.4))));
+      rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + i * rb.tam * 1.4, COR.preto, COR.vermelho));
+      ctx.fillStyle = COR.preto; ctx.fillRect(0, 1600, W, 120);
+      fonte(ctx, 66); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1683);
+      grao(ctx, W, H, 0.05);
+    },
+  },
+
+  // 7) Dado ou número — feed 1080×1350
+  dado: {
+    nome: "Dado ou número", w: 1080, h: 1350,
+    campos: [
+      { id: "kicker", rotulo: "Linha de cima", padrao: "VOCÊ SABIA?" },
+      { id: "numero", rotulo: "Número em destaque", padrao: "44h" },
+      { id: "texto", rotulo: "O que o número significa (use *asteriscos*)", tipo: "area", padrao: "é a jornada semanal máxima no Brasil desde *1988*. Na escala 6x1, sobra só um dia de descanso." },
+      { id: "fonte", rotulo: "Fonte do dado", padrao: "Fonte: Constituição Federal, art. 7º, XIII" },
+      { id: "fundo", rotulo: "Fundo", tipo: "opcoes", opcoes: { vermelho: "Vermelho", preto: "Preto" }, padrao: "vermelho" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1350, ver = v.fundo !== "preto";
+      ctx.fillStyle = ver ? COR.vermelho : COR.preto; ctx.fillRect(0, 0, W, H);
+      raios(ctx, W / 2, 560, 28, ver ? "rgba(255,255,255,.06)" : "rgba(204,34,32,.18)", 0);
+      assinatura(ctx, 90, 130, ver ? COR.branco : COR.amarelo, 40);
+      etiqueta(ctx, v.kicker.toUpperCase(), W / 2, 290, 50, ver ? COR.preto : COR.vermelho, COR.papel, "center");
+      let t = 480; fonte(ctx, t); while (ctx.measureText(v.numero).width > 920 && t > 160) { t -= 10; fonte(ctx, t); }
+      ctx.textAlign = "center";
+      ctx.fillStyle = COR.preto; ctx.fillText(v.numero, W / 2 + 12, 400 + t * 0.78 + 12);
+      ctx.fillStyle = COR.amarelo; ctx.fillText(v.numero, W / 2, 400 + t * 0.78);
+      const y0 = 400 + t * 0.78 + 90;
+      const r = caber(ctx, v.texto, 880, H - 200 - y0, 56, 34, 1.3, FONTE.texto, "700");
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, y0 + i * r.tam * 1.3, COR.papel, COR.amarelo, "center"));
+      fonte(ctx, 26, FONTE.texto); ctx.fillStyle = COR.papel; ctx.globalAlpha = 0.75; ctx.textAlign = "center"; ctx.fillText(v.fonte, W / 2, H - 120); ctx.globalAlpha = 1;
+      fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.fillText(ARROBA.toUpperCase(), W / 2, H - 60);
+      grao(ctx, W, H);
+    },
+  },
+
+  // 8) Notícia — feed 1080×1350
+  noticia: {
+    nome: "Notícia", w: 1080, h: 1350,
+    campos: [
+      { id: "selo", rotulo: "Selo", padrao: "URGENTE" },
+      { id: "data", rotulo: "Data", padrao: "03/11/2026" },
+      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
+      { id: "resumo", rotulo: "Resumo (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas. Paralisação começa na próxima segunda." },
+      { id: "fonte", rotulo: "Fonte", padrao: "Fonte: Agência Brasil" },
+      { id: "imagem", rotulo: "Foto (com crédito na fonte)", tipo: "imagem" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1350, FY = 640;
+      ctx.fillStyle = COR.papel; ctx.fillRect(0, 0, W, H);
+      if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, FY);
+      else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, FY); raios(ctx, W / 2, FY, 22, "rgba(255,255,255,.06)", 0); }
+      const g = ctx.createLinearGradient(0, 0, 0, 220); g.addColorStop(0, "rgba(30,25,22,.7)"); g.addColorStop(1, "rgba(30,25,22,0)");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 220);
+      assinatura(ctx, 60, 100, COR.branco, 38);
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, FY, W, 14);
+      const ws = etiqueta(ctx, v.selo.toUpperCase(), 90, FY + 82, 46, COR.vermelho, COR.branco);
+      fonte(ctx, 34); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.data, 90 + ws + 22, FY + 84);
+      const r = caber(ctx, v.manchete.toUpperCase(), 900, 300, 112, 60, 0.95, FONTE.titulo);
+      let y = FY + 120;
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.85 + i * r.tam * 0.95, COR.preto, COR.vermelho));
+      y += r.tam * 0.85 + (r.linhas.length - 1) * r.tam * 0.95 + 50;
+      if (v.resumo.trim()) { const rb = caber(ctx, v.resumo, 900, H - 140 - y, 38, 28, 1.35, FONTE.texto); rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.fillText(l, 90, y + i * rb.tam * 1.35); }); }
+      ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 90, W, 90);
+      fonte(ctx, 24, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, 90, H - 36);
+      fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - 90, H - 32);
+      grao(ctx, W, H, 0.05);
+    },
+  },
+
+  // 9) Meme — feed 1080×1350, imagem com texto em cima e embaixo
+  meme: {
+    nome: "Meme", w: 1080, h: 1350,
+    campos: [
+      { id: "cima", rotulo: "Texto de cima", tipo: "area", padrao: "O patrão quando você pede aumento" },
+      { id: "baixo", rotulo: "Texto de baixo (opcional)", tipo: "area", padrao: "\"A empresa é uma família\"" },
+      { id: "imagem", rotulo: "Imagem do meme", tipo: "imagem" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1350;
+      ctx.fillStyle = COR.preto; ctx.fillRect(0, 0, W, H);
+      const temBaixo = !!v.baixo.trim();
+      fonte(ctx, 70, FONTE.texto, "700");
+      const rc = caber(ctx, v.cima, 940, 300, 76, 40, 1.15, FONTE.texto, "700");
+      const topo = 60 + rc.linhas.length * rc.tam * 1.15 + 40;
+      ctx.fillStyle = COR.branco; ctx.fillRect(0, 0, W, topo);
+      ctx.fillStyle = COR.preto; ctx.textAlign = "left";
+      rc.linhas.forEach((l, i) => linhaDestacada(ctx, l, 70, 60 + rc.tam * 0.9 + i * rc.tam * 1.15, COR.preto, COR.vermelho));
+      const base = temBaixo ? H - 230 : H - 110;
+      if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, topo, W, base - topo);
+      else { ctx.fillStyle = "#3a322d"; ctx.fillRect(0, topo, W, base - topo); fonte(ctx, 50); ctx.fillStyle = "#8a7f74"; ctx.textAlign = "center"; ctx.fillText("ESCOLHA UMA IMAGEM", W / 2, (topo + base) / 2); }
+      if (temBaixo) {
+        ctx.fillStyle = COR.vermelho; ctx.fillRect(0, base, W, H - base);
+        const rb = caber(ctx, v.baixo.toUpperCase(), 940, 110, 90, 44, 0.95, FONTE.titulo);
+        rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, base + 30 + rb.tam * 0.85 + i * rb.tam * 0.95, COR.branco, COR.amarelo, "center"));
+      }
+      ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 70, W, 70);
+      logo(ctx, 70, H - 35, 46, null, false);
+      fonte(ctx, 34); ctx.fillStyle = COR.amarelo; ctx.textAlign = "left"; ctx.fillText(ARROBA.toUpperCase(), 110, H - 22);
+      fonte(ctx, 30); ctx.fillStyle = "#b9ab98"; ctx.textAlign = "right"; ctx.fillText("COLETIVO LUFÃ", W - 40, H - 24);
+    },
+  },
 };
 
 // desenha um modelo num canvas novo e devolve o canvas
