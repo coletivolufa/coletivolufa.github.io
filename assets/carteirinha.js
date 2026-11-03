@@ -9,7 +9,7 @@ const LINHA = { nome: 690, idade: 782, ocupacao: 871, matricula: 1008, data: 109
 const hoje = new Date();
 const DATA = { d: String(hoje.getDate()).padStart(2, "0"), m: String(hoje.getMonth() + 1).padStart(2, "0"), a: String(hoje.getFullYear()) };
 
-let membros = [], membro = null, foto = null, eu = null;
+let membro = null, foto = null, eu = null;
 const fundo = carregar("carteirinha/fundo.jpg"), carimbo = carregar("carteirinha/carimbo-foto.png");
 
 function carregar(src) { const i = new Image(); i.src = src; return i; }
@@ -112,19 +112,17 @@ $("foto").addEventListener("change", (ev) => {
 ["zoom", "px", "py"].forEach((id) => $(id).addEventListener("input", desenhar));
 
 // ---------- dados ----------
-function escolherMembro() {
-  membro = membros.find((m) => m.matricula === $("membro").value) || null;
-  $("nome").value = membro ? membro.nome : "";
-  $("ver-matricula").textContent = membro ? membro.matricula : "—";
-  $("ver-ocupacao").textContent = classificacao(membro);
-  if (membro && membro.foto) {
-    ["zoom", "px", "py"].forEach((id) => ($(id).value = id === "zoom" ? 1 : 0));
-    usarFoto(membro.foto);
-    $("foto-aviso").textContent = "Usamos a sua foto do site. Se quiser, escolha outra.";
-  } else { foto = null; $("ajuste").hidden = true; $("foto-aviso").textContent = "Escolha uma foto de rosto."; }
-  desenhar();
+function preencherDaConta() {
+  membro = { nome: eu.nome, matricula: eu.matricula, foto: eu.foto, funcao: eu.funcao };
+  $("nome").value = eu.nome || "";
+  if (eu.idade) $("idade").value = eu.idade;
+  $("ver-matricula").textContent = eu.matricula;
+  $("ver-ocupacao").textContent = classificacao(eu);
+  if (eu.aprovado_em) { const d = new Date(eu.aprovado_em); DATA.d = String(d.getDate()).padStart(2, "0"); DATA.m = String(d.getMonth() + 1).padStart(2, "0"); DATA.a = String(d.getFullYear()); }
+  $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`;
+  if (eu.foto) { usarFoto(eu.foto); $("foto-aviso").textContent = "Usamos a foto do seu perfil. Se quiser, escolha outra só para a carteirinha."; }
+  else $("foto-aviso").textContent = "Escolha uma foto de rosto.";
 }
-$("membro").addEventListener("change", escolherMembro);
 ["nome", "idade"].forEach((id) => $(id).addEventListener("input", agendar));
 
 let espera;
@@ -133,7 +131,7 @@ function avisar(t) { $("aviso").textContent = t; }
 
 // ---------- baixar e compartilhar ----------
 function faltando() {
-  if (!membro) return "Escolha o seu nome na lista de membros.";
+  if (!membro) return "Entre na sua conta para fazer a carteirinha.";
   if (!$("nome").value.trim()) return "Preencha o seu nome.";
   if (!$("idade").value.trim()) return "Preencha a sua idade.";
   if (!foto) return "Escolha uma foto.";
@@ -150,7 +148,7 @@ $("baixar").addEventListener("click", async () => {
   const blob = await gerarBlob(), a = document.createElement("a");
   a.href = URL.createObjectURL(blob); a.download = nomeArquivo(); a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-  avisar("Carteirinha baixada! Ela fica salva na pasta de downloads ou na galeria do seu celular.");
+  avisar("Carteirinha baixada! Salvando na sua conta…");
   salvarNaConta(blob);
 });
 if (navigator.canShare) {
@@ -165,34 +163,28 @@ if (navigator.canShare) {
 
 // guarda a carteirinha na conta de quem está logado (aba "Minha carteirinha")
 async function salvarNaConta(blob) {
-  if (!eu || !membro || membro.matricula !== eu.matricula) return;
+  if (!eu) return;
   const { error } = await supa.storage.from("fotos").upload(`${eu.id}/carteirinha.png`, blob, { contentType: "image/png", upsert: true, cacheControl: "60" });
   avisar(error ? "Carteirinha baixada, mas não foi possível salvar na sua conta: " + mensagemErro(error)
                : "Carteirinha baixada e salva em Minha conta → Minha carteirinha!");
 }
 
-// ---------- início ----------
+// ---------- início: só para quem entrou na conta e foi aprovado ----------
+function bloquear(titulo, texto, link, rotulo) {
+  $("bloqueio").hidden = false;
+  $("bloqueio-titulo").textContent = titulo;
+  $("bloqueio-texto").textContent = texto;
+  $("bloqueio-link").href = link; $("bloqueio-link").textContent = rotulo;
+  document.querySelector(".carteira").hidden = true;
+}
 (async () => {
-  $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`;
   await Promise.all([fundo.decode().catch(() => {}), carimbo.decode().catch(() => {}), document.fonts.load('700 46px "Courier Prime"').catch(() => {})]);
-  try {
-    membros = (await todosOsMembros()).filter((m) => m.matricula)
-      .sort((a, b) => a.nome.localeCompare(b.nome, "pt"));
-    $("membro").innerHTML = '<option value="">Escolha o seu nome…</option>' +
-      membros.map((m) => `<option value="${esc(m.matricula)}">${esc(m.nome)}</option>`).join("");
-    // quem está logado e aprovado já entra preenchido
-    eu = await meuPerfil().catch(() => null);
-    if (eu && eu.matricula && APROVADO.includes(eu.papel)) {
-      // filiação = dia em que a conta foi aprovada
-      if (eu.aprovado_em) { const d = new Date(eu.aprovado_em); DATA.d = String(d.getDate()).padStart(2, "0"); DATA.m = String(d.getMonth() + 1).padStart(2, "0"); DATA.a = String(d.getFullYear()); $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`; }
-      const naLista = membros.find((m) => m.matricula === eu.matricula);
-      if (naLista) naLista.funcao = eu.funcao; else membros.push({ nome: eu.nome, matricula: eu.matricula, foto: eu.foto, funcao: eu.funcao });
-      $("membro").value = eu.matricula; escolherMembro();
-      if (eu.idade) $("idade").value = eu.idade;
-      avisar("Seus dados vieram da sua conta. Falta só assinar! Ao baixar, ela também fica salva em Minha conta.");
-    }
-  } catch (e) {
-    $("membro").innerHTML = '<option value="">Não foi possível carregar a lista</option>';
-  }
+  eu = await meuPerfil().catch(() => null);
+  if (!eu) return bloquear("Entre na sua conta", "A carteirinha é feita com os dados da sua conta e fica salva nela. Entre (ou crie a sua conta) para continuar.", "conta.html", "Entrar ou criar conta");
+  if (eu.papel === "pendente") return bloquear("Aguardando aprovação", "Sua conta ainda está sendo analisada pela secretaria. Assim que for aprovada, você ganha a sua matrícula e pode fazer a carteirinha.", "conta.html", "Ver minha conta");
+  if (!APROVADO.includes(eu.papel) || !eu.matricula) return bloquear("Carteirinha indisponível", "Sua conta não tem permissão para emitir carteirinha. Fale com a secretaria do coletivo.", "conta.html", "Ver minha conta");
+  document.querySelector(".carteira").hidden = false;
+  preencherDaConta();
+  avisar("Seus dados vieram da sua conta. Falta só assinar! Ao baixar, a carteirinha também fica salva em Minha conta.");
   desenhar();
 })();
