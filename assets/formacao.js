@@ -46,12 +46,13 @@ function desenhar() {
             <h2>${esc(s.titulo)}</h2>
             ${s.apresentador ? `<p class="serie__com">com ${esc(s.apresentador)}${perfil ? " do " + perfil : ""}</p>` : ""}
             <p class="serie__desc">${esc(s.descricao || "")}</p>
-            <p class="serie__meta">${eps.length} ${eps.length === 1 ? "episódio" : "episódios"}${eps.some((e) => !e.video) ? " · novos episódios em breve" : ""}</p>
+            <p class="serie__meta">${eps.length ? `${eps.length} ${eps.length === 1 ? "episódio" : "episódios"}${eps.some((e) => !e.video) ? " · novos episódios em breve" : ""}` : "Nova série · estreia em breve"}</p>
             ${primeiro ? `<button type="button" class="botao" data-serie="${esc(s.id)}" data-ep="${esc(primeiro.id)}">▶ Assistir</button>`
               : `<span class="serie__aviso">Primeiro episódio chegando em breve</span>`}
           </div>
         </div>
-        <div class="fileira" role="list">${eps.map((e) => cartaoEpisodio(s, e)).join("")}</div>
+        <div class="fileira" role="list">${eps.length ? eps.map((e) => cartaoEpisodio(s, e)).join("")
+          : `<div class="episodio episodio--breve" aria-label="Primeiro episódio em breve"><span class="episodio__capa"><span class="episodio__sem-capa">EP. 1</span><span class="episodio__breve">Em breve</span></span><span class="episodio__titulo">Primeiro episódio</span></div>`}</div>
       </article>`;
   }).join("");
 }
