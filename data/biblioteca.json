@@ -1,0 +1,355 @@
+{
+  "fonte": {
+    "nome": "Marxists Internet Archive",
+    "link": "https://www.marxists.org/portugues/"
+  },
+  "categorias": [
+    {
+      "id": "comece",
+      "nome": "Comece por aqui",
+      "descricao": "Textos curtos e diretos para quem está chegando agora."
+    },
+    {
+      "id": "economia",
+      "nome": "Economia política",
+      "descricao": "Como o capitalismo funciona: trabalho, valor, salário e lucro."
+    },
+    {
+      "id": "filosofia",
+      "nome": "Filosofia e história",
+      "descricao": "O materialismo histórico e a leitura marxista da história."
+    },
+    {
+      "id": "revolucao",
+      "nome": "Estado e revolução",
+      "descricao": "Estado, partido, organização e estratégia revolucionária."
+    },
+    {
+      "id": "cotidiano",
+      "nome": "Mulheres, família e vida cotidiana",
+      "descricao": "A luta de classes dentro de casa, no trabalho e no tempo livre."
+    }
+  ],
+  "livros": [
+    {
+      "categoria": "comece",
+      "titulo": "Manifesto do Partido Comunista",
+      "autores": "Karl Marx e Friedrich Engels",
+      "ano": 1848,
+      "link": "https://www.marxists.org/portugues/marx/1848/ManifestoDoPartidoComunista/index.htm",
+      "formato": "Ler online",
+      "descricao": "O texto mais famoso do marxismo: a história como luta de classes e o chamado à organização dos trabalhadores.",
+      "destaque": true
+    },
+    {
+      "categoria": "comece",
+      "titulo": "Trabalho Assalariado e Capital",
+      "autores": "Karl Marx",
+      "ano": 1849,
+      "link": "https://www.marxists.org/portugues/marx/1849/04/05.htm",
+      "formato": "Ler online",
+      "descricao": "Uma explicação simples de onde vem o lucro e por que o salário nunca paga todo o trabalho.",
+      "destaque": false
+    },
+    {
+      "categoria": "comece",
+      "titulo": "Salário, Preço e Lucro",
+      "autores": "Karl Marx",
+      "ano": 1865,
+      "link": "https://www.marxists.org/portugues/marx/1865/salario/index.htm",
+      "formato": "Ler online",
+      "descricao": "Palestra para operários que resume a teoria do valor e da mais-valia em linguagem acessível.",
+      "destaque": false
+    },
+    {
+      "categoria": "comece",
+      "titulo": "Do Socialismo Utópico ao Socialismo Científico",
+      "autores": "Friedrich Engels",
+      "ano": 1880,
+      "link": "https://www.marxists.org/portugues/marx/1880/socialismo/index.htm",
+      "formato": "Ler online",
+      "descricao": "Por que o socialismo deixou de ser um sonho e passou a ser uma análise da realidade.",
+      "destaque": false
+    },
+    {
+      "categoria": "comece",
+      "titulo": "Sobre o Papel do Trabalho na Transformação do Macaco em Homem",
+      "autores": "Friedrich Engels",
+      "ano": 1876,
+      "link": "https://www.marxists.org/portugues/marx/1876/mes/macaco.htm",
+      "formato": "Ler online",
+      "descricao": "Texto curto sobre como o trabalho moldou a própria espécie humana.",
+      "destaque": false
+    },
+    {
+      "categoria": "comece",
+      "titulo": "ABC do Comunismo",
+      "autores": "Nikolai Bukharin e Evgeni Preobrajenski",
+      "ano": 1920,
+      "link": "https://www.marxists.org/portugues/bukharin/1920/abc/abc-do-comunismo.pdf",
+      "formato": "PDF",
+      "descricao": "Manual didático escrito para formar militantes logo depois da Revolução Russa.",
+      "destaque": false
+    },
+    {
+      "categoria": "economia",
+      "titulo": "O Capital: Crítica da Economia Política",
+      "autores": "Karl Marx",
+      "ano": 1867,
+      "link": "https://www.marxists.org/portugues/marx/1867/capital/index.htm",
+      "formato": "Ler online",
+      "descricao": "A obra central de Marx: a mercadoria, a mais-valia, a acumulação e as crises do capitalismo.",
+      "destaque": true
+    },
+    {
+      "categoria": "economia",
+      "titulo": "Manuscritos Econômico-Filosóficos",
+      "autores": "Karl Marx",
+      "ano": 1844,
+      "link": "https://www.marxists.org/portugues/marx/1844/manuscritos/index.htm",
+      "formato": "Ler online",
+      "descricao": "Os escritos de juventude sobre trabalho alienado e a relação entre ser humano e natureza.",
+      "destaque": false
+    },
+    {
+      "categoria": "economia",
+      "titulo": "Miséria da Filosofia",
+      "autores": "Karl Marx",
+      "ano": 1847,
+      "link": "https://www.marxists.org/portugues/marx/1847/miseria/index.htm",
+      "formato": "Ler online",
+      "descricao": "A resposta de Marx a Proudhon e um primeiro esboço da sua crítica da economia.",
+      "destaque": false
+    },
+    {
+      "categoria": "economia",
+      "titulo": "O Imperialismo, Fase Superior do Capitalismo",
+      "autores": "Vladimir Lênin",
+      "ano": 1916,
+      "link": "https://www.marxists.org/portugues/lenin/1916/imperialismo/index.htm",
+      "formato": "Ler online",
+      "descricao": "Monopólios, capital financeiro e a disputa das potências pelo mundo.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "Teses sobre Feuerbach",
+      "autores": "Karl Marx",
+      "ano": 1845,
+      "link": "https://www.marxists.org/portugues/marx/1845/tesfeuer.htm",
+      "formato": "Ler online",
+      "descricao": "Onze teses curtas. A última: os filósofos interpretaram o mundo; trata-se de transformá-lo.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "A Ideologia Alemã (capítulo I: Feuerbach)",
+      "autores": "Karl Marx e Friedrich Engels",
+      "ano": 1846,
+      "link": "https://www.marxists.org/portugues/marx/1845/ideologia-alema-oe/index.htm",
+      "formato": "Ler online",
+      "descricao": "Onde nasce a concepção materialista da história.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "O 18 de Brumário de Luís Bonaparte",
+      "autores": "Karl Marx",
+      "ano": 1852,
+      "link": "https://www.marxists.org/portugues/marx/1852/brumario/index.htm",
+      "formato": "Ler online",
+      "descricao": "Como um golpe de Estado acontece: classes, partidos e a farsa que repete a tragédia.",
+      "destaque": true
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "As Lutas de Classes em França de 1848 a 1850",
+      "autores": "Karl Marx",
+      "ano": 1850,
+      "link": "https://www.marxists.org/portugues/marx/1850/11/lutas_class/index.htm",
+      "formato": "Ler online",
+      "descricao": "A revolução de 1848 analisada no calor dos acontecimentos.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "Anti-Dühring",
+      "autores": "Friedrich Engels",
+      "ano": 1878,
+      "link": "https://www.marxists.org/portugues/marx/1877/antiduhring/index.htm",
+      "formato": "Ler online",
+      "descricao": "Uma visão de conjunto do marxismo: filosofia, economia e socialismo.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "A Origem da Família, da Propriedade Privada e do Estado",
+      "autores": "Friedrich Engels",
+      "ano": 1884,
+      "link": "https://www.marxists.org/portugues/marx/1884/origem/index.htm",
+      "formato": "Ler online",
+      "descricao": "Como surgiram a propriedade privada, a opressão das mulheres e o Estado.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "Ludwig Feuerbach e o Fim da Filosofia Clássica Alemã",
+      "autores": "Friedrich Engels",
+      "ano": 1886,
+      "link": "https://www.marxists.org/portugues/marx/1886/mes/fim.htm",
+      "formato": "Ler online",
+      "descricao": "O acerto de contas do marxismo com Hegel e Feuerbach.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "O Papel do Indivíduo na História",
+      "autores": "Gueorgui Plekhanov",
+      "ano": 1898,
+      "link": "https://www.marxists.org/portugues/plekhanov/1898/mes/papel.htm",
+      "formato": "Ler online",
+      "descricao": "Grandes figuras fazem a história? Plekhanov responde a partir do materialismo.",
+      "destaque": false
+    },
+    {
+      "categoria": "filosofia",
+      "titulo": "A Teoria do Materialismo Histórico",
+      "autores": "Nikolai Bukharin",
+      "ano": 1921,
+      "link": "https://www.marxists.org/portugues/bukharin/1921/teoria/index.htm",
+      "formato": "Ler online",
+      "descricao": "Um manual de sociologia marxista escrito para a formação de quadros.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "A Guerra Civil em França",
+      "autores": "Karl Marx",
+      "ano": 1871,
+      "link": "https://www.marxists.org/portugues/marx/1871/guerra_civil/index.htm",
+      "formato": "Ler online",
+      "descricao": "A Comuna de Paris, o primeiro governo operário da história.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "Crítica do Programa de Gotha",
+      "autores": "Karl Marx",
+      "ano": 1875,
+      "link": "https://www.marxists.org/portugues/marx/1875/gotha/index.htm",
+      "formato": "Ler online",
+      "descricao": "De cada um segundo suas capacidades, a cada um segundo suas necessidades.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "Que Fazer?",
+      "autores": "Vladimir Lênin",
+      "ano": 1902,
+      "link": "https://www.marxists.org/portugues/lenin/1902/quefazer/index.htm",
+      "formato": "Ler online",
+      "descricao": "Consciência de classe, jornal operário e o papel do partido revolucionário.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "O Estado e a Revolução",
+      "autores": "Vladimir Lênin",
+      "ano": 1917,
+      "link": "https://www.marxists.org/portugues/lenin/1917/08/estadoerevolucao/index.htm",
+      "formato": "Ler online",
+      "descricao": "O que é o Estado, a quem ele serve e o que fazer com ele.",
+      "destaque": true
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "Esquerdismo, Doença Infantil do Comunismo",
+      "autores": "Vladimir Lênin",
+      "ano": 1920,
+      "link": "https://www.marxists.org/portugues/lenin/1920/esquerdismo/index.htm",
+      "formato": "Ler online",
+      "descricao": "Contra o sectarismo: táticas, alianças e trabalho nas organizações de massa.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "Reforma ou Revolução?",
+      "autores": "Rosa Luxemburgo",
+      "ano": 1899,
+      "link": "https://www.marxists.org/portugues/luxemburgo/1900/ref_rev/index.htm",
+      "formato": "Ler online",
+      "descricao": "Dá para chegar ao socialismo só com reformas? A resposta clássica de Rosa.",
+      "destaque": true
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "Greve de Massas, Partido e Sindicatos",
+      "autores": "Rosa Luxemburgo",
+      "ano": 1906,
+      "link": "https://www.marxists.org/portugues/luxemburgo/1906/mes/40.pdf",
+      "formato": "PDF",
+      "descricao": "As lições da Revolução Russa de 1905 sobre a força da greve.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "A Revolução Russa",
+      "autores": "Rosa Luxemburgo",
+      "ano": 1918,
+      "link": "https://www.marxists.org/portugues/luxemburgo/1918/mes/40.pdf",
+      "formato": "PDF",
+      "descricao": "Apoio e crítica aos bolcheviques, escrito na prisão.",
+      "destaque": false
+    },
+    {
+      "categoria": "revolucao",
+      "titulo": "A Revolução contra O Capital",
+      "autores": "Antonio Gramsci",
+      "ano": 1917,
+      "link": "https://www.marxists.org/portugues/gramsci/1917/04/24.htm",
+      "formato": "Ler online",
+      "descricao": "Texto curto de Gramsci sobre a Revolução de Outubro.",
+      "destaque": false
+    },
+    {
+      "categoria": "cotidiano",
+      "titulo": "O Direito à Preguiça",
+      "autores": "Paul Lafargue",
+      "ano": 1880,
+      "link": "https://www.marxists.org/portugues/lafargue/1883/preg/index.htm",
+      "formato": "Ler online",
+      "descricao": "Uma crítica afiada e bem-humorada ao culto do trabalho. Leitura obrigatória no debate da escala 6x1.",
+      "destaque": true
+    },
+    {
+      "categoria": "cotidiano",
+      "titulo": "O Comunismo e a Família",
+      "autores": "Alexandra Kollontai",
+      "ano": 1920,
+      "link": "https://www.marxists.org/portugues/kollontai/1920/mes/com_fam.htm",
+      "formato": "Ler online",
+      "descricao": "Como o socialismo pode libertar as mulheres do trabalho doméstico.",
+      "destaque": false
+    },
+    {
+      "categoria": "cotidiano",
+      "titulo": "As Relações entre os Sexos e a Luta de Classes",
+      "autores": "Alexandra Kollontai",
+      "ano": 1911,
+      "link": "https://www.marxists.org/portugues/kollontai/1911/mes/luta.htm",
+      "formato": "Ler online",
+      "descricao": "Amor, casamento e moral sexual vistos pela luta de classes.",
+      "destaque": false
+    },
+    {
+      "categoria": "cotidiano",
+      "titulo": "Para a Questão da Habitação",
+      "autores": "Friedrich Engels",
+      "ano": 1873,
+      "link": "https://www.marxists.org/portugues/marx/1873/habita/index.htm",
+      "formato": "Ler online",
+      "descricao": "Por que falta moradia para quem trabalha, e por que o mercado não resolve.",
+      "destaque": false
+    }
+  ]
+}

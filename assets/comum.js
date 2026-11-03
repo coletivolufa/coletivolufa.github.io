@@ -12,7 +12,7 @@ const LUFA = {
 const ICONES = {
   inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg>',
   artigos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg>',
-  breve: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>',
+  biblioteca: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="m16 5 3.8-1 3 15.5-3.8 1z"/></svg>',
   menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
 };
 
@@ -33,7 +33,7 @@ function montarMenu() {
       <nav>
         <a href="index.html"${atual("inicio")}>${ICONES.inicio}Início</a>
         <a href="artigos.html"${atual("artigos")}>${ICONES.artigos}Artigos</a>
-        <span class="em-breve" aria-disabled="true">${ICONES.breve}Em breve</span>
+        <a href="biblioteca.html"${atual("biblioteca")}>${ICONES.biblioteca}Biblioteca</a>
       </nav>
       <div class="menu__rodape">
         Siga <a href="https://www.instagram.com/coletivolufa/" target="_blank" rel="noopener">@coletivolufa</a>
