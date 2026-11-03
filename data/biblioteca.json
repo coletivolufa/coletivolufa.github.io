@@ -517,7 +517,8 @@
    "id": "minha-formacao",
    "formato": "Ler online",
    "pdf": "livros/minha-formacao.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 1.1,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -552,7 +553,8 @@
    "id": "cultura-e-opulencia-do-brasil-por-suas-drogas-e-minas",
    "formato": "Ler online",
    "pdf": "livros/cultura-e-opulencia-do-brasil-por-suas-drogas-e-minas.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -841,7 +843,9 @@
    "id": "as-mulheres-portuguesas",
    "formato": "Ler online",
    "pdf": "livros/as-mulheres-portuguesas.pdf",
-   "pdf_mb": 1.7
+   "pdf_mb": 0.6,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/as-mulheres-portuguesas-ana-de-castro-osorio/"
   },
   {
    "estantes": [
@@ -894,7 +898,9 @@
    "id": "a-escrava-isaura",
    "formato": "Ler online",
    "pdf": "livros/a-escrava-isaura.pdf",
-   "pdf_mb": 1.2
+   "pdf_mb": 0.8,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/a-escrava-isaura-bernardo-guimaraes/"
   },
   {
    "estantes": [
@@ -929,7 +935,9 @@
    "id": "dom-casmurro",
    "formato": "Ler online",
    "pdf": "livros/dom-casmurro.pdf",
-   "pdf_mb": 1.2
+   "pdf_mb": 1.1,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/dom-casmurro-machado-de-assis/"
   },
   {
    "estantes": [
@@ -946,7 +954,9 @@
    "id": "memorias-postumas-de-bras-cubas",
    "formato": "Ler online",
    "pdf": "livros/memorias-postumas-de-bras-cubas.pdf",
-   "pdf_mb": 1.2
+   "pdf_mb": 1.0,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/memorias-postumas-de-bras-cubas-machado-de-assis/"
   },
   {
    "estantes": [
@@ -963,7 +973,9 @@
    "id": "quincas-borba",
    "formato": "Ler online",
    "pdf": "livros/quincas-borba.pdf",
-   "pdf_mb": 1.3
+   "pdf_mb": 1.3,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/quincas-borba-machado-de-assis/"
   },
   {
    "estantes": [
@@ -972,15 +984,16 @@
    "titulo": "Esaú e Jacó",
    "autor": "Machado de Assis",
    "ano": 1904,
-   "link": "https://www.gutenberg.org/ebooks/56737",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Esa%C3%BA_e_Jac%C3%B3",
+   "fonte": "Wikisource",
    "resumo": "Os gêmeos Pedro e Paulo brigam desde o ventre da mãe: um é monarquista, outro republicano. Os dois amam a mesma moça, enquanto o Império vira República.",
    "destaque": false,
    "idioma": "pt",
    "id": "esau-e-jaco",
    "formato": "Ler online",
    "pdf": "livros/esau-e-jaco.pdf",
-   "pdf_mb": 1.2
+   "pdf_mb": 1.2,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -989,15 +1002,16 @@
    "titulo": "Memorial de Aires",
    "autor": "Machado de Assis",
    "ano": 1908,
-   "link": "https://www.gutenberg.org/ebooks/55797",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Memorial_de_Aires",
+   "fonte": "Wikisource",
    "resumo": "O último romance de Machado, em forma de diário de um diplomata aposentado, ambientado no ano da Abolição.",
    "destaque": false,
    "idioma": "pt",
    "id": "memorial-de-aires",
    "formato": "Ler online",
    "pdf": "livros/memorial-de-aires.pdf",
-   "pdf_mb": 0.8
+   "pdf_mb": 1.0,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1014,7 +1028,9 @@
    "id": "o-alienista",
    "formato": "Ler online",
    "pdf": "livros/o-alienista.pdf",
-   "pdf_mb": 0.3
+   "pdf_mb": 0.3,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/o-alienista-machado-de-assis/"
   },
   {
    "estantes": [
@@ -1023,15 +1039,16 @@
    "titulo": "Papéis Avulsos",
    "autor": "Machado de Assis",
    "ano": 1882,
-   "link": "https://www.gutenberg.org/ebooks/57001",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Pap%C3%A9is_avulsos",
+   "fonte": "Wikisource",
    "resumo": "Coletânea de contos em que estão O Espelho, Teoria do Medalhão e A Sereníssima República, entre outros clássicos.",
    "destaque": false,
    "idioma": "pt",
    "id": "papeis-avulsos",
    "formato": "Ler online",
    "pdf": "livros/papeis-avulsos.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1040,15 +1057,16 @@
    "titulo": "Helena",
    "autor": "Machado de Assis",
    "ano": 1876,
-   "link": "https://www.gutenberg.org/ebooks/67162",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Helena",
+   "fonte": "Wikisource",
    "resumo": "Romance da primeira fase de Machado: uma jovem é reconhecida como filha num testamento e muda a vida de uma família.",
    "destaque": false,
    "idioma": "pt",
    "id": "helena",
    "formato": "Ler online",
    "pdf": "livros/helena.pdf",
-   "pdf_mb": 1.0
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1057,15 +1075,16 @@
    "titulo": "Iaiá Garcia",
    "autor": "Machado de Assis",
    "ano": 1878,
-   "link": "https://www.gutenberg.org/ebooks/67780",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Iai%C3%A1_Garcia",
+   "fonte": "Wikisource",
    "resumo": "História de amor e orgulho entre classes sociais diferentes no Rio de Janeiro do século XIX.",
    "destaque": false,
    "idioma": "pt",
    "id": "iaia-garcia",
    "formato": "Ler online",
    "pdf": "livros/iaia-garcia.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1074,15 +1093,16 @@
    "titulo": "A Mão e a Luva",
    "autor": "Machado de Assis",
    "ano": 1874,
-   "link": "https://www.gutenberg.org/ebooks/53101",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/A_M%C3%A3o_e_a_Luva",
+   "fonte": "Wikisource",
    "resumo": "Guiomar, moça pobre criada por uma baronesa, precisa escolher entre três pretendentes.",
    "destaque": false,
    "idioma": "pt",
    "id": "a-mao-e-a-luva",
    "formato": "Ler online",
    "pdf": "livros/a-mao-e-a-luva.pdf",
-   "pdf_mb": 0.7
+   "pdf_mb": 0.6,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1099,7 +1119,8 @@
    "id": "historias-sem-data",
    "formato": "Ler online",
    "pdf": "livros/historias-sem-data.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1108,15 +1129,16 @@
    "titulo": "Relíquias de Casa Velha",
    "autor": "Machado de Assis",
    "ano": 1906,
-   "link": "https://www.gutenberg.org/ebooks/67935",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Rel%C3%ADquias_de_Casa_Velha",
+   "fonte": "Wikisource",
    "resumo": "Contos e peças reunidos no fim da vida de Machado, como Pai contra Mãe, sobre um caçador de escravizados fugidos.",
    "destaque": false,
    "idioma": "pt",
    "id": "reliquias-de-casa-velha",
    "formato": "Ler online",
    "pdf": "livros/reliquias-de-casa-velha.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.5,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1133,7 +1155,8 @@
    "id": "contos-fluminenses",
    "formato": "Ler online",
    "pdf": "livros/contos-fluminenses.pdf",
-   "pdf_mb": 1.0
+   "pdf_mb": 1.0,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1150,7 +1173,9 @@
    "id": "o-cortico",
    "formato": "Ler online",
    "pdf": "livros/o-cortico.pdf",
-   "pdf_mb": 1.4
+   "pdf_mb": 1.2,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/o-cortico-aluisio-azevedo/"
   },
   {
    "estantes": [
@@ -1185,24 +1210,26 @@
    "id": "iracema",
    "formato": "Ler online",
    "pdf": "livros/iracema.pdf",
-   "pdf_mb": 0.8
+   "pdf_mb": 0.8,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
     "brasil"
    ],
-   "titulo": "O Guarani (volume 1)",
+   "titulo": "O Guarani",
    "autor": "José de Alencar",
    "ano": 1857,
-   "link": "https://www.gutenberg.org/ebooks/67724",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/O_Guarani",
+   "fonte": "Wikisource",
    "resumo": "Aventura no Brasil colonial: o indígena Peri dedica a vida a proteger Ceci, filha de um fidalgo português.",
    "destaque": false,
    "idioma": "pt",
-   "id": "o-guarani-volume-1",
+   "id": "o-guarani",
    "formato": "Ler online",
-   "pdf": "livros/o-guarani-volume-1.pdf",
-   "pdf_mb": 1.0
+   "pdf": "livros/o-guarani.pdf",
+   "pdf_mb": 1.7,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1220,7 +1247,8 @@
    "id": "ubirajara",
    "formato": "Ler online",
    "pdf": "livros/ubirajara.pdf",
-   "pdf_mb": 0.7
+   "pdf_mb": 0.7,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1272,7 +1300,8 @@
    "id": "cinco-minutos",
    "formato": "Ler online",
    "pdf": "livros/cinco-minutos.pdf",
-   "pdf_mb": 0.3
+   "pdf_mb": 0.3,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1289,7 +1318,8 @@
    "id": "a-pata-da-gazela",
    "formato": "Ler online",
    "pdf": "livros/a-pata-da-gazela.pdf",
-   "pdf_mb": 0.7
+   "pdf_mb": 0.7,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1332,15 +1362,16 @@
    "titulo": "O Ateneu",
    "autor": "Raul Pompeia",
    "ano": 1888,
-   "link": "https://www.gutenberg.org/ebooks/68541",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/O_Ateneu",
+   "fonte": "Wikisource",
    "resumo": "Sérgio relembra os anos no internato Ateneu, um colégio de elite que funciona como miniatura da sociedade, com seus poderes e violências.",
    "destaque": false,
    "idioma": "pt",
    "id": "o-ateneu",
    "formato": "Ler online",
    "pdf": "livros/o-ateneu.pdf",
-   "pdf_mb": 4.7
+   "pdf_mb": 1.0,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1349,15 +1380,16 @@
    "titulo": "Inocência",
    "autor": "Visconde de Taunay",
    "ano": 1872,
-   "link": "https://www.gutenberg.org/ebooks/68635",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Inoc%C3%AAncia_%28Visconde_de_Taunay%29",
+   "fonte": "Wikisource",
    "resumo": "Amor proibido no sertão de Mato Grosso, entre a jovem Inocência e o curandeiro Cirino, contra a vontade do pai.",
    "destaque": false,
    "idioma": "pt",
    "id": "inocencia",
    "formato": "Ler online",
    "pdf": "livros/inocencia.pdf",
-   "pdf_mb": 1.5
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1374,7 +1406,9 @@
    "id": "triste-fim-de-policarpo-quaresma",
    "formato": "Ler online",
    "pdf": "livros/triste-fim-de-policarpo-quaresma.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 1.1,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/triste-fim-de-policarpo-quaresma/"
   },
   {
    "estantes": [
@@ -1443,7 +1477,9 @@
    "id": "a-falencia",
    "formato": "Ler online",
    "pdf": "livros/a-falencia.pdf",
-   "pdf_mb": 1.3
+   "pdf_mb": 1.2,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/a-falencia-julia-lopes-de-almeida/"
   },
   {
    "estantes": [
@@ -1453,15 +1489,16 @@
    "titulo": "A Intrusa",
    "autor": "Júlia Lopes de Almeida",
    "ano": 1908,
-   "link": "https://www.gutenberg.org/ebooks/67594",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/A_Intrusa",
+   "fonte": "Wikisource",
    "resumo": "Uma governanta entra na casa de um viúvo e desperta a desconfiança de todos.",
    "destaque": false,
    "idioma": "pt",
    "id": "a-intrusa",
    "formato": "Ler online",
    "pdf": "livros/a-intrusa.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1496,7 +1533,9 @@
    "id": "macunaima",
    "formato": "Ler online",
    "pdf": "livros/macunaima.pdf",
-   "pdf_mb": 0.8
+   "pdf_mb": 0.7,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/macunaima-mario-de-andrade/"
   },
   {
    "estantes": [
@@ -1531,7 +1570,8 @@
    "id": "os-maias",
    "formato": "Ler online",
    "pdf": "livros/os-maias.pdf",
-   "pdf_mb": 3.1
+   "pdf_mb": 3.1,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1548,7 +1588,8 @@
    "id": "o-primo-basilio",
    "formato": "Ler online",
    "pdf": "livros/o-primo-basilio.pdf",
-   "pdf_mb": 2.0
+   "pdf_mb": 2.0,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1566,7 +1607,9 @@
    "id": "o-crime-do-padre-amaro",
    "formato": "Ler online",
    "pdf": "livros/o-crime-do-padre-amaro.pdf",
-   "pdf_mb": 2.1
+   "pdf_mb": 2.2,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/o-crime-do-padre-amaro-eca-de-queiros/"
   },
   {
    "estantes": [
@@ -1583,7 +1626,9 @@
    "id": "a-cidade-e-as-serras",
    "formato": "Ler online",
    "pdf": "livros/a-cidade-e-as-serras.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 1.1,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/a-cidade-e-as-serras-eca-de-queiros/"
   },
   {
    "estantes": [
@@ -1601,7 +1646,9 @@
    "id": "a-reliquia",
    "formato": "Ler online",
    "pdf": "livros/a-reliquia.pdf",
-   "pdf_mb": 1.3
+   "pdf_mb": 1.3,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/a-reliquia-eca-de-queiros/"
   },
   {
    "estantes": [
@@ -1618,7 +1665,9 @@
    "id": "o-mandarim",
    "formato": "Ler online",
    "pdf": "livros/o-mandarim.pdf",
-   "pdf_mb": 0.4
+   "pdf_mb": 0.4,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/o-mandarim-eca-de-queiros/"
   },
   {
    "estantes": [
@@ -1635,7 +1684,9 @@
    "id": "a-ilustre-casa-de-ramires",
    "formato": "Ler online",
    "pdf": "livros/a-ilustre-casa-de-ramires.pdf",
-   "pdf_mb": 1.6
+   "pdf_mb": 1.7,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/a-ilustre-casa-de-ramires-eca-de-queiros/"
   },
   {
    "estantes": [
@@ -1669,7 +1720,9 @@
    "id": "amor-de-perdicao",
    "formato": "Ler online",
    "pdf": "livros/amor-de-perdicao.pdf",
-   "pdf_mb": 0.8
+   "pdf_mb": 0.8,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/amor-de-perdicao-camilo-castelo-branco/"
   },
   {
    "estantes": [
@@ -1678,15 +1731,16 @@
    "titulo": "Viagens na Minha Terra",
    "autor": "Almeida Garrett",
    "ano": 1846,
-   "link": "https://www.gutenberg.org/ebooks/24401",
-   "fonte": "Projeto Gutenberg",
+   "link": "https://pt.wikisource.org/wiki/Viagens_na_Minha_Terra_%28grafia_de_1943%29",
+   "fonte": "Wikisource",
    "resumo": "Relato de viagem que mistura crônica, política e a história de amor de Joaninha, a menina dos rouxinóis.",
    "destaque": false,
    "idioma": "pt",
    "id": "viagens-na-minha-terra",
    "formato": "Ler online",
    "pdf": "livros/viagens-na-minha-terra.pdf",
-   "pdf_mb": 1.2
+   "pdf_mb": 1.1,
+   "pdf_edicao": "Ortografia atualizada · Wikisource"
   },
   {
    "estantes": [
@@ -1704,7 +1758,9 @@
    "id": "eurico-o-presbitero",
    "formato": "Ler online",
    "pdf": "livros/eurico-o-presbitero.pdf",
-   "pdf_mb": 1.1
+   "pdf_mb": 1.0,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/eurico-o-presbitero-alexandre-herculano/"
   },
   {
    "estantes": [
@@ -1721,7 +1777,9 @@
    "id": "a-confissao-de-lucio",
    "formato": "Ler online",
    "pdf": "livros/a-confissao-de-lucio.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.5,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/a-confissao-de-lucio-mario-de-sa-carneiro/"
   },
   {
    "estantes": [
@@ -1738,7 +1796,9 @@
    "id": "humus",
    "formato": "Ler online",
    "pdf": "livros/humus.pdf",
-   "pdf_mb": 1.4
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/humus-raul-brandao/"
   },
   {
    "estantes": [
@@ -1755,7 +1815,9 @@
    "id": "os-pobres",
    "formato": "Ler online",
    "pdf": "livros/os-pobres.pdf",
-   "pdf_mb": 0.7
+   "pdf_mb": 0.7,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/os-pobres-raul-brandao/"
   },
   {
    "estantes": [
@@ -1789,7 +1851,8 @@
    "id": "os-trabalhadores-do-mar",
    "formato": "Ler online",
    "pdf": "livros/os-trabalhadores-do-mar.pdf",
-   "pdf_mb": 1.8
+   "pdf_mb": 1.8,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1806,7 +1869,8 @@
    "id": "da-terra-a-lua",
    "formato": "Ler online",
    "pdf": "livros/da-terra-a-lua.pdf",
-   "pdf_mb": 10.2
+   "pdf_mb": 10.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1823,7 +1887,8 @@
    "id": "robur-o-conquistador",
    "formato": "Ler online",
    "pdf": "livros/robur-o-conquistador.pdf",
-   "pdf_mb": 1.3
+   "pdf_mb": 1.3,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1875,7 +1940,8 @@
    "id": "espumas-flutuantes",
    "formato": "Ler online",
    "pdf": "livros/espumas-flutuantes.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1926,7 +1992,9 @@
    "id": "eu",
    "formato": "Ler online",
    "pdf": "livros/eu.pdf",
-   "pdf_mb": 0.4
+   "pdf_mb": 0.3,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/eu-augusto-dos-anjos/"
   },
   {
    "estantes": [
@@ -1943,7 +2011,8 @@
    "id": "broqueis",
    "formato": "Ler online",
    "pdf": "livros/broqueis.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1961,7 +2030,8 @@
    "id": "i-juca-pirama",
    "formato": "Ler online",
    "pdf": "livros/i-juca-pirama.pdf",
-   "pdf_mb": 0.1
+   "pdf_mb": 0.1,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -1978,7 +2048,8 @@
    "id": "cantos",
    "formato": "Ler online",
    "pdf": "livros/cantos.pdf",
-   "pdf_mb": 1.5
+   "pdf_mb": 1.5,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2031,7 +2102,8 @@
    "id": "o-uraguai",
    "formato": "Ler online",
    "pdf": "livros/o-uraguai.pdf",
-   "pdf_mb": 0.3
+   "pdf_mb": 0.3,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2066,7 +2138,8 @@
    "id": "poesias-completas-machado-de-assis",
    "formato": "Ler online",
    "pdf": "livros/poesias-completas-machado-de-assis.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2083,7 +2156,8 @@
    "id": "poemas-de-gregorio-de-matos-tomo-i",
    "formato": "Ler online",
    "pdf": "livros/poemas-de-gregorio-de-matos-tomo-i.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2100,7 +2174,8 @@
    "id": "pau-brasil",
    "formato": "Ler online",
    "pdf": "livros/pau-brasil.pdf",
-   "pdf_mb": 1.3
+   "pdf_mb": 1.3,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2118,7 +2193,9 @@
    "id": "mensagem",
    "formato": "Ler online",
    "pdf": "livros/mensagem.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/mensagem-fernando-pessoa/"
   },
   {
    "estantes": [
@@ -2135,7 +2212,9 @@
    "id": "o-livro-de-cesario-verde",
    "formato": "Ler online",
    "pdf": "livros/o-livro-de-cesario-verde.pdf",
-   "pdf_mb": 0.3
+   "pdf_mb": 0.3,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/o-livro-de-cesario-verde-cesario-verde/"
   },
   {
    "estantes": [
@@ -2153,7 +2232,9 @@
    "id": "sonetos-antero-de-quental",
    "formato": "Ler online",
    "pdf": "livros/sonetos-antero-de-quental.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.4,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/sonetos-completos-antero-de-quental/"
   },
   {
    "estantes": [
@@ -2171,7 +2252,8 @@
    "id": "livro-de-magoas",
    "formato": "Ler online",
    "pdf": "livros/livro-de-magoas.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2189,7 +2271,9 @@
    "id": "livro-de-soror-saudade",
    "formato": "Ler online",
    "pdf": "livros/livro-de-soror-saudade.pdf",
-   "pdf_mb": 0.6
+   "pdf_mb": 0.1,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/livro-de-soror-saudade-florbela-espanca/"
   },
   {
    "estantes": [
@@ -2206,7 +2290,9 @@
    "id": "clepsidra",
    "formato": "Ler online",
    "pdf": "livros/clepsidra.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.1,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/clepsidra-camilo-pessanha/"
   },
   {
    "estantes": [
@@ -2224,7 +2310,8 @@
    "id": "os-simples",
    "formato": "Ler online",
    "pdf": "livros/os-simples.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2242,7 +2329,9 @@
    "id": "hamlet",
    "formato": "Ler online",
    "pdf": "livros/hamlet.pdf",
-   "pdf_mb": 0.7
+   "pdf_mb": 0.6,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/hamlet-william-shakespeare/"
   },
   {
    "estantes": [
@@ -2259,7 +2348,9 @@
    "id": "frei-luis-de-sousa",
    "formato": "Ler online",
    "pdf": "livros/frei-luis-de-sousa.pdf",
-   "pdf_mb": 0.4
+   "pdf_mb": 0.6,
+   "pdf_edicao": "Ortografia atualizada · revisão do Projecto Adamastor (licença CC BY-SA)",
+   "pdf_origem": "https://projectoadamastor.org/frei-luis-de-sousa-almeida-garrett/"
   },
   {
    "estantes": [
@@ -2276,7 +2367,8 @@
    "id": "monologo-do-vaqueiro-auto-da-visitacao",
    "formato": "Ler online",
    "pdf": "livros/monologo-do-vaqueiro-auto-da-visitacao.pdf",
-   "pdf_mb": 0.1
+   "pdf_mb": 0.1,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2330,7 +2422,8 @@
    "id": "eneida",
    "formato": "Ler online",
    "pdf": "livros/eneida.pdf",
-   "pdf_mb": 1.7
+   "pdf_mb": 1.7,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2416,7 +2509,8 @@
    "id": "ramayana-a-morte-de-yajnadatta",
    "formato": "Ler online",
    "pdf": "livros/ramayana-a-morte-de-yajnadatta.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2469,7 +2563,8 @@
    "id": "lendas-e-narrativas-tomo-i",
    "formato": "Ler online",
    "pdf": "livros/lendas-e-narrativas-tomo-i.pdf",
-   "pdf_mb": 0.9
+   "pdf_mb": 0.9,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2503,7 +2598,8 @@
    "id": "biblia-sagrada-traducao-de-joao-ferreira-de-almeida",
    "formato": "Ler online",
    "pdf": "livros/biblia-sagrada-traducao-de-joao-ferreira-de-almeida.pdf",
-   "pdf_mb": 31.7
+   "pdf_mb": 31.7,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [
@@ -2609,7 +2705,8 @@
    "id": "sermao-da-sexagesima",
    "formato": "Ler online",
    "pdf": "livros/sermao-da-sexagesima.pdf",
-   "pdf_mb": 0.2
+   "pdf_mb": 0.2,
+   "pdf_edicao": "Ortografia original da época"
   },
   {
    "estantes": [

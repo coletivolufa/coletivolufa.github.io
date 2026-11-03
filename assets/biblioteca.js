@@ -125,6 +125,7 @@ function abrirFicha(id, { atualizarEndereco = true } = {}) {
           ${pdf ? "" : `<a class="botao ${l.pdf ? "botao--claro" : "botao--vermelho"}" href="${esc(l.link)}" target="_blank" rel="noopener">Ler online →</a>`}
           <button class="botao botao--claro" type="button" data-compartilhar="${esc(l.id)}">Compartilhar</button>
         </div>
+        ${l.pdf && l.pdf_edicao ? `<p class="ficha__edicao">Edição do PDF: <b>${esc(l.pdf_edicao)}</b>${l.pdf_origem ? ` · <a href="${esc(l.pdf_origem)}" target="_blank" rel="noopener">ver a edição original</a>` : ""}</p>` : ""}
         ${l.pdf ? "" : `<p class="ficha__aviso">${pdf
           ? `Este livro está disponível em PDF no ${esc(l.fonte)}: <a href="${esc(l.link)}" target="_blank" rel="noopener">abrir o PDF</a>.`
           : "PDF ainda não disponível no nosso acervo: o texto original está em domínio público, mas esta tradução tem direitos reservados pela editora. Você pode ler gratuitamente no link acima."}</p>`}

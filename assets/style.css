@@ -375,3 +375,5 @@ main { display: flex; flex-direction: column; }
 .livro-card__pdf { position: absolute; top: 8px; right: -6px; background: var(--preto); color: var(--branco); font-family: var(--titulo); font-size: 14px; letter-spacing: .08em; padding: 2px 8px 0; box-shadow: 2px 2px 0 var(--amarelo); }
 .ficha__peso { font-family: var(--texto); font-size: 12px; opacity: .85; margin-left: 4px; letter-spacing: 0; }
 .ficha__aviso { font-size: 14px; color: var(--cinza); background: var(--branco); border-left: 4px solid var(--amarelo); padding: 10px 14px; margin: -12px 0 24px; }
+.ficha__edicao { font-size: 13px; color: var(--cinza); margin: -14px 0 24px; }
+.ficha__edicao b { color: var(--preto); font-weight: 700; }
