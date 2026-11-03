@@ -1,0 +1,23 @@
+{
+  "series": [
+    {
+      "id": "desmistificando-o-comunismo",
+      "titulo": "Desmistificando o Comunismo",
+      "apresentador": "Léo Duarte",
+      "perfil": "_ocamarada",
+      "descricao": "Socialismo, comunismo e capitalismo para quem tem pressa.",
+      "banner": "formacao/capas/desmistificando-banner.jpg",
+      "episodios": [
+        {
+          "id": "ep01",
+          "numero": 1,
+          "titulo": "O que é o comunismo?",
+          "descricao": "Afinal, o que Marx e Engels queriam dizer com comunismo? O primeiro episódio volta à Revolução Industrial para explicar de onde vem essa ideia e o que ela propõe.",
+          "duracao": "1 min 37 s",
+          "capa": "formacao/capas/desmistificando-ep01.jpg",
+          "video": ""
+        }
+      ]
+    }
+  ]
+}

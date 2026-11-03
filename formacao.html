@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formação para Novos Militantes · Coletivo Lufã</title>
+  <meta name="description" content="Séries de vídeos curtos de formação política do Coletivo Lufã: socialismo, comunismo e capitalismo para quem tem pressa.">
+  <meta property="og:title" content="Formação para Novos Militantes · Coletivo Lufã">
+  <meta property="og:description" content="Séries de vídeos curtos de formação política. Comece por Desmistificando o Comunismo, com Léo Duarte.">
+  <meta property="og:image" content="formacao/capas/desmistificando-banner.jpg">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=8">
+</head>
+<body data-pagina="formacao">
+<main>
+  <header class="cabecalho-pagina">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Escola do coletivo</span>
+      <h1>Formação para Novos Militantes</h1>
+      <p>Vídeos curtos, organizados em séries, para entender o mundo e aprender a transformá-lo. Escolha uma série e comece pelo primeiro episódio.</p>
+    </div>
+  </header>
+
+  <section class="secao" style="padding-bottom:56px">
+    <div class="conteudo">
+      <div class="origem militante">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
+        <div>
+          <h2 class="militante__titulo">O que é ser militante?</h2>
+          <p><b>Militante é quem não fica só assistindo.</b> É a pessoa que se dedica, de forma organizada e constante, a uma causa em que acredita. A palavra vem do latim <i>militare</i>, mas hoje quer dizer simplesmente atuar, participar, se comprometer.</p>
+          <p>Existe militante de esquerda e de direita, do movimento estudantil, sindical, ambiental, feminista, negro, LGBTQIA+, religioso, do bairro… Quem ajuda na associação de moradores, organiza um abaixo-assinado ou estuda e debate política também está militando.</p>
+          <p>Ser militante não é ser fanático nem violento. <b>É estudar, conversar, se organizar com outras pessoas e agir para mudar a realidade.</b> É isso que esta formação quer ajudar você a fazer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="streaming" aria-label="Séries de formação">
+    <div id="series" aria-live="polite"><p class="streaming__carregando">Carregando as séries…</p></div>
+  </section>
+</main>
+
+<dialog class="player" id="player" aria-labelledby="player-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar-player>×</button>
+  <div id="player-conteudo"></div>
+</dialog>
+
+<script src="assets/comum.js?v=8"></script>
+<script src="assets/formacao.js?v=8"></script>
+</body>
+</html>

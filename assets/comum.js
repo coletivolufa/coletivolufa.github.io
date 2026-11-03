@@ -12,6 +12,7 @@ const LUFA = {
 const ICONES = {
   inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg>',
   artigos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg>',
+  formacao: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>',
   biblioteca: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="m16 5 3.8-1 3 15.5-3.8 1z"/></svg>',
   menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
 };
@@ -33,6 +34,7 @@ function montarMenu() {
       <nav>
         <a href="index.html"${atual("inicio")}>${ICONES.inicio}Início</a>
         <a href="artigos.html"${atual("artigos")}>${ICONES.artigos}Artigos</a>
+        <a href="formacao.html"${atual("formacao")}>${ICONES.formacao}Formação</a>
         <a href="biblioteca.html"${atual("biblioteca")}>${ICONES.biblioteca}Biblioteca</a>
       </nav>
       <div class="menu__rodape">

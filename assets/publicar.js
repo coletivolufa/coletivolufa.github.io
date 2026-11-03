@@ -122,6 +122,7 @@ function abrirAba(nome) {
   document.querySelectorAll("[data-painel]").forEach((p) => (p.hidden = p.dataset.painel !== nome));
   if (nome === "publicados") carregarPublicados();
   if (nome === "membros") carregarMembros();
+  if (nome === "formacao") carregarFormacao();
 }
 
 // ---------- artigos ----------
@@ -357,6 +358,127 @@ async function subirMembro(i) {
     carregarMembros();
   } catch (e) { avisar(explicarErro(e), "erro"); }
 }
+
+
+// ---------- formação (séries e episódios) ----------
+let formacao = null, editandoEp = null, capaEp = null;
+async function carregarFormacao() {
+  const ul = $("lista-episodios");
+  ul.innerHTML = "<li>Carregando…</li>";
+  try {
+    const a = await lerArquivo("data/formacao.json");
+    formacao = a ? JSON.parse(a.texto) : { series: [] };
+    $("e-serie").innerHTML = formacao.series.map((s) => `<option value="${esc(s.id)}">${esc(s.titulo)}</option>`).join("") + '<option value="__nova">+ Nova série…</option>';
+    $("nova-serie").hidden = formacao.series.length > 0;
+    ul.innerHTML = formacao.series.map((s) => `
+      <li style="display:block"><strong style="font-family:var(--titulo);font-size:24px">${esc(s.titulo)}</strong>
+        <ul class="itens">${[...s.episodios].sort((a, b) => a.numero - b.numero).map((e) => `
+          <li><div><strong>EP. ${esc(e.numero)} · ${esc(e.titulo)}</strong><span class="meta">${e.video ? "publicado" : "em breve"}</span></div>
+            <button type="button" data-editar-ep="${esc(s.id)}|${esc(e.id)}">Editar</button>
+            <button type="button" data-remover-ep="${esc(s.id)}|${esc(e.id)}">Remover</button></li>`).join("") || "<li>Nenhum episódio ainda.</li>"}</ul>
+      </li>`).join("") || "<li>Nenhuma série ainda.</li>";
+  } catch (e) { ul.innerHTML = `<li>${explicarErro(e)}</li>`; }
+}
+function lerBase64(arquivo) {
+  return new Promise((ok, falha) => {
+    const r = new FileReader();
+    r.onload = () => ok(String(r.result).split(",")[1]);
+    r.onerror = () => falha(new Error("Não foi possível ler o arquivo."));
+    r.readAsDataURL(arquivo);
+  });
+}
+function capaVertical(arquivo) {
+  return new Promise((ok, falha) => {
+    const img = new Image();
+    img.onload = () => {
+      const W = 540, H = 960, c = document.createElement("canvas"); c.width = W; c.height = H;
+      const esc2 = Math.max(W / img.width, H / img.height), w = img.width * esc2, h = img.height * esc2;
+      c.getContext("2d").drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+      URL.revokeObjectURL(img.src); ok(c.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = () => falha(new Error("Não foi possível ler essa imagem."));
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
+async function salvarEpisodio(ev) {
+  ev.preventDefault();
+  const botao = $("botao-ep"); botao.disabled = true;
+  avisar("Salvando episódio…");
+  try {
+    let serieId = $("e-serie").value, novaSerie = null;
+    if (serieId === "__nova" || !serieId) {
+      const t = $("s-titulo").value.trim();
+      if (!t) throw new Error("Dê um nome para a nova série.");
+      serieId = criarSlug(t);
+      novaSerie = { id: serieId, titulo: t, apresentador: $("s-apres").value.trim(), perfil: $("s-perfil").value.trim().replace(/^@/, ""), descricao: $("s-desc").value.trim(), episodios: [] };
+    }
+    const numero = Number($("e-numero").value);
+    const epId = editandoEp ? editandoEp.ep : "ep" + String(numero).padStart(2, "0") + "-" + Date.now().toString(36);
+    let video = $("e-link").value.trim();
+    const arq = $("e-arquivo").files[0];
+    if (arq) {
+      if (arq.size > 40 * 1048576) throw new Error("O vídeo tem mais de 40 MB. Publique no YouTube ou no Instagram e cole o link.");
+      avisar("Enviando o vídeo… isso pode levar alguns minutos.");
+      const ext = (arq.name.split(".").pop() || "mp4").toLowerCase();
+      const caminhoVideo = `formacao/videos/${serieId}-${epId}.${ext}`;
+      await gravar(caminhoVideo, await lerBase64(arq), `Vídeo: ${$("e-titulo").value.trim()}`);
+      video = caminhoVideo;
+    }
+    let capa = null;
+    if (capaEp) {
+      capa = `formacao/capas/${serieId}-${epId}.jpg`;
+      await gravar(capa, capaEp, `Capa: ${$("e-titulo").value.trim()}`);
+    }
+    await alterarLista("data/formacao.json", (f) => {
+      f = Array.isArray(f) ? { series: [] } : f;
+      if (novaSerie && !f.series.some((s) => s.id === novaSerie.id)) f.series.push(novaSerie);
+      const s = f.series.find((x) => x.id === serieId);
+      const anterior = s.episodios.find((e) => e.id === epId) || {};
+      const ep = { ...anterior, id: epId, numero, titulo: $("e-titulo").value.trim(), descricao: $("e-desc").value.trim(), duracao: $("e-dur").value.trim(),
+        capa: capa || anterior.capa || "", video: video || (editandoEp && !$("e-link").value.trim() && !arq ? anterior.video || "" : video) };
+      s.episodios = [...s.episodios.filter((e) => e.id !== epId), ep];
+      return f;
+    }, `${editandoEp ? "Edita" : "Adiciona"} episódio: ${$("e-titulo").value.trim()}`);
+    avisar("Episódio salvo! Ele aparece na página de Formação em 1 a 2 minutos.", "ok");
+    limparFormEp(); carregarFormacao();
+  } catch (e) { avisar(explicarErro(e), "erro"); }
+  finally { botao.disabled = false; }
+}
+function limparFormEp() {
+  editandoEp = null; capaEp = null; $("form-ep").reset();
+  $("e-capa-previa").hidden = true; $("titulo-form-ep").textContent = "Novo episódio"; $("botao-cancelar-ep").hidden = true;
+  if (formacao) $("nova-serie").hidden = formacao.series.length > 0;
+}
+document.addEventListener("DOMContentLoaded", () => {
+  $("form-ep").addEventListener("submit", salvarEpisodio);
+  $("botao-cancelar-ep").addEventListener("click", limparFormEp);
+  $("e-serie").addEventListener("change", (e) => ($("nova-serie").hidden = e.target.value !== "__nova"));
+  $("e-capa").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) { capaEp = null; return; }
+    try { const url = await capaVertical(f); capaEp = url.split(",")[1]; $("e-capa-previa").src = url; $("e-capa-previa").hidden = false; }
+    catch (err) { avisar(esc(err.message), "erro"); }
+  });
+  $("lista-episodios").addEventListener("click", async (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    const [sid, eid] = (b.dataset.editarEp || b.dataset.removerEp || "").split("|");
+    const s = formacao.series.find((x) => x.id === sid), ep = s && s.episodios.find((x) => x.id === eid);
+    if (!ep) return;
+    if (b.dataset.editarEp) {
+      editandoEp = { serie: sid, ep: eid }; capaEp = null;
+      $("e-serie").value = sid; $("nova-serie").hidden = true;
+      $("e-numero").value = ep.numero; $("e-dur").value = ep.duracao || ""; $("e-titulo").value = ep.titulo;
+      $("e-desc").value = ep.descricao || ""; $("e-link").value = /^https?:/.test(ep.video || "") ? ep.video : "";
+      if (ep.capa) { $("e-capa-previa").src = ep.capa; $("e-capa-previa").hidden = false; }
+      $("titulo-form-ep").textContent = `Editando: EP. ${ep.numero}`; $("botao-cancelar-ep").hidden = false;
+      $("form-ep").scrollIntoView({ behavior: "smooth", block: "start" });
+    } else if (confirm(`Remover o EP. ${ep.numero} (${ep.titulo})?`)) {
+      try {
+        await alterarLista("data/formacao.json", (f) => { const ss = f.series.find((x) => x.id === sid); ss.episodios = ss.episodios.filter((x) => x.id !== eid); return f; }, `Remove episódio: ${ep.titulo}`);
+        avisar("Episódio removido.", "ok"); carregarFormacao();
+      } catch (err) { avisar(explicarErro(err), "erro"); }
+    }
+  });
+});
 
 // ---------- ligações ----------
 document.addEventListener("DOMContentLoaded", () => {
