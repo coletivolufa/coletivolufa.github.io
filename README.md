@@ -40,4 +40,4 @@ Depois abra http://localhost:8000.
 Se o repositório ou o branch principal mudarem de nome, atualize `LUFA` em `assets/comum.js`
 e o branch em `.github/workflows/site.yml`.
 
-Endereço: https://coletivo-lufa.github.io/coletivolufa/
+Endereço: https://coletivo-lufa.github.io/

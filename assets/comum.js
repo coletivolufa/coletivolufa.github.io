@@ -4,7 +4,7 @@
 // Se mudar o nome do repositório ou do branch principal, altere estes valores.
 const LUFA = {
   dono: "Coletivo-Lufa",
-  repositorio: "coletivolufa",
+  repositorio: "coletivo-lufa.github.io",
   branch: "main",
   pasta: "",
 };
