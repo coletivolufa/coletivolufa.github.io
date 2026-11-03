@@ -168,7 +168,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "manifesto-do-partido-comunista",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/manifesto-do-partido-comunista.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -462,7 +464,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-revolucao-contra-o-capital",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-revolucao-contra-o-capital.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -477,7 +481,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "os-sertoes",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-sertoes.pdf",
+   "pdf_mb": 2.4
   },
   {
    "estantes": [
@@ -492,7 +498,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-abolicionismo",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-abolicionismo.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -507,7 +515,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "minha-formacao",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/minha-formacao.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -522,7 +532,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "carta-de-pero-vaz-de-caminha",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/carta-de-pero-vaz-de-caminha.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -538,7 +550,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "cultura-e-opulencia-do-brasil-por-suas-drogas-e-minas",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/cultura-e-opulencia-do-brasil-por-suas-drogas-e-minas.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -600,7 +614,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "teses-sobre-feuerbach",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/teses-sobre-feuerbach.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -691,7 +707,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "a-republica",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-republica.pdf",
+   "pdf_mb": 1.7
   },
   {
    "estantes": [
@@ -707,7 +725,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "utopia",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/utopia.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -723,7 +743,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "a-origem-da-familia-da-propriedade-privada-e-do-estado",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-origem-da-familia-da-propriedade-privada-e-do-estado.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -753,7 +775,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "as-relacoes-entre-os-sexos-e-a-luta-de-classes",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/as-relacoes-entre-os-sexos-e-a-luta-de-classes.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -783,7 +807,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "apenas-junto-com-as-mulheres-proletarias-o-socialismo-sera-v",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/apenas-junto-com-as-mulheres-proletarias-o-socialismo-sera-v.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -813,7 +839,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "as-mulheres-portuguesas",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/as-mulheres-portuguesas.pdf",
+   "pdf_mb": 1.7
   },
   {
    "estantes": [
@@ -828,7 +856,9 @@
    "destaque": true,
    "idioma": "en",
    "id": "a-vindication-of-the-rights-of-woman",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-vindication-of-the-rights-of-woman.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -844,7 +874,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "the-subjection-of-women",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/the-subjection-of-women.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -860,7 +892,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "a-escrava-isaura",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-escrava-isaura.pdf",
+   "pdf_mb": 1.2
   },
   {
    "estantes": [
@@ -876,7 +910,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "ursula",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/ursula.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -891,7 +927,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "dom-casmurro",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/dom-casmurro.pdf",
+   "pdf_mb": 1.2
   },
   {
    "estantes": [
@@ -906,7 +944,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "memorias-postumas-de-bras-cubas",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/memorias-postumas-de-bras-cubas.pdf",
+   "pdf_mb": 1.2
   },
   {
    "estantes": [
@@ -921,7 +961,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "quincas-borba",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/quincas-borba.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -936,7 +978,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "esau-e-jaco",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/esau-e-jaco.pdf",
+   "pdf_mb": 1.2
   },
   {
    "estantes": [
@@ -951,7 +995,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "memorial-de-aires",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/memorial-de-aires.pdf",
+   "pdf_mb": 0.8
   },
   {
    "estantes": [
@@ -966,7 +1012,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "o-alienista",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-alienista.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -981,7 +1029,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "papeis-avulsos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/papeis-avulsos.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -996,7 +1046,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "helena",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/helena.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -1011,7 +1063,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "iaia-garcia",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/iaia-garcia.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -1026,7 +1080,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-mao-e-a-luva",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-mao-e-a-luva.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1041,7 +1097,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "historias-sem-data",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/historias-sem-data.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -1056,7 +1114,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "reliquias-de-casa-velha",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/reliquias-de-casa-velha.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -1071,7 +1131,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "contos-fluminenses",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/contos-fluminenses.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -1086,7 +1148,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "o-cortico",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-cortico.pdf",
+   "pdf_mb": 1.4
   },
   {
    "estantes": [
@@ -1101,7 +1165,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-mulato",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-mulato.pdf",
+   "pdf_mb": 1.5
   },
   {
    "estantes": [
@@ -1117,7 +1183,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "iracema",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/iracema.pdf",
+   "pdf_mb": 0.8
   },
   {
    "estantes": [
@@ -1132,7 +1200,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-guarani-volume-1",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-guarani-volume-1.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -1148,7 +1218,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "ubirajara",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/ubirajara.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1164,7 +1236,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "senhora",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/senhora.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -1179,7 +1253,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "luciola",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/luciola.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1194,7 +1270,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "cinco-minutos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/cinco-minutos.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -1209,7 +1287,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-pata-da-gazela",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-pata-da-gazela.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1224,7 +1304,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-moreninha",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-moreninha.pdf",
+   "pdf_mb": 0.8
   },
   {
    "estantes": [
@@ -1239,7 +1321,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "memorias-de-um-sargento-de-milicias",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/memorias-de-um-sargento-de-milicias.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -1254,7 +1338,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-ateneu",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-ateneu.pdf",
+   "pdf_mb": 4.7
   },
   {
    "estantes": [
@@ -1269,7 +1355,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "inocencia",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/inocencia.pdf",
+   "pdf_mb": 1.5
   },
   {
    "estantes": [
@@ -1284,7 +1372,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "triste-fim-de-policarpo-quaresma",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/triste-fim-de-policarpo-quaresma.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -1299,7 +1389,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "clara-dos-anjos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/clara-dos-anjos.pdf",
+   "pdf_mb": 0.8
   },
   {
    "estantes": [
@@ -1314,7 +1406,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "recordacoes-do-escrivao-isaias-caminha",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/recordacoes-do-escrivao-isaias-caminha.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -1329,7 +1423,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-normalista",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-normalista.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -1345,7 +1441,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-falencia",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-falencia.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -1361,7 +1459,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-intrusa",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-intrusa.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -1376,7 +1476,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "noite-na-taverna",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/noite-na-taverna.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -1392,7 +1494,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "macunaima",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/macunaima.pdf",
+   "pdf_mb": 0.8
   },
   {
    "estantes": [
@@ -1408,7 +1512,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "contos-gauchescos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/contos-gauchescos.pdf",
+   "pdf_mb": 0.5
   },
   {
    "estantes": [
@@ -1423,7 +1529,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "os-maias",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-maias.pdf",
+   "pdf_mb": 3.1
   },
   {
    "estantes": [
@@ -1438,7 +1546,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-primo-basilio",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-primo-basilio.pdf",
+   "pdf_mb": 2.0
   },
   {
    "estantes": [
@@ -1454,7 +1564,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-crime-do-padre-amaro",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-crime-do-padre-amaro.pdf",
+   "pdf_mb": 2.1
   },
   {
    "estantes": [
@@ -1469,7 +1581,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-cidade-e-as-serras",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-cidade-e-as-serras.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -1485,7 +1599,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-reliquia",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-reliquia.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -1500,7 +1616,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-mandarim",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-mandarim.pdf",
+   "pdf_mb": 0.4
   },
   {
    "estantes": [
@@ -1515,7 +1633,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-ilustre-casa-de-ramires",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-ilustre-casa-de-ramires.pdf",
+   "pdf_mb": 1.6
   },
   {
    "estantes": [
@@ -1530,7 +1650,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "contos-eca-de-queiros",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/contos-eca-de-queiros.pdf",
+   "pdf_mb": 1.8
   },
   {
    "estantes": [
@@ -1545,7 +1667,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "amor-de-perdicao",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/amor-de-perdicao.pdf",
+   "pdf_mb": 0.8
   },
   {
    "estantes": [
@@ -1560,7 +1684,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "viagens-na-minha-terra",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/viagens-na-minha-terra.pdf",
+   "pdf_mb": 1.2
   },
   {
    "estantes": [
@@ -1576,7 +1702,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "eurico-o-presbitero",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/eurico-o-presbitero.pdf",
+   "pdf_mb": 1.1
   },
   {
    "estantes": [
@@ -1591,7 +1719,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "a-confissao-de-lucio",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-confissao-de-lucio.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -1606,7 +1736,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "humus",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/humus.pdf",
+   "pdf_mb": 1.4
   },
   {
    "estantes": [
@@ -1621,7 +1753,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "os-pobres",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-pobres.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1636,7 +1770,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "dom-quixote",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/dom-quixote.pdf",
+   "pdf_mb": 5.1
   },
   {
    "estantes": [
@@ -1651,7 +1787,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "os-trabalhadores-do-mar",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-trabalhadores-do-mar.pdf",
+   "pdf_mb": 1.8
   },
   {
    "estantes": [
@@ -1666,7 +1804,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "da-terra-a-lua",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/da-terra-a-lua.pdf",
+   "pdf_mb": 10.2
   },
   {
    "estantes": [
@@ -1681,7 +1821,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "robur-o-conquistador",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/robur-o-conquistador.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -1697,7 +1839,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "os-lusiadas",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-lusiadas.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -1712,7 +1856,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "o-navio-negreiro",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-navio-negreiro.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -1727,7 +1873,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "espumas-flutuantes",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/espumas-flutuantes.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -1742,7 +1890,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "os-escravos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-escravos.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -1757,7 +1907,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "lira-dos-vinte-anos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/lira-dos-vinte-anos.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1772,7 +1924,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "eu",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/eu.pdf",
+   "pdf_mb": 0.4
   },
   {
    "estantes": [
@@ -1787,7 +1941,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "broqueis",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/broqueis.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -1803,7 +1959,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "i-juca-pirama",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/i-juca-pirama.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -1818,7 +1976,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "cantos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/cantos.pdf",
+   "pdf_mb": 1.5
   },
   {
    "estantes": [
@@ -1833,7 +1993,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "marilia-de-dirceu",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/marilia-de-dirceu.pdf",
+   "pdf_mb": 0.5
   },
   {
    "estantes": [
@@ -1849,7 +2011,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "cartas-chilenas",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/cartas-chilenas.pdf",
+   "pdf_mb": 0.5
   },
   {
    "estantes": [
@@ -1865,7 +2029,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-uraguai",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-uraguai.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -1881,7 +2047,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "caramuru",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/caramuru.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -1896,7 +2064,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "poesias-completas-machado-de-assis",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/poesias-completas-machado-de-assis.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -1911,7 +2081,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "poemas-de-gregorio-de-matos-tomo-i",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/poemas-de-gregorio-de-matos-tomo-i.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -1926,7 +2098,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "pau-brasil",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/pau-brasil.pdf",
+   "pdf_mb": 1.3
   },
   {
    "estantes": [
@@ -1942,7 +2116,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "mensagem",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/mensagem.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -1957,7 +2133,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "o-livro-de-cesario-verde",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-livro-de-cesario-verde.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -1973,7 +2151,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "sonetos-antero-de-quental",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/sonetos-antero-de-quental.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -1989,7 +2169,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "livro-de-magoas",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/livro-de-magoas.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -2005,7 +2187,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "livro-de-soror-saudade",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/livro-de-soror-saudade.pdf",
+   "pdf_mb": 0.6
   },
   {
    "estantes": [
@@ -2020,7 +2204,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "clepsidra",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/clepsidra.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -2036,7 +2222,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "os-simples",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/os-simples.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -2052,7 +2240,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "hamlet",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/hamlet.pdf",
+   "pdf_mb": 0.7
   },
   {
    "estantes": [
@@ -2067,7 +2257,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "frei-luis-de-sousa",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/frei-luis-de-sousa.pdf",
+   "pdf_mb": 0.4
   },
   {
    "estantes": [
@@ -2082,7 +2274,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "monologo-do-vaqueiro-auto-da-visitacao",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/monologo-do-vaqueiro-auto-da-visitacao.pdf",
+   "pdf_mb": 0.1
   },
   {
    "estantes": [
@@ -2098,7 +2292,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "iliada",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/iliada.pdf",
+   "pdf_mb": 1.2
   },
   {
    "estantes": [
@@ -2114,7 +2310,9 @@
    "destaque": true,
    "idioma": "en",
    "id": "odisseia",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/odisseia.pdf",
+   "pdf_mb": 2.1
   },
   {
    "estantes": [
@@ -2130,7 +2328,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "eneida",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/eneida.pdf",
+   "pdf_mb": 1.7
   },
   {
    "estantes": [
@@ -2145,7 +2345,9 @@
    "destaque": true,
    "idioma": "en",
    "id": "a-mitologia-de-bulfinch-a-idade-da-fabula",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-mitologia-de-bulfinch-a-idade-da-fabula.pdf",
+   "pdf_mb": 2.1
   },
   {
    "estantes": [
@@ -2160,7 +2362,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "a-epopeia-de-gilgamesh",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-epopeia-de-gilgamesh.pdf",
+   "pdf_mb": 1.8
   },
   {
    "estantes": [
@@ -2175,7 +2379,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "a-edda-mitologia-nordica",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-edda-mitologia-nordica.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -2190,7 +2396,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "saga-dos-volsungos",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/saga-dos-volsungos.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -2206,7 +2414,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "ramayana-a-morte-de-yajnadatta",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/ramayana-a-morte-de-yajnadatta.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [
@@ -2222,7 +2432,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "mahabharata-livro-1",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/mahabharata-livro-1.pdf",
+   "pdf_mb": 3.3
   },
   {
    "estantes": [
@@ -2237,7 +2449,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "lendas-do-sul",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/lendas-do-sul.pdf",
+   "pdf_mb": 0.4
   },
   {
    "estantes": [
@@ -2253,7 +2467,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "lendas-e-narrativas-tomo-i",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/lendas-e-narrativas-tomo-i.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -2268,7 +2484,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "fabulas-de-esopo",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/fabulas-de-esopo.pdf",
+   "pdf_mb": 0.9
   },
   {
    "estantes": [
@@ -2283,7 +2501,9 @@
    "destaque": true,
    "idioma": "pt",
    "id": "biblia-sagrada-traducao-de-joao-ferreira-de-almeida",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/biblia-sagrada-traducao-de-joao-ferreira-de-almeida.pdf",
+   "pdf_mb": 31.7
   },
   {
    "estantes": [
@@ -2298,7 +2518,9 @@
    "destaque": true,
    "idioma": "en",
    "id": "o-alcorao",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/o-alcorao.pdf",
+   "pdf_mb": 2.8
   },
   {
    "estantes": [
@@ -2314,7 +2536,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "bhagavad-gita",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/bhagavad-gita.pdf",
+   "pdf_mb": 0.4
   },
   {
    "estantes": [
@@ -2330,7 +2554,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "tao-te-ching",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/tao-te-ching.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -2346,7 +2572,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "dhammapada",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/dhammapada.pdf",
+   "pdf_mb": 0.3
   },
   {
    "estantes": [
@@ -2361,7 +2589,9 @@
    "destaque": false,
    "idioma": "en",
    "id": "a-imitacao-de-cristo",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/a-imitacao-de-cristo.pdf",
+   "pdf_mb": 1.0
   },
   {
    "estantes": [
@@ -2377,7 +2607,9 @@
    "destaque": false,
    "idioma": "pt",
    "id": "sermao-da-sexagesima",
-   "formato": "Ler online"
+   "formato": "Ler online",
+   "pdf": "livros/sermao-da-sexagesima.pdf",
+   "pdf_mb": 0.2
   },
   {
    "estantes": [

@@ -30,6 +30,7 @@ function cartao(l) {
   return `
     <button type="button" class="livro-card" data-livro="${esc(l.id)}" aria-label="${esc(l.titulo)}, de ${esc(l.autor)}">
       ${capa(l)}
+      ${l.pdf ? '<span class="livro-card__pdf">PDF</span>' : ""}
       <span class="livro-card__titulo">${esc(l.titulo)}</span>
       <span class="livro-card__autor">${esc(l.autor)}</span>
     </button>`;
@@ -120,13 +121,17 @@ function abrirFicha(id, { atualizarEndereco = true } = {}) {
           ${l.idioma === "en" ? '<span class="ficha__idioma">Em inglês</span>' : ""}</div>
         <p class="ficha__resumo">${esc(l.resumo)}</p>
         <div class="ficha__acoes">
-          <a class="botao botao--vermelho" href="${esc(l.link)}" target="_blank" rel="noopener">${pdf ? "Baixar PDF" : "Ler agora"} →</a>
+          ${l.pdf ? `<a class="botao botao--vermelho" href="${esc(l.pdf)}" download="${esc(l.id)}.pdf">Baixar PDF <small class="ficha__peso">${esc(l.pdf_mb)} MB</small></a>` : ""}
+          ${pdf ? "" : `<a class="botao ${l.pdf ? "botao--claro" : "botao--vermelho"}" href="${esc(l.link)}" target="_blank" rel="noopener">Ler online →</a>`}
           <button class="botao botao--claro" type="button" data-compartilhar="${esc(l.id)}">Compartilhar</button>
         </div>
+        ${l.pdf ? "" : `<p class="ficha__aviso">${pdf
+          ? `Este livro está disponível em PDF no ${esc(l.fonte)}: <a href="${esc(l.link)}" target="_blank" rel="noopener">abrir o PDF</a>.`
+          : "PDF ainda não disponível no nosso acervo: o texto original está em domínio público, mas esta tradução tem direitos reservados pela editora. Você pode ler gratuitamente no link acima."}</p>`}
         ${bios.length ? `<div class="ficha__bloco"><h3>Sobre ${bios.length > 1 ? "os autores" : "o autor"}</h3>
           ${bios.map(([n, b]) => `<p><strong>${esc(n)}.</strong> ${esc(b)}</p>`).join("")}</div>` : ""}
         ${mais.length ? `<div class="ficha__bloco"><h3>Mais deste autor</h3><div class="ficha__mais">${mais.map(cartao).join("")}</div></div>` : ""}
-        <p class="ficha__fonte">Texto em domínio público, disponível no ${esc(l.fonte)}${l.idioma === "en" ? " (tradução livre em inglês)" : ""}.</p>
+        <p class="ficha__fonte">Texto em domínio público${l.pdf ? ". O PDF é uma edição da Biblioteca dos Camaradas, hospedada no nosso site" : ""}. Leitura online: ${esc(l.fonte)}${l.idioma === "en" ? " (tradução livre em inglês)" : ""}.</p>
       </div>
     </div>`;
   if (!ficha.open) ficha.showModal();
