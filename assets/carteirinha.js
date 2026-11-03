@@ -99,6 +99,8 @@ function recorteAssinatura() {
 // ---------- foto ----------
 function usarFoto(src) {
   const img = new Image();
+  // foto do perfil fica no Supabase (outro endereço): sem isso o navegador bloqueia gerar a imagem final
+  if (!/^(blob:|data:)/.test(src)) img.crossOrigin = "anonymous";
   img.onload = () => { foto = img; $("ajuste").hidden = false; desenhar(); };
   img.onerror = () => avisar("Não foi possível abrir essa foto. Tente outra.");
   img.src = src;
@@ -142,15 +144,26 @@ function nomeArquivo() {
   return "carteirinha-lufa-" + (membro ? membro.matricula : "") + "-" +
     $("nome").value.trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".png";
 }
-function gerarBlob(tipo = "image/png", q) { desenhar(); return new Promise((ok) => cartao.toBlob(ok, tipo, q)); }
+function gerarBlob(tipo = "image/png", q) {
+  desenhar();
+  return new Promise((ok, falha) => {
+    try { cartao.toBlob((b) => (b ? ok(b) : falha(new Error("não foi possível gerar a imagem"))), tipo, q); }
+    catch (e) { falha(new Error("a foto não pôde ser usada; escolha a foto de novo pelo botão de foto")); }
+  });
+}
 
 // salva na conta ANTES de baixar/compartilhar (no celular, o download interrompe a página)
 let salva = false;
 async function salvarNaConta() {
   if (!eu) return false;
   avisar("Salvando na sua conta…");
-  const jpg = await gerarBlob("image/jpeg", 0.9);
-  const { error } = await supa.storage.from("fotos").upload(`${eu.id}/carteirinha.jpg`, jpg, { contentType: "image/jpeg", upsert: true, cacheControl: "60" });
+  let error;
+  try {
+    const jpg = await gerarBlob("image/jpeg", 0.9);
+    const envio = supa.storage.from("fotos").upload(`${eu.id}/carteirinha.jpg`, jpg, { contentType: "image/jpeg", upsert: true, cacheControl: "60" });
+    const limite = new Promise((_, falha) => setTimeout(() => falha(new Error("a conexão demorou demais")), 45000));
+    ({ error } = await Promise.race([envio, limite]));
+  } catch (e) { error = e; }
   if (error) { avisar("Não foi possível salvar na sua conta: " + mensagemErro(error) + ". Tente de novo."); return false; }
   salva = true;
   avisar("Carteirinha salva! Ela aparece em Minha conta → Minha carteirinha.");
@@ -166,7 +179,8 @@ $("baixar").addEventListener("click", async () => {
   const f = faltando(); if (f) { avisar(f); return; }
   botoes(true);
   const ok = await salvarNaConta();
-  const blob = await gerarBlob(), a = document.createElement("a");
+  let blob; try { blob = await gerarBlob(); } catch (e) { avisar("Não foi possível baixar: " + e.message + "."); botoes(false); return; }
+  const a = document.createElement("a");
   a.href = URL.createObjectURL(blob); a.download = nomeArquivo(); a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   if (ok) avisar("Carteirinha salva na sua conta e baixada no aparelho!");
@@ -178,7 +192,8 @@ if (navigator.canShare) {
     const f = faltando(); if (f) { avisar(f); return; }
     botoes(true);
     await salvarNaConta();
-    const arq = new File([await gerarBlob()], nomeArquivo(), { type: "image/png" });
+    let png; try { png = await gerarBlob(); } catch (e) { avisar("Não foi possível compartilhar: " + e.message + "."); botoes(false); return; }
+    const arq = new File([png], nomeArquivo(), { type: "image/png" });
     botoes(false);
     if (navigator.canShare({ files: [arq] })) { try { await navigator.share({ files: [arq], title: "Minha carteirinha do Coletivo Lufã" }); } catch (_) {} }
     else avisar("Seu navegador não permite compartilhar arquivos. Use o botão Baixar.");
