@@ -79,7 +79,7 @@ async function mostrar() {
   $("titulo").textContent = "Olá, " + (perfil.nome.split(" ")[0] || "camarada") + "!";
   $("subtitulo").textContent = APROVADO.includes(perfil.papel) ? "Bem-vindo(a) à área do militante." : "Sua conta foi criada.";
   $("topo-nome").textContent = perfil.nome || perfil.email;
-  $("topo-status").textContent = PAPEIS[perfil.papel] || perfil.papel;
+  $("topo-status").textContent = APROVADO.includes(perfil.papel) ? `${classificacao(perfil)} · ${PAPEIS[perfil.papel]}` : (PAPEIS[perfil.papel] || perfil.papel);
   $("topo-status").dataset.papel = perfil.papel;
   $("topo-matricula").textContent = perfil.matricula ? "Matrícula Nº " + perfil.matricula : "";
   $("topo-foto").src = perfil.foto || "assets/img/avatar.svg";
@@ -218,8 +218,9 @@ function desenharPessoas() {
     <li data-id="${p.id}">
       <img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
       <div><strong>${esc(p.nome || "(sem nome)")}</strong>
-        <span class="meta">${p.arroba ? "@" + esc(p.arroba) + " · " : ""}${p.matricula ? "Nº " + esc(p.matricula) + " · " : ""}cadastro em ${esc(dataPorExtenso(p.criado_em))}${p.idade ? " · " + esc(p.idade) + " anos" : ""}</span></div>
-      ${p.papel === "pendente" ? `<button type="button" class="aprovar" data-papel="membro">Aprovar</button><button type="button" data-papel="recusado">Recusar</button>` : ""}
+        <span class="meta">${APROVADO.includes(p.papel) ? `<b>${esc(classificacao(p))}</b> · ` : ""}${p.arroba ? "@" + esc(p.arroba) + " · " : ""}${p.matricula ? "Nº " + esc(p.matricula) + " · " : ""}cadastro em ${esc(dataPorExtenso(p.criado_em))}${p.idade ? " · " + esc(p.idade) + " anos" : ""}</span></div>
+      ${p.papel === "pendente" ? `<button type="button" class="aprovar" data-papel="membro" data-classe="${ATIVO}">Aprovar como ativo</button><button type="button" class="aprovar aprovar--comum" data-papel="membro" data-classe="${COMUM}">Aprovar como comum</button><button type="button" data-papel="recusado">Recusar</button>`
+        : `<select data-classe-sel aria-label="Classificação de ${esc(p.nome)}"><option value="${ATIVO}"${!ehComum(p) ? " selected" : ""}>Membro ativo</option><option value="${COMUM}"${ehComum(p) ? " selected" : ""}>Membro comum</option></select>`}
       <select data-mudar aria-label="Permissão de ${esc(p.nome)}" ${p.id === perfil.id ? "disabled title='Você não pode mudar a sua própria permissão'" : ""}>
         ${Object.entries(PAPEIS).map(([k, n]) => `<option value="${k}"${k === p.papel ? " selected" : ""}>${n}</option>`).join("")}
       </select>
@@ -241,7 +242,13 @@ async function definir(id, papel) {
 $("lista-pessoas").addEventListener("click", async (ev) => {
   const b = ev.target.closest("button"); if (!b) return;
   const id = b.closest("li").dataset.id;
-  if (b.dataset.papel) definir(id, b.dataset.papel);
+  if (b.dataset.papel) {
+    if (b.dataset.classe) {
+      const { error } = await supa.from("perfis").update({ funcao: b.dataset.classe }).eq("id", id);
+      if (error) return avisar(mensagemErro(error), "erro");
+    }
+    definir(id, b.dataset.papel);
+  }
   if (b.hasAttribute("data-matricula")) {
     const p = pessoas.find((x) => x.id === id);
     const nova = prompt(`Matrícula de ${p.nome} (6 números, ex.: 001003). Use para quem já era membro antes do cadastro:`, p.matricula || "");
@@ -252,7 +259,13 @@ $("lista-pessoas").addEventListener("click", async (ev) => {
     avisar("Matrícula atualizada.", "ok"); carregarPessoas();
   }
 });
-$("lista-pessoas").addEventListener("change", (ev) => {
+$("lista-pessoas").addEventListener("change", async (ev) => {
+  const c = ev.target.closest("[data-classe-sel]");
+  if (c) {
+    const { error } = await supa.from("perfis").update({ funcao: c.value }).eq("id", c.closest("li").dataset.id);
+    if (error) return avisar(mensagemErro(error), "erro");
+    avisar(`Classificação alterada para ${esc(c.value)}.`, "ok"); return carregarPessoas();
+  }
   const s = ev.target.closest("[data-mudar]"); if (!s) return;
   definir(s.closest("li").dataset.id, s.value);
 });

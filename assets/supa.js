@@ -12,6 +12,10 @@ const PAPEIS = {
 };
 const APROVADO = ["membro", "autor", "editor", "admin"];
 const PODE_ESCREVER = ["autor", "editor", "admin"];
+// classificação: "Membro ativo" (equipe, aparece na página inicial) ou "Membro comum" (usa o site)
+const ATIVO = "Membro ativo", COMUM = "Membro comum";
+const ehComum = (m) => /comum/i.test(String((m && m.funcao) || ""));
+const classificacao = (m) => (ehComum(m) ? COMUM : ATIVO);
 
 async function usuarioAtual() {
   const { data } = await supa.auth.getSession();

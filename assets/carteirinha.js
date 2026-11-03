@@ -44,7 +44,7 @@ function desenhar() {
   escrever($("nome").value.trim().toUpperCase(), 232, LINHA.nome, 728);
   const idade = $("idade").value.trim();
   escrever(idade ? `${idade} ANOS` : "", 245, LINHA.idade, 580);
-  escrever("MEMBRO", 668, LINHA.ocupacao, 200, 42);
+  escrever(classificacao(membro).toUpperCase(), 66, 924, 760, 48);
   escrever(membro ? membro.matricula : "", 470, LINHA.matricula, 480, 50);
   escrever(DATA.d, 584, LINHA.data, 100, 46, "center");
   escrever(DATA.m, 724, LINHA.data, 100, 46, "center");
@@ -116,6 +116,7 @@ function escolherMembro() {
   membro = membros.find((m) => m.matricula === $("membro").value) || null;
   $("nome").value = membro ? membro.nome : "";
   $("ver-matricula").textContent = membro ? membro.matricula : "—";
+  $("ver-ocupacao").textContent = classificacao(membro);
   if (membro && membro.foto) {
     ["zoom", "px", "py"].forEach((id) => ($(id).value = id === "zoom" ? 1 : 0));
     usarFoto(membro.foto);
@@ -184,7 +185,8 @@ async function salvarNaConta(blob) {
     if (eu && eu.matricula && APROVADO.includes(eu.papel)) {
       // filiação = dia em que a conta foi aprovada
       if (eu.aprovado_em) { const d = new Date(eu.aprovado_em); DATA.d = String(d.getDate()).padStart(2, "0"); DATA.m = String(d.getMonth() + 1).padStart(2, "0"); DATA.a = String(d.getFullYear()); $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`; }
-      if (!membros.some((m) => m.matricula === eu.matricula)) membros.push({ nome: eu.nome, matricula: eu.matricula, foto: eu.foto });
+      const naLista = membros.find((m) => m.matricula === eu.matricula);
+      if (naLista) naLista.funcao = eu.funcao; else membros.push({ nome: eu.nome, matricula: eu.matricula, foto: eu.foto, funcao: eu.funcao });
       $("membro").value = eu.matricula; escolherMembro();
       if (eu.idade) $("idade").value = eu.idade;
       avisar("Seus dados vieram da sua conta. Falta só assinar! Ao baixar, ela também fica salva em Minha conta.");

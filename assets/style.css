@@ -646,3 +646,4 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .minha-carteira { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .minha-carteira img { width: 100%; max-width: 360px; border-radius: 10px; box-shadow: 10px 12px 0 var(--preto); }
 .minha-carteira .vazio { width: 100%; }
+.pessoas button.aprovar--comum { background: var(--amarelo); border-color: var(--amarelo); color: var(--preto); }
