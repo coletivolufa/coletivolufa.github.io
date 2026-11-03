@@ -295,8 +295,11 @@ async function salvarMembro(ev) {
     await alterarLista("data/membros.json", (lista) => {
       if (indice !== null && lista[indice]) {
         if (!membro.foto) membro.foto = lista[indice].foto || "";
+        // vaga de exemplo preenchida ganha matrícula nova; membro real mantém a dele
+        membro.matricula = lista[indice].matricula || proximaMatricula(lista);
         lista[indice] = membro;
       } else {
+        membro.matricula = proximaMatricula(lista);
         lista.push(membro);
       }
       return lista;
@@ -310,6 +313,12 @@ async function salvarMembro(ev) {
   } finally {
     botao.disabled = false;
   }
+}
+
+// matrícula: "001" (primeira turma do coletivo) + ordem de entrada, com 3 dígitos
+function proximaMatricula(lista) {
+  const ultimo = Math.max(0, ...lista.map((m) => parseInt(String(m.matricula || "").slice(3), 10) || 0));
+  return "001" + String(ultimo + 1).padStart(3, "0");
 }
 
 function limparFormMembro() {

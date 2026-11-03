@@ -597,3 +597,30 @@ main.catalogo { background: var(--preto); color: var(--papel); }
   .cat-militante .militante__titulo { font-size: 28px; }
   .cat-militante .militante p { font-size: 15px; }
 }
+
+/* ---------- Carteirinha do Militante ---------- */
+.carteira { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); gap: 32px; align-items: start; }
+.carteira__form .painel { margin-bottom: 22px; }
+.carteira__form h2 { font-size: 36px; display: flex; align-items: center; gap: 12px; }
+.passo { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--amarelo); color: var(--preto); font-size: 26px; }
+.carteira__fixos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.carteira__fixos div { background: var(--papel); border: 2px dashed var(--linha); padding: 10px 12px; }
+.carteira__fixos span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--cinza); }
+.carteira__fixos b { font-family: "Courier Prime", monospace; font-size: 20px; color: #1c2d6e; }
+.carteira__ajuste { display: grid; gap: 10px; }
+.carteira__ajuste label { display: grid; gap: 4px; font-size: 14px; font-weight: 700; }
+.carteira__ajuste input { width: 100%; accent-color: var(--vermelho); }
+.carteira__dica { margin: 0 0 10px; color: var(--cinza); font-size: 15px; }
+.carteira__assinatura { width: 100%; aspect-ratio: 3 / 1; background: #f6eedb; border: 2px solid #1c2d6e; border-radius: 4px; touch-action: none; cursor: crosshair;
+  background-image: linear-gradient(transparent calc(100% - 46px), rgba(28,45,110,.35) calc(100% - 46px), rgba(28,45,110,.35) calc(100% - 44px), transparent calc(100% - 44px)); }
+.carteira__previa { position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.carteira__previa canvas { width: 100%; max-width: 360px; height: auto; box-shadow: 10px 12px 0 var(--preto); border-radius: 10px; background: #e9dcc0; }
+.carteira__acoes { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.carteira__nota { min-height: 1.4em; margin: 0; text-align: center; font-weight: 700; color: var(--vermelho); }
+.membros__chamada { margin-top: 30px; text-align: center; }
+@media (max-width: 900px) {
+  .carteira { grid-template-columns: 1fr; }
+  .carteira__previa { position: static; order: -1; }
+  .carteira__previa canvas { max-width: 300px; }
+  .carteira__fixos { grid-template-columns: 1fr; }
+}

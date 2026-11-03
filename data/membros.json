@@ -4,62 +4,71 @@
     "arroba": "_ocamarada",
     "rede": "instagram",
     "funcao": "Idealizador",
-    "foto": "membros/leonardo-duarte.jpg"
+    "foto": "membros/leonardo-duarte.jpg",
+    "matricula": "001001"
   },
   {
     "nome": "Eduarda Prado",
     "arroba": "mariaeduardaprado__",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": "membros/eduarda-prado.jpg"
+    "foto": "membros/eduarda-prado.jpg",
+    "matricula": "001002"
   },
   {
     "nome": "Mattheus Batinga",
     "arroba": "vermelhobrasa_",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": ""
+    "foto": "",
+    "matricula": "001003"
   },
   {
     "nome": "Ana Carolina Alapone",
     "arroba": "anacarolinaam_psi",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": "membros/ana-carolina-alapone.jpg"
+    "foto": "membros/ana-carolina-alapone.jpg",
+    "matricula": "001004"
   },
   {
     "nome": "Naiara",
     "arroba": "na.iaraaa",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": ""
+    "foto": "",
+    "matricula": "001005"
   },
   {
     "nome": "Arthur Alves",
     "arroba": "galocomuna",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": "membros/arthur-alves.jpg"
+    "foto": "membros/arthur-alves.jpg",
+    "matricula": "001006"
   },
   {
     "nome": "Artur Cury",
     "arroba": "financista.comunista",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": "membros/artur-cury.jpg"
+    "foto": "membros/artur-cury.jpg",
+    "matricula": "001007"
   },
   {
     "nome": "Tiago Magalhães",
     "arroba": "tiagomagtv",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": ""
+    "foto": "",
+    "matricula": "001008"
   },
   {
     "nome": "Carlos Cabano",
     "arroba": "cabanocomunista",
     "rede": "instagram",
     "funcao": "Membro",
-    "foto": "membros/carlos-cabano.jpg"
+    "foto": "membros/carlos-cabano.jpg",
+    "matricula": "001009"
   }
 ]

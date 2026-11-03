@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carteirinha do Militante · Coletivo Lufã</title>
+  <meta name="description" content="Monte a sua carteirinha de membro do Coletivo Lufã: foto, nome, idade, matrícula e assinatura feita com o dedo.">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Courier+Prime:wght@700&family=Literata:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=13">
+</head>
+<body data-pagina="carteirinha">
+<main>
+  <header class="cabecalho-pagina">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Só para membros</span>
+      <h1>Carteirinha do Militante</h1>
+      <p>Escolha o seu nome, coloque a sua foto, assine com o dedo e baixe a sua carteirinha do Coletivo Lufã.</p>
+    </div>
+  </header>
+
+  <section class="secao">
+    <div class="conteudo carteira">
+      <form class="carteira__form" id="form" onsubmit="return false">
+        <div class="painel">
+          <h2><span class="passo">1</span> Quem é você?</h2>
+          <div class="campo">
+            <label for="membro">Seu nome na lista de membros</label>
+            <select id="membro" required><option value="">Carregando…</option></select>
+            <small>Não está na lista? Fale com a secretaria do coletivo para ser cadastrado.</small>
+          </div>
+          <div class="campo">
+            <label for="nome">Nome como vai aparecer na carteirinha</label>
+            <input id="nome" maxlength="40" autocomplete="name">
+          </div>
+          <div class="campo">
+            <label for="idade">Idade</label>
+            <input id="idade" type="number" min="12" max="110" inputmode="numeric" placeholder="Ex.: 24">
+          </div>
+          <div class="carteira__fixos">
+            <div><span>Ocupação no coletivo</span><b>Membro</b></div>
+            <div><span>Matrícula</span><b id="ver-matricula">—</b></div>
+            <div><span>Data de filiação</span><b id="ver-data">—</b></div>
+          </div>
+        </div>
+
+        <div class="painel">
+          <h2><span class="passo">2</span> Sua foto</h2>
+          <div class="campo">
+            <label for="foto">Escolha uma foto (de rosto, de preferência)</label>
+            <input id="foto" type="file" accept="image/*">
+            <small id="foto-aviso">Se você já tem foto no site, ela entra automaticamente.</small>
+          </div>
+          <div class="carteira__ajuste" id="ajuste" hidden>
+            <label>Zoom <input id="zoom" type="range" min="1" max="3" step="0.01" value="1"></label>
+            <label>Para os lados <input id="px" type="range" min="-1" max="1" step="0.01" value="0"></label>
+            <label>Para cima e para baixo <input id="py" type="range" min="-1" max="1" step="0.01" value="0"></label>
+          </div>
+        </div>
+
+        <div class="painel">
+          <h2><span class="passo">3</span> Sua assinatura</h2>
+          <p class="carteira__dica">Assine com o dedo (ou com o mouse) dentro do quadro.</p>
+          <canvas id="assinatura" class="carteira__assinatura" width="900" height="300" aria-label="Área para assinar"></canvas>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+            <button type="button" class="botao botao--claro" id="limpar">Apagar assinatura</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="carteira__previa">
+        <canvas id="cartao" width="1024" height="1536" aria-label="Prévia da sua carteirinha"></canvas>
+        <div class="carteira__acoes">
+          <button type="button" class="botao botao--vermelho" id="baixar">Baixar carteirinha</button>
+          <button type="button" class="botao" id="compartilhar" hidden>Compartilhar</button>
+        </div>
+        <p class="carteira__nota" id="aviso" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/comum.js?v=10"></script>
+<script src="assets/carteirinha.js?v=1"></script>
+</body>
+</html>
