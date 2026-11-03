@@ -1,7 +1,7 @@
 /* Minha conta: cadastro, login, perfil, artigos e administração (Supabase) */
 
 const $ = (id) => document.getElementById(id);
-let perfil = null, editandoArtigo = null, filtroAdmin = "pendente", pessoas = [];
+let perfil = null, editandoArtigo = null, filtroAdmin = "todos", pessoas = [];
 
 function avisar(texto, tipo = "") {
   $("mensagem").innerHTML = texto ? `<div class="aviso ${tipo ? "aviso--" + tipo : ""}">${texto}</div>` : "";
@@ -57,7 +57,7 @@ $("form-cadastrar").addEventListener("submit", async (ev) => {
   if (error) return avisar(mensagemErro(error), "erro");
   if (!data.session) return avisar("Conta criada! Enviamos um e-mail de confirmação: abra o link para ativar a conta e depois entre por aqui.", "ok");
   if (irDeVolta()) return;
-  avisar("Conta criada! Agora é só aguardar a aprovação da secretaria. Enquanto isso, complete o seu perfil.", "ok");
+  avisar("Conta criada! Você já é membro do Coletivo Lufã. Complete o seu perfil e faça a sua carteirinha.", "ok");
   if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
 if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
 mostrar();
@@ -235,9 +235,15 @@ async function carregarPessoas() {
   pessoas = data; desenharPessoas();
 }
 function desenharPessoas() {
-  const lista = pessoas.filter((p) => filtroAdmin === "todos" || (filtroAdmin === "pendente" ? p.papel === "pendente" : APROVADO.includes(p.papel)));
-  const pend = pessoas.filter((p) => p.papel === "pendente").length;
-  document.querySelector('[data-filtro="pendente"]').textContent = `Aguardando (${pend})`;
+  const lista = pessoas.filter((p) => filtroAdmin === "todos" ? true
+    : filtroAdmin === "ativos" ? (APROVADO.includes(p.papel) && !ehComum(p))
+    : filtroAdmin === "comuns" ? (APROVADO.includes(p.papel) && ehComum(p))
+    : p.papel === "pendente" || p.papel === "recusado");
+  const conta = (f) => pessoas.filter((p) => APROVADO.includes(p.papel) && (f === "comum" ? ehComum(p) : !ehComum(p))).length;
+  const b = (f) => document.querySelector(`[data-filtro="${f}"]`);
+  b("todos").textContent = `Todos (${pessoas.length})`;
+  b("ativos").textContent = `Membros ativos (${conta("ativo")})`;
+  b("comuns").textContent = `Membros comuns (${conta("comum")})`;
   $("lista-pessoas").innerHTML = lista.length ? lista.map((p) => `
     <li data-id="${p.id}">
       <img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
@@ -252,7 +258,7 @@ function desenharPessoas() {
         }).join("")}
       </select>
       <button type="button" data-matricula title="Usar uma matrícula que a pessoa já tinha">Nº</button>
-    </li>`).join("") : `<li>${filtroAdmin === "pendente" ? "Ninguém aguardando aprovação." : "Nenhuma pessoa aqui."}</li>`;
+    </li>`).join("") : `<li>Nenhuma pessoa aqui.</li>`;
 }
 document.querySelectorAll("[data-filtro]").forEach((b) => b.addEventListener("click", () => {
   filtroAdmin = b.dataset.filtro;
