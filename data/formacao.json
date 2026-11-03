@@ -17,7 +17,8 @@
           "capa": "formacao/capas/desmistificando-ep01.jpg",
           "video": "formacao/videos/desmistificando-ep01.mp4"
         }
-      ]
+      ],
+      "poster": "formacao/capas/desmistificando-ep01.jpg"
     },
     {
       "id": "politica-e-da-sua-conta",
@@ -25,7 +26,9 @@
       "apresentador": "Eduarda Prado",
       "perfil": "mariaeduardaprado__",
       "descricao": "O básico da política para quem nunca teve contato com o assunto, em linguagem simples e sem complicação.",
-      "episodios": []
+      "episodios": [],
+      "poster": "formacao/capas/politica-poster.jpg",
+      "banner": "formacao/capas/politica-banner.jpg"
     }
   ]
 }
