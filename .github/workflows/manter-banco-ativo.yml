@@ -1,0 +1,19 @@
+# O plano gratuito do Supabase pausa o projeto depois de 7 dias sem acessos.
+# Este robô faz uma consulta simples a cada 3 dias para mantê-lo sempre ativo.
+name: Manter o banco de dados ativo
+
+on:
+  schedule:
+    - cron: "17 9 */3 * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar a lista pública de membros
+        run: |
+          curl -sf "https://mszatrbsbzhuxlsfebrv.supabase.co/rest/v1/membros_publicos?select=matricula&limit=1" \
+            -H "apikey: sb_publishable_4w3AIkuWKC-bme-eTv2vzQ_sGkjJN9U" -o /dev/null && echo "banco ativo"

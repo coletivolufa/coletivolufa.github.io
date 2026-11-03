@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=13">
+  <link rel="stylesheet" href="assets/style.css?v=14">
 </head>
 <body data-pagina="artigos">
 <main>
@@ -31,14 +31,17 @@
     </div>
   </section>
 </main>
-<script src="assets/comum.js?v=8"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=11"></script>
+<script src="assets/supa.js?v=1"></script>
 <script>
   const area = document.getElementById("area");
   const slug = new URLSearchParams(location.search).get("a");
 
   async function mostrarLista() {
     try {
-      const artigos = (await lerJSON("data/artigos.json")).sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+      const [doArquivo, doBanco] = await Promise.all([lerJSON("data/artigos.json").catch(() => []), artigosDoBanco()]);
+      const artigos = [...doBanco, ...doArquivo.filter((a) => !doBanco.some((b) => b.slug === a.slug))].sort((a, b) => (b.data || "").localeCompare(a.data || ""));
       if (!artigos.length) {
         area.innerHTML = '<div class="vazio">Nenhum artigo publicado ainda. Volte em breve.</div>';
         return;
@@ -58,7 +61,9 @@
   async function mostrarArtigo() {
     document.getElementById("cabecalho").hidden = true;
     try {
-      const a = await lerJSON("artigos/" + encodeURIComponent(slug) + ".json");
+      let a = await lerJSON("artigos/" + encodeURIComponent(slug) + ".json").catch(() => null);
+      if (!a) a = (await artigosDoBanco()).find((x) => x.slug === slug);
+      if (!a) throw new Error("não encontrado");
       document.title = a.titulo + " · Coletivo Lufã";
       area.innerHTML = `
         <article class="artigo">

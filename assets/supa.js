@@ -1,0 +1,68 @@
+/* Conexão com o Supabase (contas, perfis, permissões e artigos).
+   A chave abaixo é a "publishable": pública por natureza. Quem protege os dados
+   são as regras de segurança do banco (supabase/esquema.sql). */
+
+const SUPA_URL = "https://mszatrbsbzhuxlsfebrv.supabase.co";
+const SUPA_CHAVE = "sb_publishable_4w3AIkuWKC-bme-eTv2vzQ_sGkjJN9U";
+const supa = window.supabase.createClient(SUPA_URL, SUPA_CHAVE, { auth: { persistSession: true, autoRefreshToken: true } });
+
+const PAPEIS = {
+  pendente: "Aguardando aprovação", membro: "Membro", autor: "Autor(a)",
+  editor: "Editor(a)", admin: "Admin", recusado: "Recusado",
+};
+const APROVADO = ["membro", "autor", "editor", "admin"];
+const PODE_ESCREVER = ["autor", "editor", "admin"];
+
+async function usuarioAtual() {
+  const { data } = await supa.auth.getSession();
+  return data.session ? data.session.user : null;
+}
+
+async function meuPerfil() {
+  const u = await usuarioAtual();
+  if (!u) return null;
+  const { data, error } = await supa.from("perfis").select("*").eq("id", u.id).maybeSingle();
+  if (error) throw error;
+  return data ? { ...data, email: u.email } : null;
+}
+
+// membros aprovados no banco, no mesmo formato de data/membros.json
+async function membrosDoBanco() {
+  try {
+    const { data, error } = await supa.from("membros_publicos").select("*").order("matricula");
+    if (error) throw error;
+    return (data || []).map((m) => ({ nome: m.nome, arroba: m.arroba, rede: m.rede, funcao: m.funcao, foto: m.foto, matricula: m.matricula, conta: true }));
+  } catch (_) { return []; }
+}
+
+// junta a lista antiga (arquivo) com a do banco; quem tem conta prevalece pela matrícula
+async function todosOsMembros() {
+  const [arquivo, banco] = await Promise.all([lerJSON("data/membros.json").catch(() => []), membrosDoBanco()]);
+  const porMatricula = new Map();
+  arquivo.filter((m) => !m.exemplo).forEach((m) => porMatricula.set(m.matricula || "x" + m.nome, m));
+  banco.forEach((m) => {
+    const antigo = porMatricula.get(m.matricula);
+    porMatricula.set(m.matricula, { ...antigo, ...Object.fromEntries(Object.entries(m).filter(([, v]) => v)) });
+  });
+  return [...porMatricula.values()].sort((a, b) => String(a.matricula).localeCompare(String(b.matricula)));
+}
+
+// artigos publicados pelo site (banco), no mesmo formato de data/artigos.json
+async function artigosDoBanco() {
+  try {
+    const { data, error } = await supa.from("artigos").select("slug,titulo,autor_nome,texto,criado_em,publicado").eq("publicado", true).order("criado_em", { ascending: false });
+    if (error) throw error;
+    return (data || []).map((a) => ({ slug: a.slug, titulo: a.titulo, autor: a.autor_nome, data: a.criado_em, resumo: resumir(a.texto), texto: a.texto, banco: true }));
+  } catch (_) { return []; }
+}
+
+function mensagemErro(e) {
+  const m = String((e && (e.message || e.error_description)) || e || "");
+  if (/Invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
+  if (/Email not confirmed/i.test(m)) return "Confirme o seu e-mail antes de entrar (veja a sua caixa de entrada).";
+  if (/already registered|already exists/i.test(m)) return "Já existe uma conta com esse e-mail. Use a aba Entrar.";
+  if (/Password should be/i.test(m)) return "A senha precisa ter pelo menos 6 caracteres.";
+  if (/rate limit/i.test(m)) return "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.";
+  if (/Failed to fetch|NetworkError/i.test(m)) return "Sem conexão. Verifique a internet e tente de novo.";
+  return m || "Algo deu errado. Tente de novo.";
+}

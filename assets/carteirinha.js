@@ -166,10 +166,18 @@ if (navigator.canShare) {
   $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`;
   await Promise.all([fundo.decode().catch(() => {}), carimbo.decode().catch(() => {}), document.fonts.load('700 46px "Courier Prime"').catch(() => {})]);
   try {
-    membros = (await lerJSON("data/membros.json")).filter((m) => m.matricula && !m.exemplo)
+    membros = (await todosOsMembros()).filter((m) => m.matricula)
       .sort((a, b) => a.nome.localeCompare(b.nome, "pt"));
     $("membro").innerHTML = '<option value="">Escolha o seu nome…</option>' +
       membros.map((m) => `<option value="${esc(m.matricula)}">${esc(m.nome)}</option>`).join("");
+    // quem está logado e aprovado já entra preenchido
+    const eu = await meuPerfil().catch(() => null);
+    if (eu && eu.matricula && APROVADO.includes(eu.papel)) {
+      if (!membros.some((m) => m.matricula === eu.matricula)) membros.push({ nome: eu.nome, matricula: eu.matricula, foto: eu.foto });
+      $("membro").value = eu.matricula; escolherMembro();
+      if (eu.idade) $("idade").value = eu.idade;
+      avisar("Seus dados vieram da sua conta. Falta só assinar!");
+    }
   } catch (e) {
     $("membro").innerHTML = '<option value="">Não foi possível carregar a lista</option>';
   }

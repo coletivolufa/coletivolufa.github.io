@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Courier+Prime:wght@700&family=Literata:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=13">
+  <link rel="stylesheet" href="assets/style.css?v=14">
 </head>
 <body data-pagina="carteirinha">
 <main>
@@ -31,7 +31,7 @@
           <div class="campo">
             <label for="membro">Seu nome na lista de membros</label>
             <select id="membro" required><option value="">Carregando…</option></select>
-            <small>Não está na lista? Fale com a secretaria do coletivo para ser cadastrado.</small>
+            <small>Não está na lista? <a href="conta.html">Crie a sua conta</a> e aguarde a aprovação da secretaria.</small>
           </div>
           <div class="campo">
             <label for="nome">Nome como vai aparecer na carteirinha</label>
@@ -83,7 +83,9 @@
     </div>
   </section>
 </main>
-<script src="assets/comum.js?v=10"></script>
-<script src="assets/carteirinha.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=11"></script>
+<script src="assets/supa.js?v=1"></script>
+<script src="assets/carteirinha.js?v=2"></script>
 </body>
 </html>

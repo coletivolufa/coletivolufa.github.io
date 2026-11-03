@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minha conta · Coletivo Lufã</title>
+  <meta name="description" content="Entre ou crie a sua conta no Coletivo Lufã.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=14">
+</head>
+<body data-pagina="conta">
+<main>
+  <header class="cabecalho-pagina">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Área do militante</span>
+      <h1 id="titulo">Minha conta</h1>
+      <p id="subtitulo">Entre ou crie a sua conta para fazer parte do Coletivo Lufã.</p>
+    </div>
+  </header>
+
+  <section class="secao">
+    <div class="conteudo">
+      <div id="mensagem" aria-live="polite"></div>
+
+      <!-- SEM LOGIN -->
+      <div id="tela-fora" hidden>
+        <div class="abas" role="tablist">
+          <button type="button" role="tab" aria-selected="true" data-aba-fora="entrar">Entrar</button>
+          <button type="button" role="tab" aria-selected="false" data-aba-fora="cadastrar">Criar conta</button>
+        </div>
+        <form class="painel" id="form-entrar" data-painel-fora="entrar">
+          <h2>Entrar</h2>
+          <div class="campo"><label for="e-email">E-mail</label><input id="e-email" type="email" autocomplete="email" required></div>
+          <div class="campo"><label for="e-senha">Senha</label><input id="e-senha" type="password" autocomplete="current-password" required></div>
+          <button class="botao botao--vermelho" type="submit">Entrar</button>
+          <p style="margin-top:18px"><button type="button" class="link-botao" id="esqueci">Esqueci a minha senha</button></p>
+        </form>
+        <form class="painel" id="form-cadastrar" data-painel-fora="cadastrar" hidden>
+          <h2>Criar conta</h2>
+          <p>Depois de criar a conta, a secretaria do coletivo aprova a sua entrada. Aí você ganha a sua matrícula e pode fazer a carteirinha.</p>
+          <div class="linha-campos">
+            <div class="campo"><label for="c-nome">Nome</label><input id="c-nome" required maxlength="60" autocomplete="name"></div>
+            <div class="campo"><label for="c-arroba">@ no Instagram (opcional)</label><input id="c-arroba" maxlength="40" placeholder="@perfil"></div>
+            <div class="campo"><label for="c-email">E-mail</label><input id="c-email" type="email" required autocomplete="email"></div>
+            <div class="campo"><label for="c-senha">Senha (mínimo 6 caracteres)</label><input id="c-senha" type="password" minlength="6" required autocomplete="new-password"></div>
+          </div>
+          <button class="botao botao--vermelho" type="submit">Criar conta</button>
+        </form>
+      </div>
+
+      <!-- COM LOGIN -->
+      <div id="tela-dentro" hidden>
+        <div class="conta-topo">
+          <img id="topo-foto" src="assets/img/avatar.svg" alt="">
+          <div>
+            <strong id="topo-nome"></strong>
+            <span id="topo-status" class="selo-papel"></span>
+            <span id="topo-matricula"></span>
+          </div>
+          <button type="button" class="botao botao--claro" id="sair">Sair</button>
+        </div>
+
+        <div class="abas" role="tablist" id="abas-dentro">
+          <button type="button" role="tab" aria-selected="true" data-aba="perfil">Meu perfil</button>
+          <button type="button" role="tab" aria-selected="false" data-aba="artigos" hidden>Meus artigos</button>
+          <button type="button" role="tab" aria-selected="false" data-aba="admin" hidden>Administração</button>
+        </div>
+
+        <!-- Perfil -->
+        <div class="painel" data-painel="perfil">
+          <div id="aviso-pendente" class="aviso" hidden>Sua conta está <b>aguardando aprovação</b> da secretaria. Enquanto isso, complete o seu perfil.</div>
+          <div id="aviso-recusado" class="aviso aviso--erro" hidden>Seu cadastro não foi aprovado. Fale com a secretaria do coletivo.</div>
+          <form id="form-perfil">
+            <div class="linha-campos">
+              <div class="campo"><label for="p-nome">Nome</label><input id="p-nome" maxlength="60" required></div>
+              <div class="campo"><label for="p-arroba">@ nas redes</label><input id="p-arroba" maxlength="40" placeholder="@perfil"></div>
+              <div class="campo"><label for="p-rede">Rede social</label>
+                <select id="p-rede"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="x">X (Twitter)</option><option value="youtube">YouTube</option><option value="threads">Threads</option><option value="bluesky">Bluesky</option></select></div>
+              <div class="campo"><label for="p-idade">Idade (não aparece no site)</label><input id="p-idade" type="number" min="10" max="120" inputmode="numeric"></div>
+            </div>
+            <div class="campo">
+              <label for="p-foto">Foto de perfil</label>
+              <input id="p-foto" type="file" accept="image/*">
+              <small>A foto é recortada em quadrado. Ela aparece na lista de membros e na carteirinha.</small>
+            </div>
+            <button class="botao botao--vermelho" type="submit" id="salvar-perfil">Salvar perfil</button>
+            <a class="botao" href="carteirinha.html" id="link-carteirinha" hidden style="margin-left:10px">Fazer minha carteirinha</a>
+          </form>
+        </div>
+
+        <!-- Artigos -->
+        <div class="painel" data-painel="artigos" hidden>
+          <h2 id="titulo-artigo">Novo artigo</h2>
+          <form id="form-artigo">
+            <div class="campo"><label for="a-titulo">Título</label><input id="a-titulo" required maxlength="160"></div>
+            <div class="campo"><label for="a-texto">Texto</label><textarea id="a-texto" required></textarea></div>
+            <div class="ajuda">Deixe uma linha em branco entre os parágrafos. Formatação: <code>## Subtítulo</code> · <code>**negrito**</code> · <code>*itálico*</code> · <code>&gt; citação</code> · <code>- lista</code> · <code>[texto](https://link)</code></div>
+            <label class="check"><input type="checkbox" id="a-publicado" checked> Publicar no site agora (desmarque para salvar como rascunho)</label>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <button class="botao botao--vermelho" type="submit" id="botao-artigo">Publicar</button>
+              <button class="botao botao--claro" type="button" id="previa-artigo">Ver prévia</button>
+              <button class="botao botao--claro" type="button" id="cancelar-artigo" hidden>Cancelar edição</button>
+            </div>
+          </form>
+          <div class="previa" id="previa" hidden style="margin-top:24px"></div>
+          <h2 style="margin-top:40px;font-size:36px" id="titulo-lista-artigos">Meus artigos</h2>
+          <ul class="itens" id="lista-artigos"></ul>
+        </div>
+
+        <!-- Administração -->
+        <div class="painel" data-painel="admin" hidden>
+          <h2>Pessoas cadastradas</h2>
+          <p>Aprove novos membros e defina o que cada pessoa pode fazer. <b>Autor</b> escreve artigos; <b>Editor</b> edita os artigos de todos; <b>Admin</b> faz tudo isso e gerencia as pessoas.</p>
+          <div class="filtros-admin" id="filtros-admin">
+            <button type="button" data-filtro="pendente" aria-pressed="true">Aguardando</button>
+            <button type="button" data-filtro="aprovados" aria-pressed="false">Aprovados</button>
+            <button type="button" data-filtro="todos" aria-pressed="false">Todos</button>
+          </div>
+          <ul class="itens pessoas" id="lista-pessoas"></ul>
+        </div>
+      </div>
+
+      <!-- Nova senha (link do e-mail) -->
+      <form class="painel" id="form-nova-senha" hidden>
+        <h2>Nova senha</h2>
+        <div class="campo"><label for="n-senha">Digite a nova senha</label><input id="n-senha" type="password" minlength="6" required autocomplete="new-password"></div>
+        <button class="botao botao--vermelho" type="submit">Salvar nova senha</button>
+      </form>
+    </div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=11"></script>
+<script src="assets/supa.js?v=1"></script>
+<script src="assets/conta.js?v=1"></script>
+</body>
+</html>

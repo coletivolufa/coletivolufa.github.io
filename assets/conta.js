@@ -1,0 +1,252 @@
+/* Minha conta: cadastro, login, perfil, artigos e administração (Supabase) */
+
+const $ = (id) => document.getElementById(id);
+let perfil = null, editandoArtigo = null, filtroAdmin = "pendente", pessoas = [];
+
+function avisar(texto, tipo = "") {
+  $("mensagem").innerHTML = texto ? `<div class="aviso ${tipo ? "aviso--" + tipo : ""}">${texto}</div>` : "";
+  if (texto) $("mensagem").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function ocupado(botao, sim, texto) {
+  if (!botao) return;
+  if (sim) { botao.dataset.texto = botao.textContent; botao.textContent = texto || "Aguarde…"; botao.disabled = true; }
+  else { botao.textContent = botao.dataset.texto || botao.textContent; botao.disabled = false; }
+}
+
+// ---------- abas ----------
+document.querySelectorAll("[data-aba-fora]").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll("[data-aba-fora]").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+  document.querySelectorAll("[data-painel-fora]").forEach((p) => (p.hidden = p.dataset.painelFora !== b.dataset.abaFora));
+  avisar("");
+}));
+function abrirAba(nome) {
+  document.querySelectorAll("[data-aba]").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.aba === nome)));
+  document.querySelectorAll("[data-painel]").forEach((p) => (p.hidden = p.dataset.painel !== nome));
+  if (nome === "artigos") carregarArtigos();
+  if (nome === "admin") carregarPessoas();
+}
+document.querySelectorAll("[data-aba]").forEach((b) => b.addEventListener("click", () => abrirAba(b.dataset.aba)));
+
+// ---------- entrar / cadastrar / sair ----------
+$("form-entrar").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const b = ev.submitter; ocupado(b, true, "Entrando…");
+  const { error } = await supa.auth.signInWithPassword({ email: $("e-email").value.trim(), password: $("e-senha").value });
+  ocupado(b, false);
+  if (error) return avisar(mensagemErro(error), "erro");
+  avisar(""); mostrar();
+});
+
+$("form-cadastrar").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const b = ev.submitter; ocupado(b, true, "Criando conta…");
+  const { data, error } = await supa.auth.signUp({
+    email: $("c-email").value.trim(), password: $("c-senha").value,
+    options: { data: { nome: $("c-nome").value.trim(), arroba: $("c-arroba").value.trim().replace(/^@/, "") }, emailRedirectTo: location.origin + location.pathname },
+  });
+  ocupado(b, false);
+  if (error) return avisar(mensagemErro(error), "erro");
+  if (!data.session) return avisar("Conta criada! Enviamos um e-mail de confirmação: abra o link para ativar a conta e depois entre por aqui.", "ok");
+  avisar("Conta criada! Agora é só aguardar a aprovação da secretaria. Enquanto isso, complete o seu perfil.", "ok");
+  mostrar();
+});
+
+$("esqueci").addEventListener("click", async () => {
+  const email = $("e-email").value.trim();
+  if (!email) return avisar("Digite o seu e-mail no campo acima e clique de novo em “Esqueci a minha senha”.", "erro");
+  const { error } = await supa.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  avisar(error ? mensagemErro(error) : "Se esse e-mail estiver cadastrado, você vai receber um link para criar uma nova senha.", error ? "erro" : "ok");
+});
+
+$("form-nova-senha").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const { error } = await supa.auth.updateUser({ password: $("n-senha").value });
+  if (error) return avisar(mensagemErro(error), "erro");
+  $("form-nova-senha").hidden = true; avisar("Senha alterada!", "ok"); mostrar();
+});
+
+$("sair").addEventListener("click", async () => { await supa.auth.signOut(); perfil = null; avisar(""); mostrar(); });
+
+// ---------- tela ----------
+async function mostrar() {
+  const u = await usuarioAtual();
+  $("tela-fora").hidden = !!u;
+  $("tela-dentro").hidden = !u;
+  if (!u) { $("titulo").textContent = "Minha conta"; return; }
+  try { perfil = await meuPerfil(); } catch (e) { return avisar(mensagemErro(e), "erro"); }
+  if (!perfil) return avisar("Seu perfil ainda está sendo criado. Recarregue a página em alguns segundos.", "erro");
+  $("titulo").textContent = "Olá, " + (perfil.nome.split(" ")[0] || "camarada") + "!";
+  $("subtitulo").textContent = APROVADO.includes(perfil.papel) ? "Bem-vindo(a) à área do militante." : "Sua conta foi criada.";
+  $("topo-nome").textContent = perfil.nome || perfil.email;
+  $("topo-status").textContent = PAPEIS[perfil.papel] || perfil.papel;
+  $("topo-status").dataset.papel = perfil.papel;
+  $("topo-matricula").textContent = perfil.matricula ? "Matrícula Nº " + perfil.matricula : "";
+  $("topo-foto").src = perfil.foto || "assets/img/avatar.svg";
+  $("aviso-pendente").hidden = perfil.papel !== "pendente";
+  $("aviso-recusado").hidden = perfil.papel !== "recusado";
+  $("link-carteirinha").hidden = !APROVADO.includes(perfil.papel);
+  $("p-nome").value = perfil.nome; $("p-arroba").value = perfil.arroba; $("p-rede").value = perfil.rede || "instagram";
+  $("p-idade").value = perfil.idade || "";
+  document.querySelector('[data-aba="artigos"]').hidden = !PODE_ESCREVER.includes(perfil.papel);
+  document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";
+  $("titulo-lista-artigos").textContent = ["editor", "admin"].includes(perfil.papel) ? "Artigos do site" : "Meus artigos";
+}
+
+// ---------- perfil ----------
+let fotoNova = null;
+function recortar(arquivo, lado = 600) {
+  return new Promise((ok, falha) => {
+    const img = new Image();
+    img.onload = () => {
+      const m = Math.min(img.width, img.height), c = document.createElement("canvas"); c.width = c.height = lado;
+      c.getContext("2d").drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, lado, lado);
+      URL.revokeObjectURL(img.src); c.toBlob(ok, "image/jpeg", 0.86);
+    };
+    img.onerror = () => falha(new Error("Não foi possível ler essa imagem."));
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
+$("p-foto").addEventListener("change", async (ev) => {
+  const f = ev.target.files[0]; if (!f) return;
+  try { fotoNova = await recortar(f); $("topo-foto").src = URL.createObjectURL(fotoNova); } catch (e) { avisar(e.message, "erro"); }
+});
+$("form-perfil").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const b = $("salvar-perfil"); ocupado(b, true, "Salvando…");
+  try {
+    const dados = { nome: $("p-nome").value.trim(), arroba: $("p-arroba").value.trim().replace(/^@/, ""), rede: $("p-rede").value, idade: $("p-idade").value ? Number($("p-idade").value) : null };
+    if (fotoNova) {
+      const caminho = `${perfil.id}/foto-${Date.now()}.jpg`;
+      const { error: e1 } = await supa.storage.from("fotos").upload(caminho, fotoNova, { contentType: "image/jpeg", upsert: true });
+      if (e1) throw e1;
+      dados.foto = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
+    }
+    const { error } = await supa.from("perfis").update(dados).eq("id", perfil.id);
+    if (error) throw error;
+    fotoNova = null; $("p-foto").value = "";
+    avisar("Perfil salvo!", "ok"); mostrar();
+  } catch (e) { avisar(mensagemErro(e), "erro"); }
+  ocupado(b, false);
+});
+
+// ---------- artigos ----------
+function slug(t) {
+  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70) || "artigo";
+}
+async function carregarArtigos() {
+  const ul = $("lista-artigos"); ul.innerHTML = "<li>Carregando…</li>";
+  let q = supa.from("artigos").select("id,slug,titulo,autor_nome,autor_id,publicado,criado_em").order("criado_em", { ascending: false });
+  if (!["editor", "admin"].includes(perfil.papel)) q = q.eq("autor_id", perfil.id);
+  const { data, error } = await q;
+  if (error) { ul.innerHTML = `<li>${esc(mensagemErro(error))}</li>`; return; }
+  ul.innerHTML = data.length ? data.map((a) => `
+    <li><div><strong>${esc(a.titulo)}</strong><span class="meta">${esc(a.autor_nome)} · ${esc(dataPorExtenso(a.criado_em))} · ${a.publicado ? "publicado" : "rascunho"}</span></div>
+      ${a.publicado ? `<a href="artigos.html?a=${encodeURIComponent(a.slug)}" target="_blank" class="link-botao">Ver</a>` : ""}
+      <button type="button" data-editar="${a.id}">Editar</button>
+      <button type="button" data-apagar="${a.id}" data-titulo="${esc(a.titulo)}">Apagar</button></li>`).join("")
+    : "<li>Nenhum artigo ainda. Escreva o primeiro aí em cima!</li>";
+}
+function limparArtigo() {
+  editandoArtigo = null; $("form-artigo").reset(); $("a-publicado").checked = true; $("previa").hidden = true;
+  $("titulo-artigo").textContent = "Novo artigo"; $("botao-artigo").textContent = "Publicar"; $("cancelar-artigo").hidden = true;
+}
+$("cancelar-artigo").addEventListener("click", limparArtigo);
+$("previa-artigo").addEventListener("click", () => {
+  const p = $("previa"); p.hidden = false;
+  p.innerHTML = `<article class="artigo"><h1>${esc($("a-titulo").value || "Título")}</h1><div class="meta">Por <strong>${esc(perfil.nome)}</strong></div><div class="texto-artigo">${markdown($("a-texto").value || "O texto aparece aqui.")}</div></article>`;
+  p.scrollIntoView({ behavior: "smooth" });
+});
+$("form-artigo").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const b = $("botao-artigo"); ocupado(b, true, "Salvando…");
+  try {
+    const titulo = $("a-titulo").value.trim(), texto = $("a-texto").value.trim(), publicado = $("a-publicado").checked;
+    if (editandoArtigo) {
+      const { error } = await supa.from("artigos").update({ titulo, texto, publicado, editado_em: new Date().toISOString() }).eq("id", editandoArtigo);
+      if (error) throw error;
+    } else {
+      let s = slug(titulo);
+      const { data: iguais } = await supa.from("artigos").select("slug").like("slug", s + "%");
+      if (iguais && iguais.some((x) => x.slug === s)) s += "-" + Date.now().toString(36).slice(-4);
+      const { error } = await supa.from("artigos").insert({ slug: s, titulo, texto, publicado, autor_id: perfil.id, autor_nome: perfil.nome });
+      if (error) throw error;
+    }
+    avisar(publicado ? "Artigo publicado! Ele já aparece na página de Artigos." : "Rascunho salvo.", "ok");
+    limparArtigo(); carregarArtigos();
+  } catch (e) { avisar(mensagemErro(e), "erro"); }
+  ocupado(b, false);
+});
+$("lista-artigos").addEventListener("click", async (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  if (b.dataset.editar) {
+    const { data, error } = await supa.from("artigos").select("*").eq("id", b.dataset.editar).single();
+    if (error) return avisar(mensagemErro(error), "erro");
+    editandoArtigo = data.id; $("a-titulo").value = data.titulo; $("a-texto").value = data.texto; $("a-publicado").checked = data.publicado;
+    $("titulo-artigo").textContent = "Editando artigo"; $("botao-artigo").textContent = "Salvar alterações"; $("cancelar-artigo").hidden = false;
+    $("form-artigo").scrollIntoView({ behavior: "smooth" });
+  } else if (b.dataset.apagar && confirm(`Apagar o artigo "${b.dataset.titulo}"? Não dá para desfazer.`)) {
+    const { error } = await supa.from("artigos").delete().eq("id", b.dataset.apagar);
+    if (error) return avisar(mensagemErro(error), "erro");
+    avisar("Artigo apagado.", "ok"); carregarArtigos();
+  }
+});
+
+// ---------- administração ----------
+async function carregarPessoas() {
+  const ul = $("lista-pessoas"); ul.innerHTML = "<li>Carregando…</li>";
+  const { data, error } = await supa.from("perfis").select("*").order("criado_em", { ascending: false });
+  if (error) { ul.innerHTML = `<li>${esc(mensagemErro(error))}</li>`; return; }
+  pessoas = data; desenharPessoas();
+}
+function desenharPessoas() {
+  const lista = pessoas.filter((p) => filtroAdmin === "todos" || (filtroAdmin === "pendente" ? p.papel === "pendente" : APROVADO.includes(p.papel)));
+  const pend = pessoas.filter((p) => p.papel === "pendente").length;
+  document.querySelector('[data-filtro="pendente"]').textContent = `Aguardando (${pend})`;
+  $("lista-pessoas").innerHTML = lista.length ? lista.map((p) => `
+    <li data-id="${p.id}">
+      <img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
+      <div><strong>${esc(p.nome || "(sem nome)")}</strong>
+        <span class="meta">${p.arroba ? "@" + esc(p.arroba) + " · " : ""}${p.matricula ? "Nº " + esc(p.matricula) + " · " : ""}cadastro em ${esc(dataPorExtenso(p.criado_em))}${p.idade ? " · " + esc(p.idade) + " anos" : ""}</span></div>
+      ${p.papel === "pendente" ? `<button type="button" class="aprovar" data-papel="membro">Aprovar</button><button type="button" data-papel="recusado">Recusar</button>` : ""}
+      <select data-mudar aria-label="Permissão de ${esc(p.nome)}" ${p.id === perfil.id ? "disabled title='Você não pode mudar a sua própria permissão'" : ""}>
+        ${Object.entries(PAPEIS).map(([k, n]) => `<option value="${k}"${k === p.papel ? " selected" : ""}>${n}</option>`).join("")}
+      </select>
+      <button type="button" data-matricula title="Usar uma matrícula que a pessoa já tinha">Nº</button>
+    </li>`).join("") : `<li>${filtroAdmin === "pendente" ? "Ninguém aguardando aprovação." : "Nenhuma pessoa aqui."}</li>`;
+}
+document.querySelectorAll("[data-filtro]").forEach((b) => b.addEventListener("click", () => {
+  filtroAdmin = b.dataset.filtro;
+  document.querySelectorAll("[data-filtro]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  desenharPessoas();
+}));
+async function definir(id, papel) {
+  const { error } = await supa.rpc("definir_papel", { pessoa: id, novo_papel: papel });
+  if (error) return avisar(mensagemErro(error), "erro");
+  const p = pessoas.find((x) => x.id === id);
+  avisar(`${esc(p ? p.nome : "Pessoa")}: ${esc(PAPEIS[papel])}.`, "ok");
+  carregarPessoas();
+}
+$("lista-pessoas").addEventListener("click", async (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  const id = b.closest("li").dataset.id;
+  if (b.dataset.papel) definir(id, b.dataset.papel);
+  if (b.hasAttribute("data-matricula")) {
+    const p = pessoas.find((x) => x.id === id);
+    const nova = prompt(`Matrícula de ${p.nome} (6 números, ex.: 001003). Use para quem já era membro antes do cadastro:`, p.matricula || "");
+    if (nova === null) return;
+    if (!/^\d{6}$/.test(nova.trim())) return avisar("A matrícula precisa ter 6 números.", "erro");
+    const { error } = await supa.from("perfis").update({ matricula: nova.trim() }).eq("id", id);
+    if (error) return avisar(/duplicate|unique/i.test(error.message) ? "Essa matrícula já pertence a outra pessoa." : mensagemErro(error), "erro");
+    avisar("Matrícula atualizada.", "ok"); carregarPessoas();
+  }
+});
+$("lista-pessoas").addEventListener("change", (ev) => {
+  const s = ev.target.closest("[data-mudar]"); if (!s) return;
+  definir(s.closest("li").dataset.id, s.value);
+});
+
+// ---------- início ----------
+supa.auth.onAuthStateChange((evento) => {
+  if (evento === "PASSWORD_RECOVERY") { $("tela-fora").hidden = true; $("tela-dentro").hidden = true; $("form-nova-senha").hidden = false; }
+});
+mostrar();
