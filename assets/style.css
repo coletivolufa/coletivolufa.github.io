@@ -137,6 +137,10 @@ main { margin-left: var(--menu); min-height: 100vh; }
 .origem svg { width: 64px; height: 64px; flex: none; color: var(--vermelho); }
 .origem p { margin: 0; font-size: 20px; }
 .origem a { color: var(--preto); font-weight: 700; }
+.origem figure { margin: 0; }
+.origem blockquote { margin: 0; font-family: var(--leitura); font-size: clamp(20px, 2.4vw, 26px); font-style: italic; line-height: 1.45; }
+.origem figcaption { margin-top: 10px; font-size: 15px; }
+.origem cite { font-style: normal; font-weight: 700; }
 
 /* ---------- Membros ---------- */
 .membros { background: var(--papel); }
