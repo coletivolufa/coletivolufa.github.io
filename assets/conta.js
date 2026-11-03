@@ -102,7 +102,8 @@ async function mostrar() {
   $("p-nome").value = perfil.nome; $("p-arroba").value = perfil.arroba; $("p-rede").value = perfil.rede || "instagram";
   $("p-idade").value = perfil.idade || "";
   document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
-  document.querySelector('[data-aba="artigos"]').hidden = !PODE_ESCREVER.includes(perfil.papel);
+  // artigos: só membros ativos com permissão de autor, editor ou admin
+  document.querySelector('[data-aba="artigos"]').hidden = !(PODE_ESCREVER.includes(perfil.papel) && !ehComum(perfil));
   document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";
   $("titulo-lista-artigos").textContent = ["editor", "admin"].includes(perfil.papel) ? "Artigos do site" : "Meus artigos";
 }
@@ -245,7 +246,10 @@ function desenharPessoas() {
       ${p.papel === "pendente" ? `<button type="button" class="aprovar" data-papel="membro" data-classe="${ATIVO}">Aprovar como ativo</button><button type="button" class="aprovar aprovar--comum" data-papel="membro" data-classe="${COMUM}">Aprovar como comum</button><button type="button" data-papel="recusado">Recusar</button>`
         : `<select data-classe-sel aria-label="Classificação de ${esc(p.nome)}"><option value="${ATIVO}"${!ehComum(p) ? " selected" : ""}>Membro ativo</option><option value="${COMUM}"${ehComum(p) ? " selected" : ""}>Membro comum</option></select>`}
       <select data-mudar aria-label="Permissão de ${esc(p.nome)}" ${p.id === perfil.id ? "disabled title='Você não pode mudar a sua própria permissão'" : ""}>
-        ${Object.entries(PAPEIS).map(([k, n]) => `<option value="${k}"${k === p.papel ? " selected" : ""}>${n}</option>`).join("")}
+        ${Object.entries(PAPEIS).map(([k, n]) => {
+          const bloqueado = ehComum(p) && PODE_ESCREVER.includes(k) && k !== p.papel;
+          return `<option value="${k}"${k === p.papel ? " selected" : ""}${bloqueado ? " disabled" : ""}>${n}${bloqueado ? " (só membro ativo)" : ""}</option>`;
+        }).join("")}
       </select>
       <button type="button" data-matricula title="Usar uma matrícula que a pessoa já tinha">Nº</button>
     </li>`).join("") : `<li>${filtroAdmin === "pendente" ? "Ninguém aguardando aprovação." : "Nenhuma pessoa aqui."}</li>`;
@@ -285,6 +289,14 @@ $("lista-pessoas").addEventListener("click", async (ev) => {
 $("lista-pessoas").addEventListener("change", async (ev) => {
   const c = ev.target.closest("[data-classe-sel]");
   if (c) {
+    const alvo = pessoas.find((x) => x.id === c.closest("li").dataset.id);
+    // virar membro comum tira a permissão de escrever artigos
+    if (c.value === COMUM && alvo && PODE_ESCREVER.includes(alvo.papel)) {
+      if (alvo.id === perfil.id) { c.value = ATIVO; return avisar("Você não pode se tornar membro comum sendo admin.", "erro"); }
+      if (!confirm(`${alvo.nome} é ${PAPEIS[alvo.papel]}. Membros comuns não escrevem artigos, então a permissão dele(a) volta para Membro. Continuar?`)) { c.value = ATIVO; return; }
+      const { error: e2 } = await supa.rpc("definir_papel", { pessoa: alvo.id, novo_papel: "membro" });
+      if (e2) return avisar(mensagemErro(e2), "erro");
+    }
     const { error } = await supa.from("perfis").update({ funcao: c.value }).eq("id", c.closest("li").dataset.id);
     if (error) return avisar(mensagemErro(error), "erro");
     avisar(`Classificação alterada para ${esc(c.value)}.`, "ok"); return carregarPessoas();
