@@ -36,7 +36,7 @@ function montarMenu() {
         <span class="em-breve" aria-disabled="true">${ICONES.breve}Em breve</span>
       </nav>
       <div class="menu__rodape">
-        Siga <a href="https://www.instagram.com/ocamarada/" target="_blank" rel="noopener">@ocamarada</a>
+        Siga <a href="https://www.instagram.com/_ocamarada/" target="_blank" rel="noopener">@_ocamarada</a>
       </div>
     </aside>`;
   document.body.insertAdjacentHTML("afterbegin", menu);
@@ -54,7 +54,7 @@ function montarMenu() {
     <footer class="rodape">
       <div class="conteudo">
         <div><strong>Coletivo Lufã</strong><br>Coletivo marxista de esquerda radical.</div>
-        <div>Ideia de Leonardo Duarte · <a href="https://www.instagram.com/ocamarada/" target="_blank" rel="noopener">@ocamarada</a><br>
+        <div>Ideia de Leonardo Duarte · <a href="https://www.instagram.com/_ocamarada/" target="_blank" rel="noopener">@_ocamarada</a><br>
         <a href="publicar.html">Área dos membros</a></div>
       </div>
     </footer>`);
