@@ -7,19 +7,38 @@
     "foto": "membros/leonardo-duarte.jpg"
   },
   {
-    "nome": "Nome do membro",
-    "arroba": "perfil",
+    "nome": "Eduarda Prado",
+    "arroba": "",
     "rede": "instagram",
-    "funcao": "",
-    "foto": "",
-    "exemplo": true
+    "funcao": "Membro",
+    "foto": ""
   },
   {
-    "nome": "Nome do membro",
-    "arroba": "perfil",
+    "nome": "Mattheus Batinga",
+    "arroba": "vermelhobrasa_",
     "rede": "instagram",
-    "funcao": "",
-    "foto": "",
-    "exemplo": true
+    "funcao": "Membro",
+    "foto": ""
+  },
+  {
+    "nome": "Ana Carolina Alapone",
+    "arroba": "anacarolinaam_psi",
+    "rede": "instagram",
+    "funcao": "Membro",
+    "foto": ""
+  },
+  {
+    "nome": "Naiara",
+    "arroba": "na.iaraaa",
+    "rede": "instagram",
+    "funcao": "Membro",
+    "foto": ""
+  },
+  {
+    "nome": "Galo Comuna",
+    "arroba": "galocomuna",
+    "rede": "instagram",
+    "funcao": "Membro",
+    "foto": ""
   }
 ]
