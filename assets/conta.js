@@ -133,12 +133,20 @@ $("form-perfil").addEventListener("submit", async (ev) => {
 
 // ---------- carteirinha ----------
 function carregarCarteirinha() {
-  const url = supa.storage.from("fotos").getPublicUrl(`${perfil.id}/carteirinha.png`).data.publicUrl + "?t=" + Date.now();
+  const base = (nome) => supa.storage.from("fotos").getPublicUrl(`${perfil.id}/${nome}`).data.publicUrl + "?t=" + Date.now();
   const img = $("carteira-img");
-  img.onload = () => { img.hidden = false; $("carteira-acoes").hidden = false; $("carteira-vazia").hidden = true; };
-  img.onerror = () => { img.hidden = true; $("carteira-acoes").hidden = true; $("carteira-vazia").hidden = false; };
-  img.src = url;
-  fetch(url).then((r) => r.ok ? r.blob() : null).then((b) => { if (b) $("carteira-baixar").href = URL.createObjectURL(b); }).catch(() => {});
+  const vazia = () => { img.hidden = true; $("carteira-acoes").hidden = true; $("carteira-vazia").hidden = false; };
+  const tentar = (lista) => {
+    if (!lista.length) return vazia();
+    const url = base(lista[0]);
+    img.onload = () => {
+      img.hidden = false; $("carteira-acoes").hidden = false; $("carteira-vazia").hidden = true;
+      fetch(url).then((r) => r.blob()).then((b) => { $("carteira-baixar").href = URL.createObjectURL(b); $("carteira-baixar").download = "carteirinha-coletivo-lufa." + lista[0].split(".").pop(); }).catch(() => {});
+    };
+    img.onerror = () => tentar(lista.slice(1));
+    img.src = url;
+  };
+  tentar(["carteirinha.jpg", "carteirinha.png"]);
 }
 
 // ---------- artigos ----------
