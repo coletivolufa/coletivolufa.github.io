@@ -579,3 +579,21 @@ main.catalogo { background: var(--preto); color: var(--papel); }
   .cat-capa__texto p { display: none; }
 }
 .cat-capa__texto .cat-topo__marca { display: table; margin: 0 0 6px auto; }
+/* quadro "O que é ser militante?" logo abaixo da arte, compacto */
+.cat-militante { padding: 22px clamp(20px, 5vw, 64px) 26px; background: var(--preto); }
+.cat-militante .militante { padding: 22px 26px; box-shadow: 6px 6px 0 var(--vermelho); }
+.cat-militante .militante svg { width: 46px; height: 46px; }
+.cat-militante .militante__titulo { font-size: clamp(30px, 3.6vw, 40px); margin-bottom: 6px; }
+.cat-militante .militante p { font-size: 16px; margin-bottom: 8px; }
+.militante__mais summary { cursor: pointer; font-family: var(--titulo); font-size: 20px; letter-spacing: .06em; color: var(--vermelho); list-style: none; display: inline-flex; align-items: center; gap: 6px; }
+.militante__mais summary::-webkit-details-marker { display: none; }
+.militante__mais summary::after { content: "▾"; font-size: 16px; transition: transform .2s; }
+.militante__mais[open] summary::after { transform: rotate(180deg); }
+.militante__mais[open] summary { margin-bottom: 8px; }
+@media (max-width: 760px) {
+  .cat-militante { padding: 16px 14px 18px; }
+  .cat-militante .militante { flex-direction: row; gap: 14px; padding: 18px 16px; }
+  .cat-militante .militante svg { width: 32px; height: 32px; }
+  .cat-militante .militante__titulo { font-size: 28px; }
+  .cat-militante .militante p { font-size: 15px; }
+}
