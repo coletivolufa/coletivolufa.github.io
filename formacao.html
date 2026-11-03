@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=14">
+  <link rel="stylesheet" href="assets/style.css?v=17">
 </head>
 <body data-pagina="formacao">
 <main class="catalogo">
@@ -56,12 +56,27 @@
   <div id="detalhe-conteudo"></div>
 </dialog>
 
+<dialog class="pedir-conta" id="pedir-conta" aria-labelledby="pedir-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar-pedido>×</button>
+  <div class="pedir-conta__corpo">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
+    <h2 id="pedir-titulo">Entre para assistir</h2>
+    <p>A formação é gratuita, mas exclusiva para quem tem cadastro no Coletivo Lufã. Leva menos de um minuto.</p>
+    <div class="pedir-conta__botoes">
+      <a class="botao botao--vermelho" id="pedir-cadastrar" href="conta.html">Criar minha conta</a>
+      <a class="botao botao--escuro" id="pedir-entrar" href="conta.html">Já tenho conta: entrar</a>
+    </div>
+  </div>
+</dialog>
+
 <dialog class="player" id="player" aria-labelledby="player-titulo">
   <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar-player>×</button>
   <div id="player-conteudo"></div>
 </dialog>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=11"></script>
-<script src="assets/formacao.js?v=10"></script>
+<script src="assets/supa.js?v=2"></script>
+<script src="assets/formacao.js?v=11"></script>
 </body>
 </html>

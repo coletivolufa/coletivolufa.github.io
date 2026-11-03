@@ -647,3 +647,14 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .minha-carteira img { width: 100%; max-width: 360px; border-radius: 10px; box-shadow: 10px 12px 0 var(--preto); }
 .minha-carteira .vazio { width: 100%; }
 .pessoas button.aprovar--comum { background: var(--amarelo); border-color: var(--amarelo); color: var(--preto); }
+
+/* janela "entre para assistir" da Formação */
+.pedir-conta { border: 0; padding: 0; width: min(520px, calc(100vw - 32px)); background: var(--vermelho); color: var(--branco); box-shadow: 12px 12px 0 var(--amarelo); }
+.pedir-conta::backdrop { background: rgba(10,8,7,.82); }
+.pedir-conta .ficha__fechar { background: var(--preto); }
+.pedir-conta__corpo { padding: 36px 32px 34px; text-align: center; }
+.pedir-conta__corpo svg { width: 56px; height: 56px; color: var(--amarelo); }
+.pedir-conta__corpo h2 { font-size: clamp(42px, 7vw, 58px); margin: 8px 0 10px; }
+.pedir-conta__corpo p { font-size: 17px; margin: 0 0 24px; }
+.pedir-conta__botoes { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+.pedir-conta__botoes .botao { justify-content: center; }

@@ -13,6 +13,11 @@ function ocupado(botao, sim, texto) {
   else { botao.textContent = botao.dataset.texto || botao.textContent; botao.disabled = false; }
 }
 
+// ---------- volta para onde a pessoa estava (ex.: um episódio da Formação) ----------
+const params = new URLSearchParams(location.search);
+const voltar = (() => { const v = params.get("voltar") || ""; return /^[a-z0-9_-]+\.html(#[\w\-\/=]*)?$/i.test(v) ? v : ""; })();
+function irDeVolta() { if (voltar) { location.href = voltar; return true; } return false; }
+
 // ---------- abas ----------
 document.querySelectorAll("[data-aba-fora]").forEach((b) => b.addEventListener("click", () => {
   document.querySelectorAll("[data-aba-fora]").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
@@ -35,7 +40,10 @@ $("form-entrar").addEventListener("submit", async (ev) => {
   const { error } = await supa.auth.signInWithPassword({ email: $("e-email").value.trim(), password: $("e-senha").value });
   ocupado(b, false);
   if (error) return avisar(mensagemErro(error), "erro");
-  avisar(""); mostrar();
+  if (irDeVolta()) return;
+  avisar(""); if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
+if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
+mostrar();
 });
 
 $("form-cadastrar").addEventListener("submit", async (ev) => {
@@ -48,8 +56,11 @@ $("form-cadastrar").addEventListener("submit", async (ev) => {
   ocupado(b, false);
   if (error) return avisar(mensagemErro(error), "erro");
   if (!data.session) return avisar("Conta criada! Enviamos um e-mail de confirmação: abra o link para ativar a conta e depois entre por aqui.", "ok");
+  if (irDeVolta()) return;
   avisar("Conta criada! Agora é só aguardar a aprovação da secretaria. Enquanto isso, complete o seu perfil.", "ok");
-  mostrar();
+  if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
+if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
+mostrar();
 });
 
 $("esqueci").addEventListener("click", async () => {
@@ -63,7 +74,9 @@ $("form-nova-senha").addEventListener("submit", async (ev) => {
   ev.preventDefault();
   const { error } = await supa.auth.updateUser({ password: $("n-senha").value });
   if (error) return avisar(mensagemErro(error), "erro");
-  $("form-nova-senha").hidden = true; avisar("Senha alterada!", "ok"); mostrar();
+  $("form-nova-senha").hidden = true; avisar("Senha alterada!", "ok"); if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
+if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
+mostrar();
 });
 
 $("sair").addEventListener("click", async () => { await supa.auth.signOut(); perfil = null; avisar(""); mostrar(); });
@@ -126,7 +139,9 @@ $("form-perfil").addEventListener("submit", async (ev) => {
     const { error } = await supa.from("perfis").update(dados).eq("id", perfil.id);
     if (error) throw error;
     fotoNova = null; $("p-foto").value = "";
-    avisar("Perfil salvo!", "ok"); mostrar();
+    avisar("Perfil salvo!", "ok"); if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
+if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
+mostrar();
   } catch (e) { avisar(mensagemErro(e), "erro"); }
   ocupado(b, false);
 });
@@ -282,4 +297,6 @@ $("lista-pessoas").addEventListener("change", async (ev) => {
 supa.auth.onAuthStateChange((evento) => {
   if (evento === "PASSWORD_RECOVERY") { $("tela-fora").hidden = true; $("tela-dentro").hidden = true; $("form-nova-senha").hidden = false; }
 });
+if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
+if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
 mostrar();

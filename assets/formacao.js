@@ -161,7 +161,21 @@ function abrirDetalhe(id, empilhar = true) {
 function fecharDetalhe() { if (detalhe.open) detalhe.close(); }
 
 // ---------- player ----------
-function abrir(serieId, epId, empilhar = true) {
+// assistir exige cadastro: sem conta, abre a janela pedindo login ou cadastro
+const pedido = document.getElementById("pedir-conta");
+async function temConta() { try { return !!(await usuarioAtual()); } catch (_) { return false; } }
+function pedirConta(serieId, epId) {
+  const voltar = encodeURIComponent(`formacao.html#${serieId}/${epId}`);
+  document.getElementById("pedir-cadastrar").href = `conta.html?criar=1&voltar=${voltar}`;
+  document.getElementById("pedir-entrar").href = `conta.html?voltar=${voltar}`;
+  fecharDetalhe();
+  if (!pedido.open) pedido.showModal();
+}
+pedido.querySelector("[data-fechar-pedido]").addEventListener("click", () => pedido.close());
+pedido.addEventListener("click", (ev) => { if (ev.target === pedido) pedido.close(); });
+
+async function abrir(serieId, epId, empilhar = true) {
+  if (!(await temConta())) { if (!empilhar && location.hash) history.replaceState({}, "", location.pathname); return pedirConta(serieId, epId); }
   const s = serie(serieId);
   if (!s) return;
   const eps = epsDe(s), ep = eps.find((e) => e.id === epId);
