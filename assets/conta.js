@@ -92,7 +92,7 @@ async function mostrar() {
   $("titulo").textContent = "Olá, " + (perfil.nome.split(" ")[0] || "camarada") + "!";
   $("subtitulo").textContent = APROVADO.includes(perfil.papel) ? "Bem-vindo(a) à área do militante." : "Sua conta foi criada.";
   $("topo-nome").textContent = perfil.nome || perfil.email;
-  $("topo-status").textContent = APROVADO.includes(perfil.papel) ? `${classificacao(perfil)} · ${PAPEIS[perfil.papel]}` : (PAPEIS[perfil.papel] || perfil.papel);
+  $("topo-status").textContent = APROVADO.includes(perfil.papel) ? `${textoOcupacao(perfil)} · ${PAPEIS[perfil.papel]}` : (PAPEIS[perfil.papel] || perfil.papel);
   $("topo-status").dataset.papel = perfil.papel;
   $("topo-matricula").textContent = perfil.matricula ? "Matrícula Nº " + perfil.matricula : "";
   $("topo-foto").src = perfil.foto || "assets/img/avatar.svg";
@@ -248,7 +248,7 @@ function desenharPessoas() {
     <li data-id="${p.id}">
       <img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
       <div><strong>${esc(p.nome || "(sem nome)")}</strong>
-        <span class="meta">${APROVADO.includes(p.papel) ? `<b>${esc(classificacao(p))}</b> · ` : ""}${p.arroba ? "@" + esc(p.arroba) + " · " : ""}${p.matricula ? "Nº " + esc(p.matricula) + " · " : ""}cadastro em ${esc(dataPorExtenso(p.criado_em))}${p.idade ? " · " + esc(p.idade) + " anos" : ""}</span></div>
+        <span class="meta">${APROVADO.includes(p.papel) ? `<b>${esc(textoOcupacao(p))}</b> · ` : ""}${p.arroba ? "@" + esc(p.arroba) + " · " : ""}${p.matricula ? "Nº " + esc(p.matricula) + " · " : ""}cadastro em ${esc(dataPorExtenso(p.criado_em))}${p.idade ? " · " + esc(p.idade) + " anos" : ""}</span></div>
       ${p.papel === "pendente" ? `<button type="button" class="aprovar" data-papel="membro" data-classe="${ATIVO}">Aprovar como ativo</button><button type="button" class="aprovar aprovar--comum" data-papel="membro" data-classe="${COMUM}">Aprovar como comum</button><button type="button" data-papel="recusado">Recusar</button>`
         : `<select data-classe-sel aria-label="Classificação de ${esc(p.nome)}"><option value="${ATIVO}"${!ehComum(p) ? " selected" : ""}>Membro ativo</option><option value="${COMUM}"${ehComum(p) ? " selected" : ""}>Membro comum</option></select>`}
       <select data-mudar aria-label="Permissão de ${esc(p.nome)}" ${p.id === perfil.id ? "disabled title='Você não pode mudar a sua própria permissão'" : ""}>
@@ -257,6 +257,7 @@ function desenharPessoas() {
           return `<option value="${k}"${k === p.papel ? " selected" : ""}${bloqueado ? " disabled" : ""}>${n}${bloqueado ? " (só membro ativo)" : ""}</option>`;
         }).join("")}
       </select>
+      ${APROVADO.includes(p.papel) && !ehComum(p) ? `<button type="button" data-ocupacoes>Ocupações</button>` : ""}
       <button type="button" data-matricula title="Usar uma matrícula que a pessoa já tinha">Nº</button>
     </li>`).join("") : `<li>Nenhuma pessoa aqui.</li>`;
 }
@@ -282,6 +283,7 @@ $("lista-pessoas").addEventListener("click", async (ev) => {
     }
     definir(id, b.dataset.papel);
   }
+  if (b.hasAttribute("data-ocupacoes")) return abrirOcupacoes(pessoas.find((x) => x.id === id));
   if (b.hasAttribute("data-matricula")) {
     const p = pessoas.find((x) => x.id === id);
     const nova = prompt(`Matrícula de ${p.nome} (6 números, ex.: 001003). Use para quem já era membro antes do cadastro:`, p.matricula || "");
@@ -309,6 +311,40 @@ $("lista-pessoas").addEventListener("change", async (ev) => {
   }
   const s = ev.target.closest("[data-mudar]"); if (!s) return;
   definir(s.closest("li").dataset.id, s.value);
+});
+
+// ---------- ocupações do membro ativo ----------
+let ocupAlvo = null, ocupLista = [];
+function desenharOcupacoes() {
+  $("ocup-chips").innerHTML = ocupLista.length ? ocupLista.map((o, i) => `<span class="chip">${esc(o)}<button type="button" data-tirar="${i}" aria-label="Tirar ${esc(o)}">×</button></span>`).join("")
+    : '<span class="meta">Nenhuma ocupação além de membro ativo.</span>';
+  $("ocup-previa").textContent = funcaoDe(ocupLista);
+}
+function abrirOcupacoes(p) {
+  if (!p) return;
+  ocupAlvo = p; ocupLista = ocupacoes(p);
+  $("ocup-nome").textContent = p.nome;
+  $("ocup-sugestoes").innerHTML = OCUPACOES_SUGERIDAS.map((o) => `<option value="${esc(o)}">`).join("");
+  $("ocup-nova").value = ""; desenharOcupacoes(); $("janela-ocupacoes").showModal();
+}
+function adicionarOcupacao() {
+  const v = $("ocup-nova").value.replace(/·/g, "").trim();
+  if (!v) return;
+  if (!ocupLista.some((o) => o.toLowerCase() === v.toLowerCase())) ocupLista.push(v.charAt(0).toUpperCase() + v.slice(1));
+  $("ocup-nova").value = ""; desenharOcupacoes(); $("ocup-nova").focus();
+}
+$("ocup-adicionar").addEventListener("click", adicionarOcupacao);
+$("ocup-nova").addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); adicionarOcupacao(); } });
+$("ocup-chips").addEventListener("click", (ev) => { const b = ev.target.closest("[data-tirar]"); if (b) { ocupLista.splice(Number(b.dataset.tirar), 1); desenharOcupacoes(); } });
+$("ocup-cancelar").addEventListener("click", () => $("janela-ocupacoes").close());
+$("ocup-salvar").addEventListener("click", async () => {
+  if ($("ocup-nova").value.trim()) adicionarOcupacao();
+  const { error } = await supa.from("perfis").update({ funcao: funcaoDe(ocupLista) }).eq("id", ocupAlvo.id);
+  if (error) return avisar(mensagemErro(error), "erro");
+  $("janela-ocupacoes").close();
+  avisar(`Ocupações de ${esc(ocupAlvo.nome)}: ${esc(funcaoDe(ocupLista))}.`, "ok");
+  if (ocupAlvo.id === perfil.id) mostrar();
+  carregarPessoas();
 });
 
 // ---------- início ----------

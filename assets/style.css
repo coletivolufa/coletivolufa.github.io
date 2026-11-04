@@ -658,3 +658,13 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .pedir-conta__corpo p { font-size: 17px; margin: 0 0 24px; }
 .pedir-conta__botoes { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
 .pedir-conta__botoes .botao { justify-content: center; }
+
+/* ocupações */
+.janela-ocup { border: 0; padding: 28px; width: min(560px, calc(100vw - 24px)); background: var(--papel); box-shadow: 10px 10px 0 var(--vermelho); }
+.janela-ocup::backdrop { background: rgba(10,8,7,.7); }
+.janela-ocup h2 { font-size: 36px; color: var(--vermelho); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; min-height: 36px; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: var(--vermelho); color: var(--branco); font-family: var(--titulo); font-size: 20px; letter-spacing: .04em; padding: 4px 6px 1px 12px; }
+.chip button { background: none; border: 0; color: var(--amarelo); font-size: 22px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.ocup-add { display: flex; gap: 10px; flex-wrap: wrap; }
+.ocup-add input { flex: 1; min-width: 200px; font: inherit; padding: 10px 12px; border: 2px solid var(--preto); background: var(--branco); }

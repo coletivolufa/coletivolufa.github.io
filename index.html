@@ -93,7 +93,7 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=11"></script>
-<script src="assets/supa.js?v=2"></script>
+<script src="assets/supa.js?v=3"></script>
 <script>
   (async () => {
     const alvo = document.getElementById("lista-membros");
@@ -108,7 +108,7 @@
             <img src="${esc(m.foto || "assets/img/avatar.svg")}" alt="Foto de ${esc(m.nome)}" loading="lazy"
                  onerror="this.onerror=null;this.src='assets/img/avatar.svg'">
             <h3>${esc(m.nome)}</h3>
-            ${m.funcao ? `<div class="membro__funcao">${esc(m.funcao)}</div>` : ""}
+            <div class="membro__funcao">${esc(ocupacoes(m).join(" · ") || "Membro")}</div>
             ${arroba ? `<a href="${esc(link)}" target="_blank" rel="noopener">@${esc(arroba)}</a>` : ""}
           </article>`;
       }).join("");

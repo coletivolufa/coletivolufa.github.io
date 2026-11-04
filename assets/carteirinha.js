@@ -44,7 +44,7 @@ function desenhar() {
   escrever($("nome").value.trim().toUpperCase(), 232, LINHA.nome, 728);
   const idade = $("idade").value.trim();
   escrever(idade ? `${idade} ANOS` : "", 245, LINHA.idade, 580);
-  escrever(classificacao(membro).toUpperCase(), 66, 924, 760, 48);
+  escrever(textoOcupacao(membro).toUpperCase(), 66, 924, 790, 48);
   escrever(membro ? membro.matricula : "", 470, LINHA.matricula, 480, 50);
   escrever(DATA.d, 584, LINHA.data, 100, 46, "center");
   escrever(DATA.m, 724, LINHA.data, 100, 46, "center");
@@ -119,7 +119,7 @@ function preencherDaConta() {
   $("nome").value = eu.nome || "";
   if (eu.idade) $("idade").value = eu.idade;
   $("ver-matricula").textContent = eu.matricula;
-  $("ver-ocupacao").textContent = classificacao(eu);
+  $("ver-ocupacao").textContent = textoOcupacao(eu);
   if (eu.aprovado_em) { const d = new Date(eu.aprovado_em); DATA.d = String(d.getDate()).padStart(2, "0"); DATA.m = String(d.getMonth() + 1).padStart(2, "0"); DATA.a = String(d.getFullYear()); }
   $("ver-data").textContent = `${DATA.d}/${DATA.m}/${DATA.a}`;
   if (eu.foto) { usarFoto(eu.foto); $("foto-aviso").textContent = "Usamos a foto do seu perfil. Se quiser, escolha outra só para a carteirinha."; }

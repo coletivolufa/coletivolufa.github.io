@@ -16,6 +16,16 @@ const PODE_ESCREVER = ["autor", "editor", "admin"];
 const ATIVO = "Membro ativo", COMUM = "Membro comum";
 const ehComum = (m) => /comum/i.test(String((m && m.funcao) || ""));
 const classificacao = (m) => (ehComum(m) ? COMUM : ATIVO);
+// ocupações do membro ativo ficam no mesmo campo: "Membro ativo · Idealizador · Secretário"
+const OCUPACOES_SUGERIDAS = ["Idealizador", "Idealizadora", "Secretário", "Secretária", "Coordenador", "Coordenadora",
+  "Assessor", "Assessora", "Designer", "Pesquisador", "Pesquisadora", "Redator", "Redatora", "Editor de vídeo", "Editora de vídeo",
+  "Social media", "Fotógrafo", "Fotógrafa", "Tesoureiro", "Tesoureira", "Formador", "Formadora", "Apresentador", "Apresentadora"];
+function ocupacoes(m) {
+  if (ehComum(m)) return [];
+  return String((m && m.funcao) || "").split("·").map((t) => t.trim()).filter((t) => t && !/^membro( ativo)?$/i.test(t));
+}
+const textoOcupacao = (m) => (ehComum(m) ? COMUM : [ATIVO, ...ocupacoes(m)].join(" · "));
+const funcaoDe = (lista) => [ATIVO, ...lista].join(" · ");
 
 async function usuarioAtual() {
   const { data } = await supa.auth.getSession();
