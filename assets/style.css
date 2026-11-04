@@ -668,3 +668,7 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .chip button { background: none; border: 0; color: var(--amarelo); font-size: 22px; line-height: 1; cursor: pointer; padding: 0 4px; }
 .ocup-add { display: flex; gap: 10px; flex-wrap: wrap; }
 .ocup-add input { flex: 1; min-width: 200px; font: inherit; padding: 10px 12px; border: 2px solid var(--preto); background: var(--branco); }
+.ordem li { gap: 10px; }
+.ordem__pos { font-family: var(--titulo); font-size: 26px; color: var(--vermelho); width: 28px; text-align: center; }
+.ordem button { font-size: 18px; width: 40px; padding: 6px 0; }
+.ordem button[disabled] { opacity: .3; cursor: default; }

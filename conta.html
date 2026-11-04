@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=18">
+  <link rel="stylesheet" href="assets/style.css?v=19">
 </head>
 <body data-pagina="conta">
 <main>
@@ -141,6 +141,11 @@
             <button type="button" data-filtro="ativos" aria-pressed="false">Membros ativos</button>
           </div>
           <ul class="itens pessoas" id="lista-pessoas"></ul>
+
+          <h2 style="margin-top:44px;font-size:36px">Ordem na página inicial</h2>
+          <p>Use as setas para subir ou descer os membros ativos e toque em <b>Salvar ordem</b>. Membros comuns não aparecem na página inicial.</p>
+          <ol class="itens ordem" id="lista-ordem"></ol>
+          <button type="button" class="botao botao--vermelho" id="salvar-ordem" style="margin-top:14px">Salvar ordem</button>
         </div>
       </div>
 
@@ -172,7 +177,7 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=11"></script>
-<script src="assets/supa.js?v=3"></script>
-<script src="assets/conta.js?v=7"></script>
+<script src="assets/supa.js?v=4"></script>
+<script src="assets/conta.js?v=8"></script>
 </body>
 </html>

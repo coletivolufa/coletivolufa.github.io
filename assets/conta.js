@@ -29,7 +29,7 @@ function abrirAba(nome) {
   document.querySelectorAll("[data-painel]").forEach((p) => (p.hidden = p.dataset.painel !== nome));
   if (nome === "artigos") carregarArtigos();
   if (nome === "carteirinha") carregarCarteirinha();
-  if (nome === "admin") carregarPessoas();
+  if (nome === "admin") { carregarPessoas(); carregarOrdem(); }
 }
 document.querySelectorAll("[data-aba]").forEach((b) => b.addEventListener("click", () => abrirAba(b.dataset.aba)));
 
@@ -311,6 +311,37 @@ $("lista-pessoas").addEventListener("change", async (ev) => {
   }
   const s = ev.target.closest("[data-mudar]"); if (!s) return;
   definir(s.closest("li").dataset.id, s.value);
+});
+
+// ---------- ordem dos membros na página inicial ----------
+let ordem = [];
+async function carregarOrdem() {
+  $("lista-ordem").innerHTML = "<li>Carregando…</li>";
+  ordem = (await todosOsMembros()).filter((m) => !ehComum(m) && m.matricula);
+  desenharOrdem();
+}
+function desenharOrdem() {
+  $("lista-ordem").innerHTML = ordem.map((m, i) => `
+    <li><span class="ordem__pos">${i + 1}</span>
+      <img src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+      <div><strong>${esc(m.nome)}</strong><span class="meta">${esc(ocupacoes(m).join(" · ") || "Membro")} · Nº ${esc(m.matricula)}</span></div>
+      <button type="button" data-ordem-subir="${i}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(m.nome)}">↑</button>
+      <button type="button" data-ordem-descer="${i}" ${i === ordem.length - 1 ? "disabled" : ""} aria-label="Descer ${esc(m.nome)}">↓</button>
+    </li>`).join("") || "<li>Nenhum membro ativo.</li>";
+}
+$("lista-ordem").addEventListener("click", (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  const i = Number(b.dataset.ordemSubir ?? b.dataset.ordemDescer), j = b.dataset.ordemSubir !== undefined ? i - 1 : i + 1;
+  if (j < 0 || j >= ordem.length) return;
+  [ordem[i], ordem[j]] = [ordem[j], ordem[i]]; desenharOrdem();
+  $("lista-ordem").children[j].querySelector("button:not([disabled])")?.focus();
+});
+$("salvar-ordem").addEventListener("click", async () => {
+  const b = $("salvar-ordem"); ocupado(b, true, "Salvando…");
+  const { error } = await supa.from("ordem_membros").upsert(ordem.map((m, i) => ({ matricula: m.matricula, posicao: i + 1 })));
+  ocupado(b, false);
+  if (error) return avisar(/ordem_membros|relation|schema cache/i.test(error.message) ? "Falta rodar o arquivo 04-ordem-dos-membros.sql no SQL Editor do Supabase." : mensagemErro(error), "erro");
+  avisar("Ordem salva! A página inicial já mostra os membros nessa ordem.", "ok");
 });
 
 // ---------- ocupações do membro ativo ----------

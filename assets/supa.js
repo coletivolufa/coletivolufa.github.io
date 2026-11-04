@@ -58,7 +58,11 @@ async function todosOsMembros() {
     const antigo = porMatricula.get(m.matricula);
     porMatricula.set(m.matricula, { ...antigo, ...Object.fromEntries(Object.entries(m).filter(([, v]) => v)) });
   });
-  return [...porMatricula.values()].sort((a, b) => String(a.matricula).localeCompare(String(b.matricula)));
+  // ordem escolhida pelo admin (tabela ordem_membros); quem não tem posição vai para o fim, pela matrícula
+  let posicao = new Map();
+  try { const { data } = await supa.from("ordem_membros").select("matricula,posicao"); posicao = new Map((data || []).map((o) => [o.matricula, o.posicao])); } catch (_) {}
+  const pos = (m) => (posicao.has(m.matricula) ? posicao.get(m.matricula) : 100000);
+  return [...porMatricula.values()].sort((a, b) => pos(a) - pos(b) || String(a.matricula).localeCompare(String(b.matricula)));
 }
 
 // artigos publicados pelo site (banco), no mesmo formato de data/artigos.json
