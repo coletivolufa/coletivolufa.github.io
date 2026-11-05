@@ -677,16 +677,3 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .botao--amarelo { background: var(--amarelo, #EBB52A); color: var(--preto); }
 .bloco-regimento { display: flex; justify-content: center; margin: 8px 0 32px; }
 .bloco-regimento .botao { font-size: 24px; padding: 14px 28px 10px; text-align: center; }
-
-/* faixa de novidades no topo do site */
-.faixa-novidades { position: relative; display: flex; align-items: center; gap: 10px; background: #1C1714; color: #fff; height: 38px; overflow: hidden; font: 14px Archivo, sans-serif; }
-.faixa-novidades[hidden] { display: none; }
-.faixa__rotulo { flex: none; background: #cc2220; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; padding: 4px 10px; margin-left: 8px; border-radius: 999px; }
-.faixa__janela { flex: 1; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
-.faixa__trilho { display: inline-flex; gap: 40px; white-space: nowrap; animation: correr-faixa 38s linear infinite; padding-left: 10px; }
-.faixa-novidades:hover .faixa__trilho { animation-play-state: paused; }
-.faixa__item { color: #fff; text-decoration: none; }
-.faixa__item:hover { text-decoration: underline; color: #EBB52A; }
-.faixa__fechar { flex: none; background: none; border: 0; color: #fff; font-size: 14px; padding: 6px 10px; cursor: pointer; opacity: .8; }
-@keyframes correr-faixa { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .faixa__trilho { animation: none; } .faixa__janela { overflow-x: auto; } }
