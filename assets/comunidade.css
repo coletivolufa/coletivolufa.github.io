@@ -214,3 +214,16 @@
 .resposta-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff4ef; border-left: 4px solid #cc2220; padding: 8px 12px; font-size: 13px; color: #5b4f44; }
 .resposta-bar[hidden] { display: none; }
 .resposta-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* faixa de novidades no topo do site */
+.faixa-novidades { position: relative; display: flex; align-items: center; gap: 10px; background: #1C1714; color: #fff; height: 38px; overflow: hidden; font: 14px Archivo, sans-serif; }
+.faixa-novidades[hidden] { display: none; }
+.faixa__rotulo { flex: none; background: #cc2220; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; padding: 4px 10px; margin-left: 8px; border-radius: 999px; }
+.faixa__janela { flex: 1; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.faixa__trilho { display: inline-flex; gap: 40px; white-space: nowrap; animation: correr-faixa 38s linear infinite; padding-left: 10px; }
+.faixa-novidades:hover .faixa__trilho { animation-play-state: paused; }
+.faixa__item { color: #fff; text-decoration: none; }
+.faixa__item:hover { text-decoration: underline; color: #EBB52A; }
+.faixa__fechar { flex: none; background: none; border: 0; color: #fff; font-size: 14px; padding: 6px 10px; cursor: pointer; opacity: .8; }
+@keyframes correr-faixa { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .faixa__trilho { animation: none; } .faixa__janela { overflow-x: auto; } }
