@@ -33,6 +33,11 @@
     .camada header { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
     .camada label { font-size: 13px; display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
     .camada button { font-size: 13px; padding: 4px 10px; border: 2px solid var(--vermelho); background: transparent; color: var(--vermelho); cursor: pointer; }
+    .barra-texto { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items: center; }
+    .barra-texto button { font: 700 15px var(--titulo), sans-serif; min-width: 38px; padding: 5px 9px; border: 2px solid var(--preto); background: var(--branco); cursor: pointer; }
+    .barra-texto button:hover { background: var(--papel); }
+    .barra-texto input[type=color] { width: 40px; height: 34px; border: 2px solid var(--preto); padding: 0; background: none; cursor: pointer; }
+    .barra-texto small { font-size: 12px; color: var(--cinza); flex-basis: 100%; }
     .dica { font-size: 14px; color: var(--cinza); background: var(--papel); padding: 10px 14px; border-left: 4px solid var(--amarelo); }
     @media (max-width: 860px) { .ger { grid-template-columns: 1fr; } .ger-previa { position: static; order: -1; } }
   </style>
@@ -130,7 +135,17 @@
       const item = atual(), m = MODELOS[item.modelo];
       $("campos").innerHTML = m.campos.map((f) => {
         const val = item.valores[f.id] !== undefined ? item.valores[f.id] : f.padrao;
-        if (f.tipo === "area") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><textarea id="f-${f.id}" data-campo="${f.id}" style="min-height:120px;font-family:var(--texto)">${esc(val)}</textarea></div>`;
+        if (f.tipo === "area") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label>
+          <div class="barra-texto" data-barra="${f.id}">
+            <button type="button" data-fmt="b" title="Negrito"><b>N</b></button>
+            <button type="button" data-fmt="i" title="Itálico"><i>I</i></button>
+            <button type="button" data-fmt="+" title="Aumentar o trecho">A+</button>
+            <button type="button" data-fmt="-" title="Diminuir o trecho">A−</button>
+            <input type="color" value="#cc2220" data-cor title="Cor do trecho">
+            <button type="button" data-fmt="limpar" title="Tirar a formatação do trecho">limpar</button>
+            <small>Selecione um trecho no texto e clique no botão. Sem seleção, a marcação entra na posição do cursor.</small>
+          </div>
+          <textarea id="f-${f.id}" data-campo="${f.id}" style="min-height:120px;font-family:var(--texto)">${esc(val)}</textarea></div>`;
         if (f.tipo === "opcoes") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><select id="f-${f.id}" data-campo="${f.id}">${Object.entries(f.opcoes).map(([k, n]) => `<option value="${k}"${k === val ? " selected" : ""}>${n}</option>`).join("")}</select></div>`;
         if (f.tipo === "imagem") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" type="file" accept="image/*"><small>${item.valores[f.id] ? "Imagem carregada. Escolha outra para trocar." : (item.modelo === "reels" ? "Use uma figura recortada (PNG sem fundo) para ficar como na série." : "JPG ou PNG.")}</small></div>`;
         return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" value="${esc(val)}"></div>`;
@@ -225,6 +240,35 @@
       const b = e.target.closest("[data-remover]"); if (!b) return;
       atual().camadas.splice(Number(b.dataset.remover), 1);
       mostrarCamadas(); redesenhar();
+    });
+    // aplica uma marcação de formatação no trecho selecionado do campo
+    function aplicarFormato(ta, abre, fecha) {
+      const ini = ta.selectionStart, fim = ta.selectionEnd, t = ta.value;
+      ta.value = t.slice(0, ini) + abre + t.slice(ini, fim) + fecha + t.slice(fim);
+      ta.focus();
+      ta.setSelectionRange(ini + abre.length, ini + abre.length + (fim - ini));
+      ta.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    function tirarFormato(ta) {
+      const ini = ta.selectionStart, fim = ta.selectionEnd, t = ta.value;
+      if (fim === ini) return;
+      const limpo = t.slice(ini, fim).replace(/\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?)\]/gi, "");
+      ta.value = t.slice(0, ini) + limpo + t.slice(fim);
+      ta.focus(); ta.setSelectionRange(ini, ini + limpo.length);
+      ta.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    $("campos").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-fmt]"); if (!b) return;
+      const ta = b.closest(".campo").querySelector("textarea"); if (!ta) return;
+      const f = b.dataset.fmt;
+      if (f === "limpar") return tirarFormato(ta);
+      const tags = { b: ["[b]", "[/b]"], i: ["[i]", "[/i]"], "+": ["[+]", "[/+]"], "-": ["[-]", "[/-]"] }[f];
+      aplicarFormato(ta, tags[0], tags[1]);
+    });
+    $("campos").addEventListener("change", (e) => {
+      const cor = e.target.closest("[data-cor]"); if (!cor) return;
+      const ta = cor.closest(".campo").querySelector("textarea"); if (!ta) return;
+      aplicarFormato(ta, `[c=${cor.value}]`, "[/c]");
     });
     $("campos").addEventListener("input", (e) => {
       const el = e.target.closest("[data-campo]"); if (!el || el.type === "file") return;

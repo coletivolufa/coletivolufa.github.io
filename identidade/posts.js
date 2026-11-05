@@ -28,6 +28,64 @@ async function prepararFontes() {
 function fonte(ctx, tam, fam = FONTE.titulo, peso = "400", estilo = "normal") {
   ctx.font = `${estilo} ${peso} ${tam}px "${fam}"`;
 }
+// marcações de formatação dentro do texto:
+// [b]negrito[/b]  [i]itálico[/i]  [+]maior[/+]  [-]menor[/-]  [c=#cc2220]cor[/c]
+const MARCA_RE = /\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?)\]/gi;
+const TEM_MARCA = /\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?)\]/i;
+const semMarca = (t) => String(t).replace(MARCA_RE, "");
+
+// separa o texto em trechos, cada um com o seu estilo
+function segmentos(txt) {
+  const out = [];
+  const st = { b: false, i: false, f: 1, c: null };
+  let pos = 0, m;
+  const empurra = (t) => { if (t) out.push({ ...st, t }); };
+  MARCA_RE.lastIndex = 0;
+  while ((m = MARCA_RE.exec(txt))) {
+    empurra(txt.slice(pos, m.index));
+    pos = MARCA_RE.lastIndex;
+    const fecha = m[0][1] === "/";
+    const k = m[0].replace(/[\[\]/]/g, "").toLowerCase();
+    if (k === "b") st.b = !fecha;
+    else if (k === "i") st.i = !fecha;
+    else if (k === "+") st.f = fecha ? 1 : 1.3;
+    else if (k === "-") st.f = fecha ? 1 : 0.75;
+    else if (k.startsWith("c")) st.c = fecha ? null : k.replace(/^c=/, "");
+  }
+  empurra(txt.slice(pos));
+  return out.map((r) => ({ ...r, t: r.t.replace(/\*/g, "") }));
+}
+
+// fonte de um trecho: mantém a família e o tamanho da linha, e aplica negrito, itálico e tamanho
+function fonteDoTrecho(base, r) {
+  const m = base.match(/^(.*?)(\d+(?:\.\d+)?)px\s+(.+)$/);
+  const pre = m ? m[1] : "";
+  const tam = m ? parseFloat(m[2]) : 40;
+  const fam = m ? m[3] : `"${FONTE.texto}"`;
+  const pesoBase = (pre.match(/\b(\d{3})\b/) || [])[1] || "400";
+  const estilo = r.i || /italic/.test(pre) ? "italic" : "normal";
+  const peso = r.b ? "700" : pesoBase;
+  return `${estilo} ${peso} ${tam * r.f}px ${fam}`;
+}
+
+const FILLTEXT_NATIVO = CanvasRenderingContext2D.prototype.fillText;
+// escreve um texto com marcações de estilo, respeitando o alinhamento da linha
+function escreverRico(ctx, texto, x, y) {
+  const base = ctx.font, corBase = ctx.fillStyle, alinhar = ctx.textAlign;
+  const trechos = segmentos(texto);
+  const larguras = trechos.map((r) => { ctx.font = fonteDoTrecho(base, r); return ctx.measureText(r.t).width; });
+  const total = larguras.reduce((a, b) => a + b, 0);
+  let cx = alinhar === "center" ? x - total / 2 : alinhar === "right" ? x - total : x;
+  ctx.textAlign = "left";
+  trechos.forEach((r, k) => {
+    ctx.font = fonteDoTrecho(base, r);
+    ctx.fillStyle = r.c || corBase;
+    FILLTEXT_NATIVO.call(ctx, r.t, cx, y);
+    cx += larguras[k];
+  });
+  ctx.font = base; ctx.fillStyle = corBase; ctx.textAlign = alinhar;
+}
+
 function quebrar(ctx, texto, largura) {
   const linhas = [];
   for (const par of String(texto).split("\n")) {
@@ -35,7 +93,7 @@ function quebrar(ctx, texto, largura) {
     let linha = "";
     for (const p of palavras) {
       const teste = linha ? linha + " " + p : p;
-      if (ctx.measureText(teste.replace(/\*/g, "")).width > largura && linha) { linhas.push(linha); linha = p; }
+      if (ctx.measureText(semMarca(teste).replace(/\*/g, "")).width > largura && linha) { linhas.push(linha); linha = p; }
       else linha = teste;
     }
     linhas.push(linha);
@@ -55,7 +113,7 @@ function caber(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, es
 // escreve uma linha em que *palavras entre asteriscos* saem na cor de destaque
 function linhaDestacada(ctx, linha, x, y, cor, corDestaque, alinhar = "left") {
   const partes = linha.split(/(\*[^*]+\*)/).filter(Boolean);
-  const total = partes.reduce((s, p) => s + ctx.measureText(p.replace(/\*/g, "")).width, 0);
+  const total = partes.reduce((s, p) => s + ctx.measureText(semMarca(p).replace(/\*/g, "")).width, 0);
   let cx = alinhar === "center" ? x - total / 2 : x;
   ctx.textAlign = "left";
   for (const p of partes) {
@@ -63,7 +121,7 @@ function linhaDestacada(ctx, linha, x, y, cor, corDestaque, alinhar = "left") {
     const t = p.replace(/\*/g, "");
     ctx.fillStyle = d ? corDestaque : cor;
     ctx.fillText(t, cx, y);
-    cx += ctx.measureText(t).width;
+    cx += ctx.measureText(semMarca(t)).width;
   }
 }
 function raios(ctx, cx, cy, n, cor, giro = 0) {
@@ -543,6 +601,11 @@ async function desenharModelo(id, valores, opcoes = {}) {
   if (opcoes.texto && opcoes.texto !== "padrao") { FONTE.texto = opcoes.texto; FONTE.citacao = opcoes.texto; }
   try {
     const ctx = c.getContext("2d");
+    ctx.fillText = function (t, x, y, max) {
+      const txt = String(t);
+      if (TEM_MARCA.test(txt)) return escreverRico(ctx, txt, x, y);
+      return FILLTEXT_NATIVO.call(ctx, t, x, y, max);
+    };
     m.desenhar(ctx, v);
     desenharCamadas(ctx, c.width, c.height, opcoes.camadas);
   } finally {
