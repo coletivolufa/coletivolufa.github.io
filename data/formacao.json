@@ -16,6 +16,15 @@
           "duracao": "1 min 37 s",
           "capa": "formacao/capas/desmistificando-ep01.jpg",
           "video": "formacao/videos/desmistificando-ep01.mp4"
+        },
+        {
+          "id": "ep02",
+          "numero": 2,
+          "titulo": "O que é o socialismo?",
+          "descricao": "Nenhum país chegou ao comunismo: tudo o que existiu até hoje foi socialismo. O segundo episódio conta de onde vem a palavra, a diferença entre o socialismo utópico e o científico e por que o socialismo é o primeiro degrau depois do capitalismo.",
+          "duracao": "2 min 17 s",
+          "capa": "formacao/capas/desmistificando-ep02.jpg",
+          "video": "formacao/videos/desmistificando-ep02.mp4"
         }
       ],
       "poster": "formacao/capas/desmistificando-ep01.jpg"
