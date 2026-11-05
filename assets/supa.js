@@ -84,3 +84,13 @@ function mensagemErro(e) {
   if (/Failed to fetch|NetworkError/i.test(m)) return "Sem conexão. Verifique a internet e tente de novo.";
   return m || "Algo deu errado. Tente de novo.";
 }
+
+// links só para MEMBROS ATIVOS no menu (ex.: Regimento interno): aparecem só se sou_ativo()
+(async () => {
+  try {
+    const { data: sessao } = await supa.auth.getSession();
+    if (!sessao || !sessao.session) return;
+    const { data: ativo } = await supa.rpc("sou_ativo");
+    if (ativo === true) document.querySelectorAll("[data-so-ativos]").forEach((a) => (a.style.display = ""));
+  } catch (_) {}
+})();

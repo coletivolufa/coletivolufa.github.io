@@ -10,6 +10,7 @@ const LUFA = {
 };
 
 const ICONES = {
+  regimento: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg>',
   inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg>',
   artigos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg>',
   formacao: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>',
@@ -37,6 +38,7 @@ function montarMenu() {
         <a href="artigos.html"${atual("artigos")}>${ICONES.artigos}Artigos</a>
         <a href="formacao.html"${atual("formacao")}>${ICONES.formacao}Formação</a>
         <a href="biblioteca.html"${atual("biblioteca")}>${ICONES.biblioteca}Biblioteca</a>
+        <a href="regimento.html" data-so-ativos style="display:none"${atual("regimento")}>${ICONES.regimento}Regimento interno</a>
         <a href="conta.html"${atual("conta")}>${ICONES.conta}Minha conta</a>
       </nav>
       <div class="menu__rodape">
