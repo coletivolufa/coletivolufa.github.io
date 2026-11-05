@@ -16,6 +16,15 @@
           "duracao": "1 min 37 s",
           "capa": "formacao/capas/desmistificando-ep01.jpg",
           "video": "formacao/videos/desmistificando-ep01.mp4"
+        },
+        {
+          "id": "ep02",
+          "numero": 2,
+          "titulo": "O que é o socialismo?",
+          "descricao": "A palavra socialismo é mais velha que Marx, e nenhum país chegou ao comunismo. Este episódio conta a diferença entre o socialismo utópico e o socialismo científico de Marx e Engels.",
+          "duracao": "2 min 17 s",
+          "capa": "formacao/capas/desmistificando-ep02.jpg",
+          "video": "formacao/videos/desmistificando-ep02.mp4"
         }
       ],
       "poster": "formacao/capas/desmistificando-ep01.jpg"
