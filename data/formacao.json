@@ -15,7 +15,8 @@
           "descricao": "Afinal, o que Marx e Engels queriam dizer com comunismo? O primeiro episódio volta à Revolução Industrial para explicar de onde vem essa ideia e o que ela propõe.",
           "duracao": "1 min 37 s",
           "capa": "formacao/capas/desmistificando-ep01.jpg",
-          "video": "formacao/videos/desmistificando-ep01.mp4"
+          "video": "formacao/videos/desmistificando-ep01.mp4",
+          "publicado_em": "2026-11-03"
         },
         {
           "id": "ep02",
@@ -24,7 +25,8 @@
           "descricao": "Nenhum país chegou ao comunismo: tudo o que existiu até hoje foi socialismo. O segundo episódio conta de onde vem a palavra, a diferença entre o socialismo utópico e o científico e por que o socialismo é o primeiro degrau depois do capitalismo.",
           "duracao": "2 min 17 s",
           "capa": "formacao/capas/desmistificando-ep02.jpg",
-          "video": "formacao/videos/desmistificando-ep02.mp4"
+          "video": "formacao/videos/desmistificando-ep02.mp4",
+          "publicado_em": "2026-11-05"
         }
       ],
       "poster": "formacao/capas/desmistificando-ep01.jpg"
@@ -37,7 +39,8 @@
       "descricao": "O básico da política para quem nunca teve contato com o assunto, em linguagem simples e sem complicação.",
       "episodios": [],
       "poster": "formacao/capas/politica-ep01.jpg",
-      "banner": "formacao/capas/politica-banner.jpg"
+      "banner": "formacao/capas/politica-banner.jpg",
+      "publicado_em": "2026-11-05"
     }
   ]
 }
