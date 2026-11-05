@@ -8,7 +8,6 @@ const MAX_AUDIO_MS = 120 * 1000;
 const SELO_ATIVO = `<img class="selo-ativo" src="assets/img/martelo-foice.png" alt="Membro ativo" title="Membro ativo">`;
 
 const $ = (id) => document.getElementById(id);
-const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ligar = (t) => t.replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener nofollow">${u}</a>`);
 
 let eu = null;
@@ -242,4 +241,4 @@ async function iniciar() {
   setInterval(limparVencidas, 60000);      // some com as mensagens que passaram de 72 horas
 }
 
-iniciar().catch(() => avisar("Não foi possível abrir o bate-papo agora. Tente de novo."));
+iniciar().catch(() => fora("Não foi possível abrir o bate-papo agora. Atualize a página e tente de novo.", false));
