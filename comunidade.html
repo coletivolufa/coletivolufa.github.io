@@ -31,8 +31,22 @@
     <section class="card compor">
       <div class="compor__topo">
         <img class="av" id="minha-foto" src="assets/img/avatar.svg" alt="">
-        <div><strong id="meu-apelido"></strong><span class="muted" style="display:block">Escreva, use # para criar hashtags, e anexe uma foto ou um vídeo</span></div>
+        <div style="flex:1; min-width:0">
+          <strong id="meu-apelido"></strong>
+          <button type="button" class="btn-pequeno btn-pequeno--link" id="trocar-apelido">trocar @arroba</button>
+          <span class="muted" style="display:block">Escreva, use # para criar hashtags, e anexe uma foto ou um vídeo</span>
+        </div>
       </div>
+      <form id="form-apelido" class="form-apelido" hidden>
+        <label for="novo-apelido" class="muted">Novo @arroba (letras minúsculas, números, ponto ou traço baixo)</label>
+        <div class="form-apelido__linha">
+          <span class="arroba">@</span>
+          <input id="novo-apelido" maxlength="20" autocomplete="off">
+          <button class="btn-pequeno" type="submit">Salvar</button>
+          <button class="btn-pequeno btn-pequeno--suave" type="button" id="cancelar-apelido">Cancelar</button>
+        </div>
+        <p class="aviso-com" id="apelido-aviso" hidden></p>
+      </form>
       <form id="form-post">
         <textarea id="post-texto" maxlength="500" placeholder="No que você está pensando? Ex.: #lutadeclasses" aria-label="Escreva uma publicação"></textarea>
         <div class="previa-midia" id="post-previa" hidden>
@@ -63,8 +77,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=15"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/comunidade.js?v=2"></script>
+<script src="assets/comunidade.js?v=3"></script>
 <script src="assets/avisos.js?v=1"></script>
-<script src="assets/feed.js?v=4"></script>
+<script src="assets/feed.js?v=5"></script>
 </body>
 </html>
