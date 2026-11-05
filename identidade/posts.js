@@ -191,7 +191,9 @@ function assinatura(ctx, x, y, cor, tam = 40) {
   ctx.fillText("COLETIVO LUFÃ", x + tam * 1.8, y);
 }
 function imagemCobrindo(ctx, img, x, y, w, h, ancora = "centro") {
-  const e = Math.max(w / img.width, h / img.height), iw = img.width * e, ih = img.height * e;
+  // aceita foto (img) ou vídeo (video): cada um tem o seu tamanho natural
+  const iW = img.videoWidth || img.width, iH = img.videoHeight || img.height;
+  const e = Math.max(w / iW, h / iH), iw = iW * e, ih = iH * e;
   const ix = x + (w - iw) / 2, iy = ancora === "baixo" ? y + h - ih : y + (h - ih) / 2;
   ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.drawImage(img, ix, iy, iw, ih); ctx.restore();
 }

@@ -98,6 +98,7 @@
       <canvas id="previa" width="1080" height="1350" aria-label="Prévia do post"></canvas>
       <div class="ger-acoes">
         <button class="botao botao--vermelho" type="button" id="baixar">Baixar PNG</button>
+        <button class="botao botao--vermelho" type="button" id="baixar-video" hidden>Baixar vídeo (.webm)</button>
         <button class="botao" type="button" id="baixar-tudo" hidden>Baixar carrossel completo (.zip)</button>
       </div>
     </div>
@@ -147,7 +148,7 @@
           </div>
           <textarea id="f-${f.id}" data-campo="${f.id}" style="min-height:120px;font-family:var(--texto)">${esc(val)}</textarea></div>`;
         if (f.tipo === "opcoes") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><select id="f-${f.id}" data-campo="${f.id}">${Object.entries(f.opcoes).map(([k, n]) => `<option value="${k}"${k === val ? " selected" : ""}>${n}</option>`).join("")}</select></div>`;
-        if (f.tipo === "imagem") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" type="file" accept="image/*"><small>${item.valores[f.id] ? "Imagem carregada. Escolha outra para trocar." : (item.modelo === "reels" ? "Use uma figura recortada (PNG sem fundo) para ficar como na série." : "JPG ou PNG.")}</small></div>`;
+        if (f.tipo === "imagem") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" type="file" accept="${item.modelo === "meme" ? "image/*,video/*" : "image/*"}"><small>${item.valores[f.id] ? "Imagem carregada. Escolha outra para trocar." : (item.modelo === "reels" ? "Use uma figura recortada (PNG sem fundo) para ficar como na série." : "JPG ou PNG.")}</small></div>`;
         return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><input id="f-${f.id}" data-campo="${f.id}" value="${esc(val)}"></div>`;
       }).join("");
     }
@@ -199,6 +200,8 @@
       $("modo").value = m;
       $("carrossel-controles").hidden = m !== "carrossel";
       $("baixar-tudo").hidden = m !== "carrossel";
+      $("baixar-video").hidden = !(m === "meme" && videoAtivo && atual().valores.imagem === videoAtivo);
+      if (m !== "meme") pararLoop(); else if (videoAtivo && atual().valores.imagem === videoAtivo) iniciarLoop();
       if (m === "carrossel") montarSlides();
       montarCampos(); mostrarCamadas(); redesenhar();
     }
@@ -208,6 +211,59 @@
       return "lufa-" + (i !== undefined ? String(i + 1).padStart(2, "0") + "-" : "") +
         String(base).replace(/\*/g, "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40).replace(/-$/, "") + ".png";
     }
+    // ----- vídeo nos memes: a prévia toca ao vivo e o botão grava o resultado -----
+    let videoAtivo = null, loopAtivo = false, desenhando = false;
+    function quadro() {
+      if (!loopAtivo) return;
+      const item = atual();
+      if (!desenhando && modo === "meme" && videoAtivo && item.valores.imagem === videoAtivo) {
+        desenhando = true;
+        renderItem(item).then((c) => {
+          const p = $("previa");
+          p.width = c.width; p.height = c.height;
+          p.getContext("2d").drawImage(c, 0, 0);
+          desenhando = false;
+        });
+      }
+      requestAnimationFrame(quadro);
+    }
+    function iniciarLoop() { if (!loopAtivo) { loopAtivo = true; quadro(); } }
+    function pararLoop() { loopAtivo = false; }
+    function carregarVideo(f) {
+      const item = atual();
+      const v = document.createElement("video");
+      v.src = URL.createObjectURL(f);
+      v.loop = true; v.muted = true; v.playsInline = true; v.preload = "auto";
+      v.onloadeddata = () => {
+        if (videoAtivo && videoAtivo !== v) { videoAtivo.pause(); }
+        videoAtivo = v;
+        item.valores.imagem = v;
+        v.play().catch(() => {});
+        $("baixar-video").hidden = false;
+        iniciarLoop();
+      };
+    }
+    function gravarVideo() {
+      const v = videoAtivo; if (!v) return;
+      const botao = $("baixar-video"); botao.disabled = true; botao.textContent = "Gravando…";
+      const stream = $("previa").captureStream(30);
+      if (v.captureStream) v.captureStream().getAudioTracks().forEach((t) => stream.addTrack(t));
+      const tipo = MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus") ? "video/webm;codecs=vp8,opus" : "video/webm";
+      const rec = new MediaRecorder(stream, { mimeType: tipo });
+      const partes = [];
+      rec.ondataavailable = (e) => { if (e.data.size) partes.push(e.data); };
+      rec.onstop = () => {
+        baixarBlob(new Blob(partes, { type: "video/webm" }), "lufa-meme-video.webm");
+        v.loop = true; v.muted = true;
+        botao.disabled = false; botao.textContent = "Baixar vídeo (.webm)";
+      };
+      v.loop = false; v.muted = false; v.currentTime = 0;
+      v.addEventListener("ended", () => { if (rec.state !== "inactive") rec.stop(); }, { once: true });
+      rec.start(250);
+      v.play().catch(() => { if (rec.state !== "inactive") rec.stop(); });
+    }
+    $("baixar-video").addEventListener("click", gravarVideo);
+
     function baixarBlob(blob, nome) {
       const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nome; a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
@@ -279,8 +335,9 @@
       if (!el) return;
       if (el.type === "file") {
         const f = el.files[0]; if (!f) return;
+        if (f.type.startsWith("video/")) { carregarVideo(f); return; }
         const img = new Image();
-        img.onload = () => { atual().valores[el.dataset.campo] = img; redesenhar(); };
+        img.onload = () => { atual().valores[el.dataset.campo] = img; if (videoAtivo && atual().valores[el.dataset.campo] === img) { videoAtivo.pause(); videoAtivo = null; pararLoop(); $("baixar-video").hidden = true; } redesenhar(); };
         img.src = URL.createObjectURL(f);
       } else { atual().valores[el.dataset.campo] = el.value; redesenhar(); }
     });
