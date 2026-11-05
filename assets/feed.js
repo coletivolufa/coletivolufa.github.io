@@ -456,6 +456,28 @@ async function iniciarFeed() {
   });
   window.addEventListener("hashchange", () => desenharFeed());
 
+  $("trocar-apelido").addEventListener("click", () => {
+    $("novo-apelido").value = perfilEu.apelido || "";
+    $("apelido-aviso").hidden = true;
+    $("form-apelido").hidden = false;
+    $("novo-apelido").focus();
+  });
+  $("cancelar-apelido").addEventListener("click", () => { $("form-apelido").hidden = true; });
+  $("form-apelido").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const aviso = $("apelido-aviso");
+    const botao = e.target.querySelector("button[type=submit]");
+    botao.disabled = true;
+    const r = await trocarApelido(eu, perfilEu, $("novo-apelido").value);
+    botao.disabled = false;
+    if (!r.ok) { aviso.hidden = false; aviso.textContent = r.erro; return; }
+    $("meu-apelido").textContent = "@" + r.apelido;
+    $("form-apelido").hidden = true;
+    membros = await carregarMembros();
+    desenharFeed();
+    avisar("Seu @arroba foi alterado.");
+  });
+
   supa.channel("feed-comunidade")
     .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, agendarRecarga)
     .on("postgres_changes", { event: "*", schema: "public", table: "post_curtidas" }, agendarRecarga)

@@ -182,3 +182,20 @@ const dataHora = (iso) => {
 };
 
 const primeiroNome = (nome) => String(nome || "Membro").split(" ")[0];
+
+// troca o @apelido de quem está logado. Retorna { ok, erro } (o banco garante que seja único)
+async function trocarApelido(eu, perfil, novo) {
+  const apelido = String(novo || "").trim().toLowerCase().replace(/^@/, "");
+  if (!REGEX_APELIDO.test(apelido)) {
+    return { ok: false, erro: "Use de 3 a 20 letras minúsculas, números, ponto ou traço baixo." };
+  }
+  if (apelido === perfil.apelido) return { ok: true, apelido };
+  const { error } = await supa.from("perfis").update({ apelido }).eq("id", eu.id);
+  if (error) {
+    return { ok: false, erro: /duplicate|unique|23505/i.test(error.message)
+      ? "Esse @arroba já existe. Escolha outro."
+      : "Não foi possível trocar: " + error.message };
+  }
+  perfil.apelido = apelido;
+  return { ok: true, apelido };
+}
