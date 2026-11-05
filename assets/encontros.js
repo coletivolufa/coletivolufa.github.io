@@ -94,8 +94,10 @@ async function salvarPerfil(e) {
     // o nome completo fica no perfil de membro (o mesmo que aparece no bate-papo)
     const { error: erroNome } = await supa.from("perfis").update({ nome: v.nome }).eq("id", eu.id);
     if (erroNome) throw new Error(erroNome.message);
+    // "nome" fica em perfis; encontro_perfis recebe só os seus próprios campos
+    const { nome, ...camposEncontro } = v;
     const { error } = await supa.from("encontro_perfis")
-      .upsert({ id: eu.id, ...v, foto_url, atualizado_em: new Date().toISOString() }, { onConflict: "id" });
+      .upsert({ id: eu.id, ...camposEncontro, foto_url, atualizado_em: new Date().toISOString() }, { onConflict: "id" });
     if (error) throw new Error(error.message);
     perfilEu.nome = v.nome;
     await carregarMeuEncontro();
