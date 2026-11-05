@@ -1,0 +1,9 @@
+# Coletivo Lufã
+User-agent: *
+Disallow: /publicar.html
+Disallow: /conta.html
+Disallow: /chat.html
+Disallow: /regimento.html
+Disallow: /carteirinha.html
+
+Sitemap: https://coletivolufa.github.io/sitemap.xml
