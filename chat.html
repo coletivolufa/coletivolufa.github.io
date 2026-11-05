@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Bate-papo · Coletivo Lufã</title>
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=19">
+  <style>
+    .chat { max-width: 760px; margin: 0 auto; padding: 20px 16px 64px; font-family: Archivo, Arial, sans-serif; }
+    .chat h1 { font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; font-size: 3rem; color: #cc2220; margin: 0; }
+    .chat__nota { margin: 6px 0 16px; font-size: 14px; color: #555; }
+    .chat__entrada { background: #fff4ef; border-left: 4px solid #cc2220; padding: 14px 16px; }
+    #lista { height: 62vh; min-height: 360px; overflow-y: auto; background: #fff; border: 3px solid #1C1714; padding: 12px; display: flex; flex-direction: column; gap: 14px; }
+    .vazio { margin: auto; color: #777; text-align: center; }
+    .msg { display: flex; gap: 10px; align-items: flex-start; }
+    .msg__foto { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #cc2220; flex: none; }
+    .msg__corpo { min-width: 0; flex: 1; }
+    .msg__cab { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 15px; }
+    .msg__cab strong { font-weight: 700; }
+    .selo-ativo { width: 20px; height: 20px; flex: none; }
+    .selo-ativo path, .selo-ativo rect { fill: #cc2220; }
+    .selo-ativo path[fill="none"] { fill: none; }
+    .badge { background: #1C1714; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 7px; text-transform: uppercase; letter-spacing: .05em; }
+    .badge--ativo { background: #cc2220; }
+    .msg time { color: #777; font-size: 12px; }
+    .texto { margin: 4px 0 0; word-break: break-word; white-space: pre-wrap; font-family: Literata, Georgia, serif; font-size: 16px; line-height: 1.5; }
+    .texto a { color: #cc2220; word-break: break-all; }
+    .midia { display: block; max-width: 100%; max-height: 320px; border: 2px solid #1C1714; margin-top: 6px; }
+    .msg--eu .msg__corpo { background: #fbf3e0; padding: 6px 8px; }
+    .apagar { margin-top: 4px; font-size: 12px; background: none; border: 0; color: #cc2220; text-decoration: underline; cursor: pointer; padding: 0; }
+    #form { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: stretch; }
+    #texto { flex: 1; min-width: 200px; min-height: 52px; padding: 10px; font: 16px Literata, Georgia, serif; border: 3px solid #1C1714; resize: vertical; }
+    .anexar { display: inline-flex; align-items: center; padding: 0 14px; border: 3px solid #1C1714; background: #fff; cursor: pointer; font-weight: 700; }
+    .anexar input { display: none; }
+    #form button[type="submit"] { background: #cc2220; color: #fff; border: 3px solid #1C1714; padding: 0 22px; font: 700 18px Archivo, sans-serif; cursor: pointer; }
+    #aviso-chat { margin-top: 10px; color: #cc2220; font-weight: 700; }
+    #aviso-chat[hidden], #entrada[hidden], #area[hidden] { display: none; }
+  </style>
+</head>
+<body data-pagina="chat">
+<main class="chat">
+  <h1>Bate-papo</h1>
+  <p class="chat__nota">Conversa aberta para todos os membros aprovados. <strong>As mensagens são apagadas 72 horas depois do envio.</strong></p>
+
+  <div class="chat__entrada" id="entrada" hidden></div>
+
+  <section id="area" hidden>
+    <div id="lista" aria-live="polite"></div>
+    <form id="form" autocomplete="off">
+      <textarea id="texto" maxlength="500" placeholder="Escreva uma mensagem… (Enter envia, Shift+Enter quebra a linha)"></textarea>
+      <label class="anexar" title="Enviar imagem ou GIF">Imagem / GIF<input id="arquivo" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+      <button type="submit">Enviar</button>
+    </form>
+    <p id="aviso-chat" hidden></p>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=14"></script>
+<script src="assets/supa.js?v=6"></script>
+<script src="assets/chat.js?v=1"></script>
+</body>
+</html>
