@@ -24,6 +24,8 @@ let filtroTag = null;
 let fotoEscolhida = null;
 let videoEscolhido = null;
 let recarregarAgendado = null;
+const fotosComentario = new Map();  // "post:pai" -> foto escolhida
+const respostasAbertas = new Set(); // comentários com a caixa de resposta aberta
 
 const avisar = (texto) => { const el = $("post-aviso"); el.textContent = texto; el.hidden = !texto; };
 const normalizar = (t) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -45,20 +47,49 @@ function botaoAmizade(autorId) {
   return `<button type="button" class="btn-pequeno" data-amigo="${esc(m.apelido)}">Adicionar amigo</button>`;
 }
 
+function formComentario(postId, paiId) {
+  const chave = `${postId}:${paiId || 0}`;
+  return `<form class="form-comentario" data-comentar="${postId}" data-pai="${paiId || ""}">
+    <input maxlength="${LIMITE_COMENTARIO}" placeholder="${paiId ? "Escreva uma resposta…" : "Escreva um comentário…"}" aria-label="${paiId ? "Escreva uma resposta" : "Escreva um comentário"}">
+    <label class="btn-foto-pequeno" title="Enviar foto">📷<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-foto-de="${chave}" aria-label="Enviar foto no comentário"></label>
+    <span class="foto-anexada">${fotosComentario.has(chave) ? "foto anexada" : ""}</span>
+    <button class="btn-pequeno" type="submit">Enviar</button>
+  </form>`;
+}
+
+function htmlComentario(c, post, nivel) {
+  const m = membros.get(c.autor_id) || {};
+  const pode = c.autor_id === eu.id || perfilEu.papel === "admin";
+  const aberta = respostasAbertas.has(c.id);
+  return `<div class="comentario${nivel ? " comentario--resposta" : ""}">
+    <div class="comentario__topo">
+      <img class="av-mini" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+      <span class="comentario__nome">${esc(m.nome || "Membro")}</span>
+      <span class="comentario__apelido">${m.apelido ? "@" + esc(m.apelido) : ""} · ${dataHora(c.criado_em)}</span>
+    </div>
+    ${c.texto ? `<p>${textoComTags(c.texto)}</p>` : ""}
+    ${c.imagem_url ? `<img class="comentario__foto" src="${esc(c.imagem_url)}" alt="Foto enviada no comentário" loading="lazy" decoding="async">` : ""}
+    <div class="comentario__acoes">
+      <button type="button" class="btn-pequeno btn-pequeno--link" data-responder="${c.id}">${aberta ? "fechar resposta" : "responder"}</button>
+      ${pode ? `<button type="button" class="btn-pequeno btn-pequeno--link" data-apagar-comentario="${c.id}" data-post="${post.id}">apagar</button>` : ""}
+    </div>
+    ${aberta ? formComentario(post.id, c.id) : ""}
+  </div>`;
+}
+
 function listaComentarios(post) {
   const lista = comentarios.get(post.id);
   if (!lista) return '<p class="muted">Carregando comentários…</p>';
-  const itens = lista.map((c) => {
-    const m = membros.get(c.autor_id) || {};
-    const pode = c.autor_id === eu.id || perfilEu.papel === "admin";
-    return `<div class="comentario">
-      <span class="comentario__nome">${esc(m.nome || "Membro")}</span>
-      <span class="comentario__apelido">${m.apelido ? "@" + esc(m.apelido) : ""}</span>
-      <p>${esc(c.texto)}</p>
-      ${pode ? `<button type="button" class="btn-pequeno btn-pequeno--link" data-apagar-comentario="${c.id}" data-post="${post.id}">apagar</button>` : ""}
-    </div>`;
-  }).join("");
-  return itens || '<p class="muted">Seja a primeira pessoa a comentar.</p>';
+  if (!lista.length) return '<p class="muted">Seja a primeira pessoa a comentar.</p>';
+  const filhos = new Map();
+  lista.filter((c) => c.parent_id).forEach((c) => {
+    if (!filhos.has(c.parent_id)) filhos.set(c.parent_id, []);
+    filhos.get(c.parent_id).push(c);
+  });
+  const descendentes = (id) => (filhos.get(id) || []).flatMap((f) => [f, ...descendentes(f.id)]);
+  return lista.filter((c) => !c.parent_id)
+    .map((r) => htmlComentario(r, post, 0) + descendentes(r.id).map((d) => htmlComentario(d, post, 1)).join(""))
+    .join("");
 }
 
 function midiaHTML(p, m) {
@@ -104,10 +135,7 @@ function cardPost(p) {
     </div>
     <div class="post__comentarios" id="comentarios-${p.id}" ${aberto ? "" : "hidden"}>
       <div class="lista-comentarios">${aberto ? listaComentarios(p) : ""}</div>
-      <form class="form-comentario" data-comentar="${p.id}">
-        <input maxlength="${LIMITE_COMENTARIO}" placeholder="Escreva um comentário…" aria-label="Escreva um comentário">
-        <button class="btn-pequeno" type="submit">Comentar</button>
-      </form>
+      ${formComentario(p.id, null)}
     </div>
   </article>`;
 }
@@ -282,16 +310,26 @@ async function alternarComentarios(postId) {
   desenharFeed();
 }
 
-async function enviarComentario(postId, campo, form) {
-  const texto = campo.value.trim();
-  if (!texto) return;
+async function enviarComentario(form) {
+  const postId = Number(form.dataset.comentar);
+  const paiId = form.dataset.pai ? Number(form.dataset.pai) : null;
+  const chave = `${postId}:${paiId || 0}`;
+  const texto = form.querySelector("input").value.trim();
+  const foto = fotosComentario.get(chave) || null;
+  if (!texto && !foto) return avisar("Escreva um comentário ou escolha uma foto.");
   if (texto.length > LIMITE_COMENTARIO) return avisar(`O comentário pode ter no máximo ${LIMITE_COMENTARIO} caracteres.`);
   const botao = form.querySelector("button");
   botao.disabled = true;
-  const { error } = await supa.from("post_comentarios").insert({ post_id: postId, autor_id: eu.id, texto });
-  botao.disabled = false;
-  if (error) return avisar("Não foi possível comentar: " + error.message);
-  campo.value = "";
+  try {
+    const imagem_url = foto ? await enviarFotoComunidade(foto, eu.id) : null;
+    const { error } = await supa.from("post_comentarios").insert({ post_id: postId, autor_id: eu.id, texto, parent_id: paiId, imagem_url });
+    if (error) throw new Error(error.message);
+  } catch (err) {
+    botao.disabled = false;
+    return avisar("Não foi possível comentar: " + err.message);
+  }
+  fotosComentario.delete(chave);
+  if (paiId) respostasAbertas.delete(paiId);
   const post = posts.find((x) => x.id === postId);
   if (post) post.comentarios = (post.comentarios || 0) + 1;
   comentariosAbertos.add(postId);
@@ -385,6 +423,11 @@ async function iniciarFeed() {
     if (tag && tag.classList.contains("tag-link")) { e.preventDefault(); return filtrarPorTag(tag.dataset.tag); }
     const b = e.target.closest("button");
     if (!b) return;
+    if (b.dataset.responder) {
+      const id = Number(b.dataset.responder);
+      if (respostasAbertas.has(id)) respostasAbertas.delete(id); else respostasAbertas.add(id);
+      return desenharFeed();
+    }
     if (b.dataset.curtir) return alternarCurtida(Number(b.dataset.curtir), b);
     if (b.dataset.repostar) return alternarRepost(Number(b.dataset.repostar), b);
     if (b.dataset.comentarios) return alternarComentarios(Number(b.dataset.comentarios));
@@ -398,7 +441,18 @@ async function iniciarFeed() {
     const form = e.target.closest("form[data-comentar]");
     if (!form) return;
     e.preventDefault();
-    enviarComentario(Number(form.dataset.comentar), form.querySelector("input"), form);
+    enviarComentario(form);
+  });
+  $("feed").addEventListener("change", (e) => {
+    const input = e.target;
+    if (!input.dataset.fotoDe) return;
+    const f = input.files[0];
+    input.value = "";
+    if (!f) return;
+    if (!f.type.startsWith("image/")) return avisar("Escolha uma imagem para o comentário.");
+    fotosComentario.set(input.dataset.fotoDe, f);
+    const aviso = input.closest("form").querySelector(".foto-anexada");
+    if (aviso) aviso.textContent = "foto anexada";
   });
   window.addEventListener("hashchange", () => desenharFeed());
 

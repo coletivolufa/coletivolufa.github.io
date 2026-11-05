@@ -108,3 +108,23 @@
 .linha-amizade__txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .linha-amizade__txt strong { font-size: 15px; }
 .acoes-linha { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* respostas em comentários, pop-up e avisos */
+.comentario { padding: 8px 0 10px; border-bottom: 1px solid #f3ecdc; }
+.comentario--resposta { margin-left: 34px; border-left: 2px solid #f0e0c8; padding-left: 10px; }
+.comentario__topo { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.av-mini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: none; }
+.comentario__foto { display: block; max-width: 240px; max-height: 240px; border-radius: 10px; margin-top: 6px; }
+.comentario__acoes { display: flex; gap: 6px; margin-top: 4px; }
+.btn-foto-pequeno { position: relative; overflow: hidden; background: #F7F1E3; border-radius: 999px; padding: 6px 10px; cursor: pointer; font-size: 15px; }
+.btn-foto-pequeno input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.foto-anexada { font-size: 12px; color: #8a7e72; }
+.form-comentario { flex-wrap: wrap; align-items: center; }
+.modal { position: fixed; inset: 0; background: rgba(20,14,10,.6); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 20px; }
+.modal[hidden] { display: none; }
+.modal__caixa { background: #fff; border-radius: 18px; padding: 22px; max-width: 380px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.modal__caixa h2 { font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; font-size: 2rem; color: #cc2220; margin: 0 0 8px; }
+.modal__caixa p { font-size: 15px; line-height: 1.5; margin: 0 0 16px; }
+.modal__acoes { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+#avisos-tela { position: fixed; right: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 8px; z-index: 70; max-width: min(340px, 90vw); }
+.aviso-tela { background: #1C1714; color: #fff; padding: 12px 16px; border-radius: 12px; font-size: 14px; box-shadow: 0 6px 18px rgba(0,0,0,.3); border-left: 4px solid #cc2220; }

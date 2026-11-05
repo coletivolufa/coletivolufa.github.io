@@ -33,8 +33,38 @@ async function desenhar() {
     : '<p class="muted">Você não enviou pedidos pendentes.</p>';
 
   $("lista-amigos").innerHTML = amigos.length
-    ? amigos.map((id) => linhaPessoa(membros.get(id) || {}, '<a class="btn-pequeno btn-pequeno--suave" href="chat.html">Conversar</a>')).join("")
+    ? amigos.map((id) => linhaPessoa(membros.get(id) || {},
+        `<span class="acoes-linha">
+           <a class="btn-pequeno btn-pequeno--suave" href="chat.html">Conversar</a>
+           <button type="button" class="btn-pequeno btn-pequeno--link" data-desfazer="${id}">desfazer amizade</button>
+         </span>`)).join("")
     : '<p class="muted">Você ainda não tem amigos. Encontre pessoas no feed ou em Pesquisar.</p>';
+}
+
+let amigoParaDesfazer = null;
+
+function abrirConfirmacao(id) {
+  const m = membros.get(id) || {};
+  amigoParaDesfazer = id;
+  $("modal-texto").textContent = `Você quer desfazer a amizade com ${m.nome || "esta pessoa"}${m.apelido ? " (@" + m.apelido + ")" : ""}? A conversa privada entre vocês será apagada.`;
+  $("modal-desfazer").hidden = false;
+  $("modal-cancelar").focus();
+}
+
+function fecharConfirmacao() {
+  amigoParaDesfazer = null;
+  $("modal-desfazer").hidden = true;
+}
+
+async function confirmarDesfazer(botao) {
+  if (!amigoParaDesfazer) return;
+  botao.disabled = true;
+  const { error } = await supa.rpc("desfazer_amizade", { p_outro: amigoParaDesfazer });
+  botao.disabled = false;
+  fecharConfirmacao();
+  if (error) return avisar(error.message);
+  avisar("Amizade desfeita.");
+  await desenhar();
 }
 
 async function responder(id, botao, acao) {
@@ -58,7 +88,12 @@ async function iniciar() {
     if (!b) return;
     if (b.dataset.aceitar) return responder(b.dataset.aceitar, b, "aceitar_amizade");
     if (b.dataset.recusar) return responder(b.dataset.recusar, b, "recusar_amizade");
+    if (b.dataset.desfazer) return abrirConfirmacao(b.dataset.desfazer);
   });
+  $("modal-cancelar").addEventListener("click", fecharConfirmacao);
+  $("modal-confirmar").addEventListener("click", (e) => confirmarDesfazer(e.currentTarget));
+  $("modal-desfazer").addEventListener("click", (e) => { if (e.target.id === "modal-desfazer") fecharConfirmacao(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") fecharConfirmacao(); });
   supa.channel("amizades-pagina")
     .on("postgres_changes", { event: "*", schema: "public", table: "amizades" }, desenhar)
     .subscribe();
