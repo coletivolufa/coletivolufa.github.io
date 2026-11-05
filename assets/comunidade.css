@@ -201,3 +201,16 @@
 .ver-respostas::before { content: ""; width: 22px; height: 2px; background: #cc2220; border-radius: 2px; }
 .ver-respostas:hover { text-decoration: underline; }
 .respostas { border-left: 2px solid #f0e0c8; margin-left: 10px; padding-left: 4px; animation: subir .25s ease both; }
+
+/* responder mensagens no bate-papo e pop-up de confirmação */
+.responder { background: none; border: 0; color: #1F3A5F; font: 700 12px Archivo, sans-serif; cursor: pointer; padding: 0; margin-right: auto; }
+.responder:hover { text-decoration: underline; }
+.citacao { display: block; width: 100%; text-align: left; background: #F7F1E3; border: 0; border-left: 3px solid #cc2220; border-radius: 8px; padding: 6px 8px; margin: 2px 0 6px; cursor: pointer; font: 13px Archivo, sans-serif; color: #1C1714; }
+.citacao strong { display: block; font-size: 12px; color: #cc2220; }
+.citacao span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #5b4f44; }
+.citacao--vazia { cursor: default; color: #8a7e72; font-style: italic; }
+.destacada .balao { animation: destacar 1.5s ease; }
+@keyframes destacar { 0%, 100% { box-shadow: 0 0 0 0 rgba(204,34,32,0); } 30% { box-shadow: 0 0 0 6px rgba(204,34,32,.35); } }
+.resposta-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff4ef; border-left: 4px solid #cc2220; padding: 8px 12px; font-size: 13px; color: #5b4f44; }
+.resposta-bar[hidden] { display: none; }
+.resposta-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

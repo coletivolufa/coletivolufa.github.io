@@ -384,7 +384,7 @@ async function enviarComentario(form) {
 }
 
 async function apagarComentario(id, postId) {
-  if (!confirm("Apagar este comentário?")) return;
+  if (!(await confirmarAcao({ titulo: "Apagar comentário?", texto: "As respostas dele também serão apagadas.", botao: "Sim, apagar" }))) return;
   const { error } = await supa.from("post_comentarios").delete().eq("id", id);
   if (error) return avisar("Não foi possível apagar: " + error.message);
   const post = posts.find((x) => x.id === postId);
@@ -429,7 +429,7 @@ async function aceitarAmizade(id, botao) {
 }
 
 async function apagarPost(id, botao) {
-  if (!confirm("Apagar esta publicação?")) return;
+  if (!(await confirmarAcao({ titulo: "Apagar publicação?", texto: "Ela some para todo mundo e não dá para desfazer.", botao: "Sim, apagar" }))) return;
   botao.disabled = true;
   const { error } = await supa.from("posts").delete().eq("id", id);
   if (error) { botao.disabled = false; return avisar("Não foi possível apagar: " + error.message); }
