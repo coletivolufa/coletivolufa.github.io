@@ -672,3 +672,9 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .ordem__pos { font-family: var(--titulo); font-size: 26px; color: var(--vermelho); width: 28px; text-align: center; }
 .ordem button { font-size: 18px; width: 40px; padding: 6px 0; }
 .ordem button[disabled] { opacity: .3; cursor: default; }
+
+/* regimento interno (página da conta, só membro ativo) */
+.botao--amarelo { background: var(--amarelo, #EBB52A); color: var(--preto); }
+.bloco-regimento { text-align: center; margin: 4px 0 28px; }
+.bloco-regimento .botao { font-size: 26px; padding: 16px 30px 12px; }
+.bloco-regimento p { margin: 12px 0 0; font-family: "Bebas Neue", Impact, sans-serif; font-size: 22px; letter-spacing: .04em; }

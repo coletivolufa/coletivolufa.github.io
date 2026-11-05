@@ -105,6 +105,8 @@ async function mostrar() {
   // artigos: só membros ativos com permissão de autor, editor ou admin
   document.querySelector('[data-aba="artigos"]').hidden = !(PODE_ESCREVER.includes(perfil.papel) && !ehComum(perfil));
   document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";
+  // regimento interno: só para membro ativo (a página do regimento também confere no banco)
+  $("bloco-regimento").hidden = !(APROVADO.includes(perfil.papel) && !ehComum(perfil));
   $("titulo-lista-artigos").textContent = ["editor", "admin"].includes(perfil.papel) ? "Artigos do site" : "Meus artigos";
 }
 
