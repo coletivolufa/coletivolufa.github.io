@@ -6,19 +6,22 @@ const COR = {
   papel: "#fbf6ec", branco: "#ffffff", preto: "#1e1916", cinza: "#6b625c",
 };
 const FONTE = { titulo: "Bebas Neue", texto: "Archivo", citacao: "Literata" };
+// fontes que o gerador oferece (do guia de identidade do site)
+const FONTES_TITULO = ["Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald"];
+const FONTES_TEXTO = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
 const ARROBA = "@coletivolufa";
 
 const LOGO = new Image();
 LOGO.src = new URL("../assets/img/logo.png", document.currentScript.src).href;
 
 async function prepararFontes() {
-  await Promise.all([
-    document.fonts.load(`400 100px "${FONTE.titulo}"`),
-    document.fonts.load(`400 40px "${FONTE.texto}"`),
-    document.fonts.load(`700 40px "${FONTE.texto}"`),
-    document.fonts.load(`italic 400 60px "${FONTE.citacao}"`),
-    LOGO.decode().catch(() => {}),
-  ]);
+  const familias = [...FONTES_TITULO, ...FONTES_TEXTO, FONTE.titulo, FONTE.texto, FONTE.citacao];
+  const cargas = [];
+  familias.forEach((f) => {
+    cargas.push(document.fonts.load(`400 100px "${f}"`), document.fonts.load(`700 40px "${f}"`),
+      document.fonts.load(`italic 400 60px "${f}"`));
+  });
+  await Promise.all([...cargas.map((p) => p.catch(() => {})), LOGO.decode().catch(() => {})]);
 }
 
 // ---------- utilidades de desenho ----------
@@ -519,12 +522,31 @@ const MODELOS = {
 };
 
 // desenha um modelo num canvas novo e devolve o canvas
-async function desenharModelo(id, valores) {
+// desenha as imagens extras (PNG) por cima do modelo. Tamanho e posição em % da largura/altura.
+function desenharCamadas(ctx, W, H, camadas) {
+  (camadas || []).forEach((l) => {
+    if (!l.img) return;
+    const w = W * (l.tamanho / 100), h = w * (l.img.height / l.img.width);
+    ctx.drawImage(l.img, W * (l.x / 100) - w / 2, H * (l.y / 100) - h / 2, w, h);
+  });
+}
+
+// opcoes: { titulo, texto (nome da fonte, ou "padrao"), camadas (imagens extras) }
+async function desenharModelo(id, valores, opcoes = {}) {
   await prepararFontes();
   const m = MODELOS[id];
   const c = document.createElement("canvas"); c.width = m.w; c.height = m.h;
   const v = {};
   m.campos.forEach((f) => (v[f.id] = valores && f.id in valores ? valores[f.id] : (f.tipo === "imagem" ? null : f.padrao)));
-  m.desenhar(c.getContext("2d"), v);
+  const salvo = { ...FONTE };
+  if (opcoes.titulo && opcoes.titulo !== "padrao") FONTE.titulo = opcoes.titulo;
+  if (opcoes.texto && opcoes.texto !== "padrao") { FONTE.texto = opcoes.texto; FONTE.citacao = opcoes.texto; }
+  try {
+    const ctx = c.getContext("2d");
+    m.desenhar(ctx, v);
+    desenharCamadas(ctx, c.width, c.height, opcoes.camadas);
+  } finally {
+    Object.assign(FONTE, salvo);
+  }
   return c;
 }

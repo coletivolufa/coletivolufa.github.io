@@ -9,7 +9,7 @@
   <link rel="icon" href="../assets/img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Big+Shoulders+Display:wght@400;700;900&family=Literata:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;700&family=Russo+One&family=Special+Elite&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/style.css?v=9">
   <style>
     body { margin: 0; }
@@ -27,6 +27,12 @@
     .slides button[aria-pressed="true"] { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); }
     .slides-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 18px; }
     .slides-acoes button { font: inherit; font-size: 14px; padding: 6px 10px; border: 2px solid var(--cinza); background: transparent; cursor: pointer; }
+    .bloco-ferr { border-top: 2px dashed var(--cinza); margin-top: 18px; padding-top: 14px; }
+    .bloco-ferr h3 { font-family: var(--titulo); font-size: 26px; letter-spacing: .04em; margin-bottom: 8px; }
+    .camada { border: 2px solid var(--preto); padding: 10px 12px; margin-bottom: 10px; background: #fff; }
+    .camada header { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
+    .camada label { font-size: 13px; display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+    .camada button { font-size: 13px; padding: 4px 10px; border: 2px solid var(--vermelho); background: transparent; color: var(--vermelho); cursor: pointer; }
     .dica { font-size: 14px; color: var(--cinza); background: var(--papel); padding: 10px 14px; border-left: 4px solid var(--amarelo); }
     @media (max-width: 860px) { .ger { grid-template-columns: 1fr; } .ger-previa { position: static; order: -1; } }
   </style>
@@ -67,6 +73,19 @@
         </div>
       </div>
       <form id="campos" onsubmit="return false"></form>
+      <div class="bloco-ferr">
+        <h3>Fontes</h3>
+        <div class="campo"><label for="fonte-titulo">Títulos</label><select id="fonte-titulo"></select></div>
+        <div class="campo"><label for="fonte-texto">Texto</label><select id="fonte-texto"></select></div>
+        <small>"Padrão" usa a fonte que cada modelo já tem.</small>
+      </div>
+      <div class="bloco-ferr">
+        <h3>Imagens PNG</h3>
+        <div class="campo"><label for="add-imagem">Adicionar imagens a este post</label>
+          <input id="add-imagem" type="file" accept="image/png,image/webp,image/jpeg" multiple></div>
+        <small>PNG sem fundo fica melhor por cima do post. Ajuste tamanho e posição de cada uma.</small>
+        <div id="camadas" style="margin-top:10px"></div>
+      </div>
       <p class="dica">Dica: no título, coloque uma palavra entre *asteriscos* para ela sair em destaque amarelo.</p>
     </div>
 
@@ -118,11 +137,43 @@
       }).join("");
     }
 
+    const FONTES_TITULO_OPC = ["Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald"];
+    const FONTES_TEXTO_OPC = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
+    function preencherFontes() {
+      const op = (lista) => `<option value="padrao">Padrão do modelo</option>` + lista.map((f) => `<option value="${f}">${f}</option>`).join("");
+      $("fonte-titulo").innerHTML = op(FONTES_TITULO_OPC);
+      $("fonte-texto").innerHTML = op(FONTES_TEXTO_OPC);
+    }
+    function opcoesDo(item) {
+      if (!item.opcoes) item.opcoes = { titulo: "padrao", texto: "padrao" };
+      if (!item.camadas) item.camadas = [];
+      return item.opcoes;
+    }
+    function renderItem(item) {
+      const o = opcoesDo(item);
+      return desenharModelo(item.modelo, item.valores, { titulo: o.titulo, texto: o.texto, camadas: item.camadas });
+    }
+    function mostrarCamadas() {
+      const item = atual(); opcoesDo(item);
+      const lista = item.camadas;
+      $("camadas").innerHTML = lista.length ? lista.map((l, i) => `
+        <div class="camada" data-i="${i}">
+          <header><span>Imagem ${i + 1} · ${esc(l.nome)}</span><button type="button" data-remover="${i}">remover</button></header>
+          <label>Tamanho: <span>${l.tamanho}</span>%<input type="range" min="5" max="100" value="${l.tamanho}" data-prop="tamanho"></label>
+          <label>Posição horizontal: <span>${l.x}</span>%<input type="range" min="0" max="100" value="${l.x}" data-prop="x"></label>
+          <label>Posição vertical: <span>${l.y}</span>%<input type="range" min="0" max="100" value="${l.y}" data-prop="y"></label>
+        </div>`).join("") : '<p class="dica">Nenhuma imagem adicionada a este post.</p>';
+      $("fonte-titulo").value = o_titulo(item);
+      $("fonte-texto").value = o_texto(item);
+    }
+    const o_titulo = (item) => opcoesDo(item).titulo;
+    const o_texto = (item) => opcoesDo(item).texto;
+
     let agendado;
     function redesenhar() {
       clearTimeout(agendado);
       agendado = setTimeout(async () => {
-        const item = atual(), c = await desenharModelo(item.modelo, item.valores), p = $("previa");
+        const item = atual(), c = await renderItem(item), p = $("previa");
         p.width = c.width; p.height = c.height; p.classList.toggle("alto", c.height > 1500);
         p.getContext("2d").drawImage(c, 0, 0);
       }, 80);
@@ -134,7 +185,7 @@
       $("carrossel-controles").hidden = m !== "carrossel";
       $("baixar-tudo").hidden = m !== "carrossel";
       if (m === "carrossel") montarSlides();
-      montarCampos(); redesenhar();
+      montarCampos(); mostrarCamadas(); redesenhar();
     }
 
     function nomeArquivo(item, i) {
@@ -148,6 +199,33 @@
     }
 
     $("modo").addEventListener("change", (e) => trocarModo(e.target.value));
+    preencherFontes();
+    $("fonte-titulo").addEventListener("change", (e) => { opcoesDo(atual()).titulo = e.target.value; redesenhar(); });
+    $("fonte-texto").addEventListener("change", (e) => { opcoesDo(atual()).texto = e.target.value; redesenhar(); });
+    $("add-imagem").addEventListener("change", (e) => {
+      const item = atual(); opcoesDo(item);
+      [...e.target.files].forEach((f) => {
+        const img = new Image();
+        img.onload = () => {
+          item.camadas.push({ img, nome: f.name.slice(0, 24), tamanho: 40, x: 50, y: 50 });
+          mostrarCamadas(); redesenhar();
+        };
+        img.src = URL.createObjectURL(f);
+      });
+      e.target.value = "";
+    });
+    $("camadas").addEventListener("input", (e) => {
+      const r = e.target.closest("[data-prop]"); if (!r) return;
+      const card = r.closest(".camada"), l = atual().camadas[Number(card.dataset.i)];
+      l[r.dataset.prop] = Number(r.value);
+      r.parentElement.querySelector("span").textContent = r.value;
+      redesenhar();
+    });
+    $("camadas").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-remover]"); if (!b) return;
+      atual().camadas.splice(Number(b.dataset.remover), 1);
+      mostrarCamadas(); redesenhar();
+    });
     $("campos").addEventListener("input", (e) => {
       const el = e.target.closest("[data-campo]"); if (!el || el.type === "file") return;
       atual().valores[el.dataset.campo] = el.value; redesenhar();
@@ -187,14 +265,14 @@
     $("mover-dir").addEventListener("click", () => mover(1));
 
     $("baixar").addEventListener("click", async () => {
-      const item = atual(), c = await desenharModelo(item.modelo, item.valores);
+      const item = atual(), c = await renderItem(item);
       c.toBlob((b) => baixarBlob(b, nomeArquivo(item, modo === "carrossel" ? carrossel.atual : undefined)), "image/png");
     });
     $("baixar-tudo").addEventListener("click", async () => {
       const botao = $("baixar-tudo"); botao.disabled = true; botao.textContent = "Gerando…";
       const zip = new JSZip(); paginar();
       for (let i = 0; i < carrossel.slides.length; i++) {
-        const s = carrossel.slides[i], c = await desenharModelo(s.modelo, s.valores);
+        const s = carrossel.slides[i], c = await renderItem(s);
         zip.file(nomeArquivo(s, i), await new Promise((ok) => c.toBlob(ok, "image/png")));
       }
       baixarBlob(await zip.generateAsync({ type: "blob" }), "carrossel-coletivo-lufa.zip");
