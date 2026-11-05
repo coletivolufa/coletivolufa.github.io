@@ -140,10 +140,34 @@ function cardPost(p) {
   </article>`;
 }
 
+const observadorCartoes = "IntersectionObserver" in window
+  ? new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("visivel"); observadorCartoes.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.05 })
+  : null;
+
+function revelarCartoes() {
+  document.querySelectorAll("#feed .post.reveal:not(.visivel)").forEach((el) => {
+    if (observadorCartoes) observadorCartoes.observe(el); else el.classList.add("visivel");
+  });
+}
+
+// pequeno pulo no coração/repost quando a pessoa age
+function pulsar(seletor) {
+  const el = document.querySelector(seletor);
+  if (!el) return;
+  el.classList.remove("pulsar");
+  void el.offsetWidth;
+  el.classList.add("pulsar");
+  setTimeout(() => el.classList.remove("pulsar"), 450);
+}
+
 function desenharFeed() {
   $("feed").innerHTML = posts.length
     ? posts.map(cardPost).join("")
     : `<p class="card muted">${filtroTag ? `Ainda não há publicações com #${esc(filtroTag)}.` : "Ainda não há publicações. Seja a primeira pessoa a publicar!"}</p>`;
+  $("feed").querySelectorAll(".post").forEach((el) => el.classList.add("reveal"));
+  revelarCartoes();
   $("filtro-ativo").hidden = !filtroTag;
   $("filtro-texto").textContent = filtroTag ? `Mostrando publicações com #${filtroTag}` : "";
   const hash = location.hash.match(/^#post-(\d+)$/);
@@ -287,6 +311,7 @@ async function alternarCurtida(postId, botao) {
   post.eu_curti = !euCurti;
   post.curtidas = Math.max(0, (post.curtidas || 0) + (euCurti ? -1 : 1));
   desenharFeed();
+  if (!euCurti) pulsar(`[data-curtir="${postId}"]`);
 }
 
 async function alternarRepost(postId, botao) {
@@ -302,6 +327,7 @@ async function alternarRepost(postId, botao) {
   post.eu_repostei = !jaReposted;
   post.reposts = Math.max(0, (post.reposts || 0) + (jaReposted ? -1 : 1));
   desenharFeed();
+  if (!jaReposted) pulsar(`[data-repostar="${postId}"]`);
 }
 
 async function alternarComentarios(postId) {
@@ -403,6 +429,7 @@ async function iniciarFeed() {
   filtroTag = new URLSearchParams(location.search).get("tag");
   filtroTag = filtroTag ? filtroTag.toLowerCase() : null;
 
+  $("feed").innerHTML = '<div class="carregando"></div><div class="carregando"></div>';
   membros = await carregarMembros();
   amizades = await carregarAmizades(eu.id);
   await carregarTendencias();
