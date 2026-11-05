@@ -24,6 +24,7 @@ let temporizador = null;
 let inicioGravacao = 0;
 let cancelando = false;
 let previa = null; // { blob, url }
+let ultimaMudanca = 0; // quando a tela mudou por último (envio, recebimento ou apagar)
 
 function avisar(texto) { const el = $("aviso-chat"); el.textContent = texto; el.hidden = !texto; }
 
@@ -122,6 +123,7 @@ function desenhar() {
 // acrescenta só a mensagem nova (rápido, sem redesenhar a conversa)
 function acrescentar(m) {
   if (!m || ids.has(m.id)) return;
+  ultimaMudanca = Date.now();
   const perto = estaPerto();
   const anterior = mensagens[mensagens.length - 1];
   mensagens.push(m);
@@ -134,6 +136,7 @@ function acrescentar(m) {
 }
 
 function removerLocal(id) {
+  ultimaMudanca = Date.now();
   mensagens = mensagens.filter((m) => m.id !== id);
   desenhar();
 }
@@ -150,14 +153,31 @@ async function carregarAutores() {
   autores = new Map((data || []).map((p) => [p.id, p]));
 }
 
+// traz a conversa do servidor. Se a tela mudou enquanto a resposta vinha, descarta a resposta
+// (ela pode ser antiga e apagaria a mensagem que acabou de chegar).
 async function carregarMensagens() {
+  const inicio = Date.now();
   const { data, error } = await supa.from("chat_mensagens")
     .select(COLUNAS)
     .gt("criado_em", new Date(Date.now() - SETENTA_E_DUAS_HORAS).toISOString())
     .order("criado_em", { ascending: true })
     .limit(300);
   if (error) return avisar("Não foi possível carregar o bate-papo agora. Tente de novo.");
+  if (ultimaMudanca > inicio) return;
   sincronizar(data || []);
+}
+
+// busca só o que é novo desde a última mensagem da tela (rápido, para o caso de o tempo real falhar)
+async function buscarNovas() {
+  const ultima = mensagens[mensagens.length - 1];
+  const desde = ultima ? ultima.criado_em : new Date(Date.now() - SETENTA_E_DUAS_HORAS).toISOString();
+  const { data, error } = await supa.from("chat_mensagens")
+    .select(COLUNAS)
+    .gte("criado_em", desde)
+    .order("criado_em", { ascending: true })
+    .limit(100);
+  if (error || !data) return;
+  data.forEach(acrescentar);
 }
 
 function podeEnviar() {
@@ -329,6 +349,7 @@ async function iniciar() {
 
   await carregarAutores();
   await carregarMensagens();
+  // tempo real: a mensagem chega na hora que é enviada
   supa.channel("chat-mensagens")
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_mensagens" }, async (p) => {
       if (!autores.has(p.new.autor_id)) await carregarAutores();
@@ -338,7 +359,10 @@ async function iniciar() {
       if (p.old && p.old.id) removerLocal(p.old.id);
     })
     .subscribe();
-  setInterval(carregarMensagens, 60000);  // confere apagamentos e mensagens perdidas
+  // reserva: confere novidades a cada 3 segundos, caso o tempo real caia
+  setInterval(buscarNovas, 3000);
+  // confere apagamentos e a conversa inteira de tempos em tempos
+  setInterval(carregarMensagens, 60000);
   setInterval(() => {                     // some com o que passou de 72 horas
     const agora = Date.now();
     const antes = mensagens.length;
