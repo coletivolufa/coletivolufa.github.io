@@ -10,12 +10,19 @@
 create table if not exists public.chat_mensagens (
   id          bigint generated always as identity primary key,
   autor_id    uuid not null references public.perfis (id) on delete cascade,
-  tipo        text not null default 'texto' check (tipo in ('texto', 'imagem')),
+  tipo        text not null default 'texto' check (tipo in ('texto', 'imagem', 'audio')),
   texto       text not null default '' check (char_length(texto) <= 500),
   imagem_url  text,
   criado_em   timestamptz not null default now(),
-  check ((tipo = 'texto' and char_length(texto) > 0) or (tipo = 'imagem' and imagem_url is not null))
+  check ((tipo = 'texto' and char_length(texto) > 0) or (tipo in ('imagem', 'audio') and imagem_url is not null))
 );
+
+-- atualiza tabelas que já existiam (rodar de novo é seguro)
+alter table public.chat_mensagens drop constraint if exists chat_mensagens_tipo_check;
+alter table public.chat_mensagens add constraint chat_mensagens_tipo_check check (tipo in ('texto', 'imagem', 'audio'));
+alter table public.chat_mensagens drop constraint if exists chat_mensagens_check;
+alter table public.chat_mensagens add constraint chat_mensagens_check
+  check ((tipo = 'texto' and char_length(texto) > 0) or (tipo in ('imagem', 'audio') and imagem_url is not null));
 
 create index if not exists chat_criado_idx on public.chat_mensagens (criado_em);
 alter table public.chat_mensagens enable row level security;
@@ -32,7 +39,10 @@ create policy "aprovados leem o chat" on public.chat_mensagens
 
 drop policy if exists "aprovados escrevem no chat" on public.chat_mensagens;
 create policy "aprovados escrevem no chat" on public.chat_mensagens
-  for insert with check (public.sou_aprovado() and autor_id = auth.uid());
+  for insert with check (
+    public.sou_aprovado() and autor_id = auth.uid()
+    and (tipo <> 'audio' or public.sou_ativo())   -- áudio: só membros ativos
+  );
 
 drop policy if exists "dono ou admin apaga no chat" on public.chat_mensagens;
 create policy "dono ou admin apaga no chat" on public.chat_mensagens
@@ -49,13 +59,16 @@ end $$;
 
 -- ---------- imagens e GIFs (Storage) ----------
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('chat', 'chat', true, 5242880, array['image/png', 'image/jpeg', 'image/webp', 'image/gif'])
+values ('chat', 'chat', true, 5242880, array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/wav'])
 on conflict (id) do update set public = true, file_size_limit = 5242880,
-  allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+  allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/wav'];
 
 drop policy if exists "aprovados enviam imagens no chat" on storage.objects;
 create policy "aprovados enviam imagens no chat" on storage.objects
-  for insert with check (bucket_id = 'chat' and public.sou_aprovado() and (storage.foldername(name))[1] = auth.uid()::text);
+  for insert with check (
+    bucket_id = 'chat' and public.sou_aprovado() and (storage.foldername(name))[1] = auth.uid()::text
+    and (name ~* '\.(png|jpe?g|webp|gif)$' or public.sou_ativo())   -- áudio: só membros ativos
+  );
 
 drop policy if exists "dono ou admin apaga imagem do chat" on storage.objects;
 create policy "dono ou admin apaga imagem do chat" on storage.objects

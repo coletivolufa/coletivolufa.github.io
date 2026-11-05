@@ -39,6 +39,10 @@
     .anexar { display: inline-flex; align-items: center; padding: 0 14px; border: 3px solid #1C1714; background: #fff; cursor: pointer; font-weight: 700; }
     .anexar input { display: none; }
     #form button[type="submit"] { background: #cc2220; color: #fff; border: 3px solid #1C1714; padding: 0 22px; font: 700 18px Archivo, sans-serif; cursor: pointer; }
+    .gravar { background: #fff; color: #1C1714; border: 3px solid #1C1714; padding: 0 16px; font: 700 16px Archivo, sans-serif; cursor: pointer; }
+    .gravar.gravando { background: #cc2220; color: #fff; animation: pisca 1s steps(2, start) infinite; }
+    @keyframes pisca { to { visibility: hidden; } }
+    .audio { display: block; margin-top: 6px; max-width: 100%; }
     #aviso-chat { margin-top: 10px; color: #cc2220; font-weight: 700; }
     #aviso-chat[hidden], #entrada[hidden], #area[hidden] { display: none; }
   </style>
@@ -55,6 +59,7 @@
     <form id="form" autocomplete="off">
       <textarea id="texto" maxlength="500" placeholder="Escreva uma mensagem… (Enter envia, Shift+Enter quebra a linha)"></textarea>
       <label class="anexar" title="Enviar imagem ou GIF">Imagem / GIF<input id="arquivo" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+      <button type="button" id="gravar" class="gravar" hidden>● Gravar áudio</button>
       <button type="submit">Enviar</button>
     </form>
     <p id="aviso-chat" hidden></p>
@@ -63,6 +68,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=14"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/chat.js?v=1"></script>
+<script src="assets/chat.js?v=2"></script>
 </body>
 </html>
