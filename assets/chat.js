@@ -24,6 +24,10 @@ let temporizador = null;
 let inicioGravacao = 0;
 let cancelando = false;
 let previa = null; // { blob, url }
+let canal = null;
+let ultimoAviso = 0;
+let estadoEnviado = "parado";
+const digitando = new Map(); // id -> { nome, estado, expira }
 let ultimaMudanca = 0; // quando a tela mudou por último (envio, recebimento ou apagar)
 
 function avisar(texto) { const el = $("aviso-chat"); el.textContent = texto; el.hidden = !texto; }
@@ -103,6 +107,45 @@ function htmlMensagem(m, anterior) {
       <footer class="rodape-balao"><time datetime="${esc(m.criado_em)}">${hora(m.criado_em)}</time>${pode ? `<button type="button" class="apagar" data-id="${m.id}">apagar</button>` : ""}</footer>
     </div>
   </article>`;
+}
+
+// ---------- quem está digitando / gravando ----------
+function avisarEstado(estado) {
+  if (!canal || !eu) return;
+  const agora = Date.now();
+  // "digitando" é reenviado no máximo a cada 2 s; "parado" e "gravando" são enviados na hora que mudam
+  if (estado === estadoEnviado && estado !== "digitando") return;
+  if (estado === "digitando" && estadoEnviado === "digitando" && agora - ultimoAviso < 2000) return;
+  estadoEnviado = estado;
+  ultimoAviso = agora;
+  canal.send({ type: "broadcast", event: "digitando", payload: { id: eu.id, nome: meuNome(), estado } });
+}
+
+function meuNome() {
+  const eu_ = autores.get(eu.id);
+  return (eu_ && eu_.nome) ? eu_.nome.split(" ")[0] : "Alguém";
+}
+
+function receberEstado(p) {
+  if (!p || !p.id || p.id === eu.id) return;
+  if (p.estado === "parado") { digitando.delete(p.id); return mostrarDigitando(); }
+  digitando.set(p.id, { nome: p.nome || "Alguém", estado: p.estado, expira: Date.now() + 4000 });
+  mostrarDigitando();
+}
+
+function mostrarDigitando() {
+  const el = $("digitando");
+  const agora = Date.now();
+  for (const [id, v] of digitando) if (v.expira < agora) digitando.delete(id);
+  const itens = [...digitando.values()];
+  if (!itens.length) { el.hidden = true; el.textContent = ""; return; }
+  const frase = (v) => v.estado === "gravando" ? `${v.nome} está gravando um áudio` : `${v.nome} está digitando`;
+  let texto;
+  if (itens.length === 1) texto = frase(itens[0]) + "…";
+  else if (itens.length === 2) texto = `${itens[0].nome} e ${itens[1].nome} estão ${itens.every(v => v.estado === "gravando") ? "gravando" : "digitando"}…`;
+  else texto = `${itens.length} pessoas estão conversando…`;
+  el.textContent = texto;
+  el.hidden = false;
 }
 
 function estaPerto() {
@@ -208,6 +251,7 @@ async function enviarTexto() {
   if (await publicar({ tipo: "texto", texto })) {
     campo.value = "";
     ajustarAltura();
+    avisarEstado("parado");
   }
 }
 
@@ -264,6 +308,7 @@ async function comecarGravacao() {
     stream.getTracks().forEach((t) => t.stop());
     clearInterval(temporizador);
     temporizador = null;
+    avisarEstado("parado");
     if (cancelando) return mostrarComp("texto");
     const blob = new Blob(pedacos, { type: rec.mimeType || tipo || "audio/webm" });
     if (!blob.size) { mostrarComp("texto"); return avisar("Não consegui gravar o áudio. Tente de novo."); }
@@ -275,6 +320,7 @@ async function comecarGravacao() {
   gravador = rec;
   inicioGravacao = Date.now();
   rec.start();
+  avisarEstado("gravando");
   mostrarComp("gravando");
   atualizarTempo();
   temporizador = setInterval(() => {
@@ -332,7 +378,11 @@ async function iniciar() {
   $("area").hidden = false;
 
   $("enviar").addEventListener("click", enviarTexto);
-  $("texto").addEventListener("input", ajustarAltura);
+  $("texto").addEventListener("input", () => {
+    ajustarAltura();
+    avisarEstado($("texto").value.trim() ? "digitando" : "parado");
+  });
+  window.addEventListener("pagehide", () => avisarEstado("parado"));
   $("texto").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(pointer: fine)").matches) { e.preventDefault(); enviarTexto(); }
   });
@@ -349,8 +399,8 @@ async function iniciar() {
 
   await carregarAutores();
   await carregarMensagens();
-  // tempo real: a mensagem chega na hora que é enviada
-  supa.channel("chat-mensagens")
+  // tempo real: mensagens chegam na hora, e o aviso de "digitando" também passa por aqui
+  canal = supa.channel("chat-mensagens", { config: { broadcast: { self: false } } })
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_mensagens" }, async (p) => {
       if (!autores.has(p.new.autor_id)) await carregarAutores();
       acrescentar(p.new);
@@ -358,7 +408,9 @@ async function iniciar() {
     .on("postgres_changes", { event: "DELETE", schema: "public", table: "chat_mensagens" }, (p) => {
       if (p.old && p.old.id) removerLocal(p.old.id);
     })
+    .on("broadcast", { event: "digitando" }, ({ payload }) => receberEstado(payload))
     .subscribe();
+  setInterval(mostrarDigitando, 1000);     // apaga o aviso quando a pessoa para de digitar
   // reserva: confere novidades a cada 3 segundos, caso o tempo real caia
   setInterval(buscarNovas, 3000);
   // confere apagamentos e a conversa inteira de tempos em tempos

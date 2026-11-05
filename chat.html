@@ -61,6 +61,8 @@
     .espaco { flex: 1; }
     .link { background: none; border: 0; color: #cc2220; font: 700 15px Archivo, sans-serif; cursor: pointer; padding: 10px 6px; }
     #previa-audio { flex: 1; min-width: 0; height: 44px; }
+    .digitando { padding: 6px 16px 0; font-size: 13px; font-style: italic; color: #5b4f44; background: #F7F1E3; }
+    .digitando[hidden] { display: none; }
     #aviso-chat { margin: 8px 4px 0; color: #cc2220; font-weight: 700; font-size: 14px; }
     #aviso-chat[hidden], #entrada[hidden], #area[hidden] { display: none; }
 
@@ -83,6 +85,7 @@
   <section class="chat__app" id="area" hidden>
     <div class="chat__lista" id="lista" aria-live="polite"></div>
 
+    <div class="digitando" id="digitando" aria-live="polite" hidden></div>
     <div class="chat__barra">
       <div class="comp" id="comp-texto">
         <label class="btn anexar" title="Enviar imagem ou GIF">
@@ -122,6 +125,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=14"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/chat.js?v=6"></script>
+<script src="assets/chat.js?v=7"></script>
 </body>
 </html>
