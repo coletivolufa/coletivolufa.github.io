@@ -1,4 +1,4 @@
-/* Bate-papo: chat geral + conversas privadas entre amigos e matches. Mensagens somem em 72 horas.
+/* Bate-papo: chat geral e conversas privadas entre amigos. Pedidos de amizade são feitos pelo feed. Mensagens somem em 72 horas.
    Requer supabase/08-chat.sql e supabase/09-chat-privado.sql. */
 const LIMITE_TEXTO = 500;
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -235,7 +235,7 @@ function renderLateral() {
           ${n ? `<span class="contador">${n}</span>` : ""}
         </button>`;
       }).join("")
-    : '<p class="muted">Nenhuma conversa ainda. Adicione um amigo pelo @apelido.</p>';
+    : '<p class="muted">Nenhuma conversa ainda. Peça amizade pelo feed.</p>';
 
   $("lista-pedidos").innerHTML = pedidosRecebidos.size
     ? [...pedidosRecebidos].map(([de, id]) => `<div class="convite">
@@ -246,26 +246,6 @@ function renderLateral() {
           </span>
         </div>`).join("")
     : '<p class="muted">Nenhum pedido agora.</p>';
-
-  const busca = $("busca-membros").value.trim().toLowerCase();
-  const situacao = { amigos, enviados: pedidosEnviados, recebidos: pedidosRecebidos };
-  const membros = [...autores.values()]
-    .filter((p) => p.id !== eu.id && p.apelido)
-    .filter((p) => !busca || p.apelido.includes(busca) || String(p.nome || "").toLowerCase().includes(busca))
-    .sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR"));
-  $("lista-membros").innerHTML = membros.length
-    ? membros.map((p) => {
-        const sit = situacaoCom(situacao, eu.id, p.id);
-        const conv = conversas.find((c) => c.outro === p.id);
-        let acao = "";
-        if (sit === "amigo" && conv) acao = `<button type="button" class="btn-mini" data-abrir="${conv.id}">Conversar</button>`;
-        else if (sit === "enviado") acao = '<span class="muted">pedido enviado</span>';
-        else if (sit === "recebido") acao = `<button type="button" class="btn-mini btn-mini--ok" data-aceitar="${pedidosRecebidos.get(p.id)}">Aceitar</button>`;
-        else if (sit === "nenhum") acao = `<button type="button" class="btn-mini btn-mini--ok" data-pedir="${esc(p.apelido)}">Adicionar</button>`;
-        return `<div class="chat-membro"><img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
-          <span class="chat-membro__nome">${esc(p.nome || "Membro")}<small class="sub-item">@${esc(p.apelido)}</small></span>${acao}</div>`;
-      }).join("")
-    : '<p class="muted">Nenhum membro encontrado.</p>';
 }
 
 // ---------- trocar de conversa ----------
@@ -531,15 +511,8 @@ async function iniciar() {
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.abrir) return abrirPrivado(Number(b.dataset.abrir));
-    if (b.dataset.pedir) return pedirAmigo(b.dataset.pedir);
     if (b.dataset.aceitar) return aceitarAmigo(b.dataset.aceitar);
     if (b.dataset.recusar) return recusarAmigo(b.dataset.recusar);
-  });
-  $("busca-membros").addEventListener("input", renderLateral);
-  $("btn-pedir").addEventListener("click", () => {
-    const v = $("busca-amigo").value.trim().toLowerCase().replace(/^@/, "");
-    if (v) pedirAmigo(v);
-    $("busca-amigo").value = "";
   });
   $("enviar").addEventListener("click", enviarTexto);
   $("texto").addEventListener("input", () => {

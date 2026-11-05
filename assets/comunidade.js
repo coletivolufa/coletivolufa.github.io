@@ -3,7 +3,6 @@
 const ABAS_COM = [
   ["feed", "Feed", "comunidade.html"],
   ["bate-papo", "Bate-papo", "chat.html"],
-  ["encontros", "Encontros", "encontros.html"],
 ];
 const REGEX_APELIDO = /^[a-z0-9_.]{3,20}$/;
 

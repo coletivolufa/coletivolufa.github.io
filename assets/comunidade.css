@@ -59,6 +59,30 @@
 .btn-pequeno--link { background: none; color: #cc2220; text-decoration: underline; padding: 4px; }
 .selo-ativo { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; }
 
-@media (max-width: 560px) {
-  .com__topo h1 { font-size: 2.6rem; }
-}
+
+
+/* feed estilo Instagram/Twitter */
+.post { padding: 0; overflow: hidden; }
+.post__cab { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; }
+.post__quem { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.post__quem strong { font-size: 15px; }
+.post__quem .apelido { font-size: 13px; color: #8a7e72; }
+.post .post__texto { margin: 0; padding: 0 16px 12px; }
+.post .post__foto { margin: 0; border-radius: 0; max-height: 600px; width: 100%; }
+.post__acoes { display: flex; align-items: center; gap: 4px; padding: 8px 10px; flex-wrap: wrap; }
+.post__acoes .espaco { flex: 1; }
+.acao { display: inline-flex; align-items: center; gap: 5px; background: none; border: 0; padding: 8px; cursor: pointer; color: #1C1714; font: 700 14px Archivo, sans-serif; border-radius: 10px; }
+.acao svg { width: 24px; height: 24px; }
+.acao:hover { background: #F7F1E3; }
+.acao.ativo { color: #cc2220; }
+.acao.ativo svg { color: #cc2220; }
+.post__comentarios { border-top: 1px solid #eee; padding: 10px 16px 14px; }
+.post__comentarios[hidden] { display: none; }
+.lista-comentarios { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; max-height: 260px; overflow-y: auto; }
+.comentario { font-size: 14px; line-height: 1.4; }
+.comentario p { margin: 2px 0 0; font-family: Literata, Georgia, serif; font-size: 15px; word-break: break-word; }
+.comentario__nome { font-weight: 700; margin-right: 4px; }
+.comentario__apelido { color: #8a7e72; font-size: 13px; }
+.form-comentario { display: flex; gap: 8px; }
+.form-comentario input { flex: 1; min-width: 0; font: 15px Archivo, sans-serif; padding: 9px 12px; border: 2px solid #1C1714; border-radius: 999px; }
+@media (max-width: 560px) { .com__topo h1 { font-size: 2.6rem; } }
