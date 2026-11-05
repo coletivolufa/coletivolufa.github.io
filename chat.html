@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css?v=19">
+  <link rel="stylesheet" href="assets/comunidade.css?v=1">
   <style>
     .chat { max-width: 1100px; margin-right: auto; padding: 18px 14px 56px; font-family: Archivo, Arial, sans-serif; }
     .chat__topo { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 12px; }
@@ -68,6 +69,12 @@
     .rodape-balao { display: flex; justify-content: flex-end; align-items: center; gap: 8px; font-size: 11px; color: #8a7e72; margin-top: 2px; }
     .apagar { background: none; border: 0; color: #cc2220; font-size: 11px; padding: 0; cursor: pointer; text-decoration: underline; }
 
+    .adicionar { display: flex; gap: 6px; margin: 2px 6px 8px; }
+    .adicionar input { flex: 1; min-width: 0; padding: 8px 12px; border: 0; border-radius: 999px; background: #fff; font: 14px Archivo, sans-serif; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+    .item__txt { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .sub-item { font-size: 12px; color: #8a7e72; font-weight: 400; }
+    .coracao-match { color: #cc2220; margin-right: 4px; }
+    .chat-membro__nome { display: flex; flex-direction: column; flex: 1; min-width: 0; font-size: 14px; }
     .digitando { padding: 6px 18px 0; font-size: 13px; font-style: italic; color: #5b4f44; background: #F7F1E3; }
     .digitando[hidden] { display: none; }
     .chat__barra { background: #F7F1E3; padding: 10px; border-top: 1px solid #dccfb6; }
@@ -116,8 +123,14 @@
       <h3>Conversas</h3>
       <div id="lista-conversas"></div>
 
-      <h3>Convites</h3>
-      <div id="lista-convites"></div>
+      <h3>Pedidos de amizade</h3>
+      <div id="lista-pedidos"></div>
+
+      <h3>Adicionar amigo</h3>
+      <div class="adicionar">
+        <input id="busca-amigo" placeholder="@apelido" maxlength="22" autocomplete="off" aria-label="@apelido da pessoa">
+        <button class="btn-mini btn-mini--ok" type="button" id="btn-pedir">Pedir</button>
+      </div>
 
       <h3>Membros</h3>
       <input class="busca" id="busca-membros" type="search" placeholder="Buscar membro" aria-label="Buscar membro">
@@ -167,8 +180,9 @@
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="assets/comum.js?v=14"></script>
+<script src="assets/comum.js?v=15"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/chat.js?v=8"></script>
+<script src="assets/comunidade.js?v=1"></script>
+<script src="assets/chat.js?v=9"></script>
 </body>
 </html>

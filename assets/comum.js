@@ -38,7 +38,7 @@ function montarMenu() {
         <a href="artigos.html"${atual("artigos")}>${ICONES.artigos}Artigos</a>
         <a href="formacao.html"${atual("formacao")}>${ICONES.formacao}Formação</a>
         <a href="biblioteca.html"${atual("biblioteca")}>${ICONES.biblioteca}Biblioteca</a>
-        <a href="chat.html"${atual("chat")}>${ICONES.chat}Bate-papo</a>
+        <a href="comunidade.html"${atual("comunidade")}>${ICONES.chat}Comunidade</a>
         <a href="conta.html"${atual("conta")}>${ICONES.conta}Minha conta</a>
       </nav>
       <div class="menu__rodape">

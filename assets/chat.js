@@ -1,4 +1,4 @@
-/* Bate-papo: chat geral + conversas privadas (por convite). Tudo some 72 horas depois do envio.
+/* Bate-papo: chat geral + conversas privadas entre amigos e matches. Mensagens somem em 72 horas.
    Requer supabase/08-chat.sql e supabase/09-chat-privado.sql. */
 const LIMITE_TEXTO = 500;
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -17,8 +17,9 @@ let minhaPapel = "";
 let souAtivo = false;
 let autores = new Map();          // id -> { id, nome, foto, funcao }
 let conversas = [];               // { id, outro }
-let convitesRecebidos = [];       // { id, de_id }
-let convitesEnviados = new Map(); // para_id -> id
+let amigos = new Set();             // ids de quem é amigo
+let pedidosEnviados = new Map();    // para_id -> id do pedido
+let pedidosRecebidos = new Map();   // de_id -> id do pedido
 let naoLidas = new Map();         // conversa id -> quantas mensagens novas
 let alvo = { chave: "geral", conversaId: null };
 let mensagens = [];
@@ -170,20 +171,27 @@ function sincronizar(novas) {
 
 // ---------- carregar dados ----------
 async function carregarAutores() {
-  const { data } = await supa.from("membros_publicos").select("id,nome,foto,funcao");
+  const { data } = await supa.from("membros_publicos").select("id,nome,foto,funcao,apelido");
   autores = new Map((data || []).map((p) => [p.id, p]));
 }
 
 async function carregarConversas() {
-  const { data } = await supa.from("chat_conversas").select("id,membro_a,membro_b");
-  conversas = (data || []).map((c) => ({ id: c.id, outro: c.membro_a === eu.id ? c.membro_b : c.membro_a }));
+  const { data } = await supa.from("chat_conversas").select("id,membro_a,membro_b,origem,respondida,iniciada_por");
+  conversas = (data || []).map((c) => ({
+    id: c.id,
+    outro: c.membro_a === eu.id ? c.membro_b : c.membro_a,
+    origem: c.origem,
+    aguardando: !c.respondida && c.iniciada_por === eu.id,
+  }));
 }
 
-async function carregarConvites() {
-  const { data } = await supa.from("chat_convites").select("id,de_id,para_id,status").eq("status", "pendente");
-  const lista = data || [];
-  convitesRecebidos = lista.filter((v) => v.para_id === eu.id).map((v) => ({ id: v.id, de_id: v.de_id }));
-  convitesEnviados = new Map(lista.filter((v) => v.de_id === eu.id).map((v) => [v.para_id, v.id]));
+async function recarregarAmizades() {
+  const a = await carregarAmizades(eu.id);   // de assets/comunidade.js
+  amigos = a.amigos;
+  pedidosEnviados = a.enviados;
+  pedidosRecebidos = a.recebidos;
+  await carregarConversas();
+  renderLateral();
 }
 
 // mensagens da conversa aberta (geral: conversa_id nulo; privada: o id da conversa)
@@ -211,45 +219,51 @@ async function buscarNovas() {
   data.forEach(acrescentar);
 }
 
-// ---------- lateral: chat geral, conversas, convites e membros ----------
+// ---------- lateral: chat geral, conversas, pedidos de amizade e membros ----------
 function renderLateral() {
   $("btn-geral").classList.toggle("ativo", alvo.conversaId === null);
 
-  const lc = $("lista-conversas");
-  lc.innerHTML = conversas.length
+  $("lista-conversas").innerHTML = conversas.length
     ? conversas.map((c) => {
         const n = naoLidas.get(c.id) || 0;
+        const marca = c.origem === "match" ? '<span class="coracao-match" title="Deu match">♥</span>' : "";
+        const sub = c.origem === "encontro"
+          ? `<small class="sub-item">${c.aguardando ? "aguardando resposta" : "mensagem de encontro"}</small>` : "";
         return `<button type="button" class="item${alvo.conversaId === c.id ? " ativo" : ""}" data-abrir="${c.id}">
           <img src="${esc(fotoDe(c.outro))}" alt="">
-          <span>${esc(nomeDe(c.outro))}</span>${n ? `<span class="contador">${n}</span>` : ""}
+          <span class="item__txt">${marca}${esc(nomeDe(c.outro))}${sub}</span>
+          ${n ? `<span class="contador">${n}</span>` : ""}
         </button>`;
       }).join("")
-    : '<p class="muted">Nenhuma conversa privada ainda.</p>';
+    : '<p class="muted">Nenhuma conversa ainda. Adicione um amigo pelo @apelido.</p>';
 
-  const ci = $("lista-convites");
-  ci.innerHTML = convitesRecebidos.length
-    ? convitesRecebidos.map((v) => `<div class="convite">
-          <span><strong>${esc(nomeDe(v.de_id))}</strong> quer conversar com você</span>
+  $("lista-pedidos").innerHTML = pedidosRecebidos.size
+    ? [...pedidosRecebidos].map(([de, id]) => `<div class="convite">
+          <span><strong>${esc(nomeDe(de))}</strong> quer ser seu amigo</span>
           <span class="acoes">
-            <button type="button" class="btn-mini btn-mini--ok" data-aceitar="${v.id}">Aceitar</button>
-            <button type="button" class="btn-mini" data-recusar="${v.id}">Recusar</button>
+            <button type="button" class="btn-mini btn-mini--ok" data-aceitar="${id}">Aceitar</button>
+            <button type="button" class="btn-mini" data-recusar="${id}">Recusar</button>
           </span>
         </div>`).join("")
-    : '<p class="muted">Nenhum convite.</p>';
+    : '<p class="muted">Nenhum pedido agora.</p>';
 
   const busca = $("busca-membros").value.trim().toLowerCase();
+  const situacao = { amigos, enviados: pedidosEnviados, recebidos: pedidosRecebidos };
   const membros = [...autores.values()]
-    .filter((p) => p.id !== eu.id)
-    .filter((p) => !busca || String(p.nome || "").toLowerCase().includes(busca))
+    .filter((p) => p.id !== eu.id && p.apelido)
+    .filter((p) => !busca || p.apelido.includes(busca) || String(p.nome || "").toLowerCase().includes(busca))
     .sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR"));
   $("lista-membros").innerHTML = membros.length
     ? membros.map((p) => {
+        const sit = situacaoCom(situacao, eu.id, p.id);
         const conv = conversas.find((c) => c.outro === p.id);
-        let acao;
-        if (conv) acao = `<button type="button" class="btn-mini" data-abrir="${conv.id}">Conversar</button>`;
-        else if (convitesEnviados.has(p.id)) acao = '<span class="muted">aguardando</span>';
-        else acao = `<button type="button" class="btn-mini btn-mini--ok" data-chamar="${p.id}">Chamar</button>`;
-        return `<div class="chat-membro"><img src="${esc(p.foto || "assets/img/avatar.svg")}" alt=""><span class="chat-membro__nome">${esc(p.nome || "Membro")}</span>${acao}</div>`;
+        let acao = "";
+        if (sit === "amigo" && conv) acao = `<button type="button" class="btn-mini" data-abrir="${conv.id}">Conversar</button>`;
+        else if (sit === "enviado") acao = '<span class="muted">pedido enviado</span>';
+        else if (sit === "recebido") acao = `<button type="button" class="btn-mini btn-mini--ok" data-aceitar="${pedidosRecebidos.get(p.id)}">Aceitar</button>`;
+        else if (sit === "nenhum") acao = `<button type="button" class="btn-mini btn-mini--ok" data-pedir="${esc(p.apelido)}">Adicionar</button>`;
+        return `<div class="chat-membro"><img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
+          <span class="chat-membro__nome">${esc(p.nome || "Membro")}<small class="sub-item">@${esc(p.apelido)}</small></span>${acao}</div>`;
       }).join("")
     : '<p class="muted">Nenhum membro encontrado.</p>';
 }
@@ -289,37 +303,33 @@ function abrirPrivado(id) {
   return trocarAlvo({ chave: "c" + id, conversaId: id });
 }
 
-// ---------- convites ----------
-async function chamar(paraId) {
-  const nome = nomeDe(paraId);
-  const { data, error } = await supa.rpc("chamar_membro", { para: paraId });
-  if (error) return avisar("Não foi possível chamar: " + error.message);
-  await carregarConvites();
-  await carregarConversas();
-  renderLateral();
-  if (data === "enviado") avisar(`Convite enviado para ${nome}. Aguarde a resposta.`);
-  else if (data === "ja_enviado") avisar(`Você já chamou ${nome}. Aguarde a resposta.`);
-  else if (data === "ja_conversa" || data === "aceito_automatico") {
-    if (data === "aceito_automatico") avisar(`${nome} já tinha chamado você: a conversa foi aberta.`);
-    const c = conversas.find((x) => x.outro === paraId);
-    if (c) abrirPrivado(c.id);
-  }
+// ---------- pedidos de amizade ----------
+const MENSAGENS_AMIZADE = {
+  enviado: (a) => `Pedido de amizade enviado para @${a}.`,
+  aceito_automatico: (a) => `@${a} já tinha pedido: agora vocês são amigos.`,
+  ja_enviado: (a) => `Você já pediu amizade para @${a}.`,
+  ja_amigos: () => "Vocês já são amigos.",
+};
+
+async function pedirAmigo(apelido) {
+  const { data, error } = await supa.rpc("pedir_amizade", { p_apelido: apelido });
+  if (error) return avisar(error.message);
+  await recarregarAmizades();
+  const texto = MENSAGENS_AMIZADE[data];
+  avisar(texto ? texto(apelido) : "");
 }
 
-async function aceitar(convite) {
-  const { data, error } = await supa.rpc("aceitar_convite", { conv: convite });
+async function aceitarAmigo(id) {
+  const { data, error } = await supa.rpc("aceitar_amizade", { p_id: Number(id) });
   if (error) return avisar("Não foi possível aceitar: " + error.message);
-  await carregarConvites();
-  await carregarConversas();
-  renderLateral();
-  abrirPrivado(data);
+  await recarregarAmizades();
+  if (data) abrirPrivado(data);
 }
 
-async function recusar(convite) {
-  const { error } = await supa.rpc("recusar_convite", { conv: convite });
+async function recusarAmigo(id) {
+  const { error } = await supa.rpc("recusar_amizade", { p_id: Number(id) });
   if (error) return avisar("Não foi possível recusar: " + error.message);
-  await carregarConvites();
-  renderLateral();
+  await recarregarAmizades();
 }
 
 // ---------- "digitando" e "gravando", por conversa ----------
@@ -507,11 +517,13 @@ async function iniciar() {
   if (aprovado !== true) return fora("O bate-papo é para membros aprovados. Se você acabou de se cadastrar, aguarde a aprovação da secretaria.", false);
 
   eu = sessao.session.user;
-  const { data: perfil } = await supa.from("perfis").select("papel,funcao").eq("id", eu.id).single();
+  const { data: perfil } = await supa.from("perfis").select("id,nome,foto,papel,funcao,apelido").eq("id", eu.id).single();
   minhaPapel = perfil ? perfil.papel : "";
   souAtivo = !!perfil && !/comum/i.test(perfil.funcao || "");
   $("gravar").hidden = !souAtivo;
   $("entrada").hidden = true;
+  montarAbas("bate-papo");
+  if (perfil) await garantirApelido(eu, perfil);   // @apelido obrigatório na comunidade
   $("area").hidden = false;
 
   $("btn-geral").addEventListener("click", abrirGeral);
@@ -519,11 +531,16 @@ async function iniciar() {
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.abrir) return abrirPrivado(Number(b.dataset.abrir));
-    if (b.dataset.chamar) return chamar(b.dataset.chamar);
-    if (b.dataset.aceitar) return aceitar(Number(b.dataset.aceitar));
-    if (b.dataset.recusar) return recusar(Number(b.dataset.recusar));
+    if (b.dataset.pedir) return pedirAmigo(b.dataset.pedir);
+    if (b.dataset.aceitar) return aceitarAmigo(b.dataset.aceitar);
+    if (b.dataset.recusar) return recusarAmigo(b.dataset.recusar);
   });
   $("busca-membros").addEventListener("input", renderLateral);
+  $("btn-pedir").addEventListener("click", () => {
+    const v = $("busca-amigo").value.trim().toLowerCase().replace(/^@/, "");
+    if (v) pedirAmigo(v);
+    $("busca-amigo").value = "";
+  });
   $("enviar").addEventListener("click", enviarTexto);
   $("texto").addEventListener("input", () => {
     ajustarAltura();
@@ -546,7 +563,7 @@ async function iniciar() {
 
   await carregarAutores();
   await carregarConversas();
-  await carregarConvites();
+  await recarregarAmizades();
   await trocarAlvo({ chave: "geral", conversaId: null });
 
   canal = supa.channel("chat-comunidade", { config: { broadcast: { self: false } } })
@@ -557,14 +574,13 @@ async function iniciar() {
     .on("postgres_changes", { event: "DELETE", schema: "public", table: "chat_mensagens" }, (p) => {
       if (p.old && p.old.id) removerLocal(p.old.id);
     })
-    .on("postgres_changes", { event: "*", schema: "public", table: "chat_convites" }, async (p) => {
+    .on("postgres_changes", { event: "*", schema: "public", table: "amizades" }, async (p) => {
       const novo = p.new || {};
       if (novo.para_id === eu.id && p.eventType === "INSERT") {
         if (!autores.has(novo.de_id)) await carregarAutores();
-        avisar(`${nomeDe(novo.de_id)} quer conversar com você. Veja em Convites.`);
+        avisar(`${nomeDe(novo.de_id)} pediu sua amizade. Veja em Pedidos de amizade.`);
       }
-      await carregarConvites();
-      renderLateral();
+      await recarregarAmizades();
     })
     .on("postgres_changes", { event: "*", schema: "public", table: "chat_conversas" }, async () => {
       await carregarConversas();
@@ -578,7 +594,7 @@ async function iniciar() {
   setInterval(mostrarDigitando, 1000);     // apaga o aviso de quem parou de digitar
   setInterval(() => {                      // confere apagamentos e a lista de convites e conversas
     carregarMensagens();
-    carregarConvites().then(renderLateral);
+    recarregarAmizades();
     carregarConversas().then(renderLateral);
   }, 60000);
   setInterval(() => {                      // tira o que passou de 72 horas
