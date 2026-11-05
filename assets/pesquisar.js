@@ -23,8 +23,8 @@ function pesquisar() {
   const achados = [...membros.values()].filter((m) => m.apelido && m.apelido.includes(termo));
   r.innerHTML = achados.length
     ? `<section class="card">${achados.slice(0, 30).map((m) => `<div class="linha-amizade">
-        <img class="av" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
-        <div class="linha-amizade__txt"><strong>${esc(m.nome || "Membro")}</strong><span class="apelido">@${esc(m.apelido)}</span></div>
+        <img class="av perfil-clicavel" data-perfil="${m.id}" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+        <div class="linha-amizade__txt"><strong class="perfil-clicavel" data-perfil="${m.id}">${esc(m.nome || "Membro")}</strong><span class="apelido">@${esc(m.apelido)}</span></div>
         ${botao(m)}
       </div>`).join("")}</section>`
     : '<p class="card muted">Ninguém com esse @arroba.</p>';
