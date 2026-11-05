@@ -1,11 +1,12 @@
-/* Bate-papo dos membros. Mensagens somem 72 horas depois do envio (supabase/08-chat.sql). */
+/* Bate-papo: chat geral + conversas privadas (por convite). Tudo some 72 horas depois do envio.
+   Requer supabase/08-chat.sql e supabase/09-chat-privado.sql. */
 const LIMITE_TEXTO = 500;
 const MAX_BYTES = 5 * 1024 * 1024;
 const TIPOS_IMAGEM = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 const SETENTA_E_DUAS_HORAS = 72 * 3600 * 1000;
 const INTERVALO_ENVIO = 1500;
 const MAX_AUDIO_MS = 120 * 1000;
-const COLUNAS = "id,autor_id,tipo,texto,imagem_url,criado_em";
+const COLUNAS = "id,autor_id,tipo,texto,imagem_url,criado_em,conversa_id";
 const CORES = ["#C8201E", "#1F3A5F", "#8A5A00", "#2E6B3A", "#6B2E7A", "#A4471B"];
 const ICONE_ATIVO = '<img class="selo-ativo" src="assets/img/martelo-foice.png" alt="" title="Membro ativo">';
 
@@ -14,22 +15,28 @@ const $ = (id) => document.getElementById(id);
 let eu = null;
 let minhaPapel = "";
 let souAtivo = false;
+let autores = new Map();          // id -> { id, nome, foto, funcao }
+let conversas = [];               // { id, outro }
+let convitesRecebidos = [];       // { id, de_id }
+let convitesEnviados = new Map(); // para_id -> id
+let naoLidas = new Map();         // conversa id -> quantas mensagens novas
+let alvo = { chave: "geral", conversaId: null };
 let mensagens = [];
 let ids = new Set();
-let autores = new Map();
+let ultimaMudanca = 0;
 let ultimoEnvio = 0;
+let canal = null;
+let ultimoAviso = 0;
+let estadoEnviado = "parado";
+const digitando = new Map();      // id -> { nome, estado, expira }
 let gravador = null;
 let pedacos = [];
 let temporizador = null;
 let inicioGravacao = 0;
 let cancelando = false;
-let previa = null; // { blob, url }
-let canal = null;
-let ultimoAviso = 0;
-let estadoEnviado = "parado";
-const digitando = new Map(); // id -> { nome, estado, expira }
-let ultimaMudanca = 0; // quando a tela mudou por último (envio, recebimento ou apagar)
+let previa = null;
 
+// ---------- utilidades ----------
 function avisar(texto) { const el = $("aviso-chat"); el.textContent = texto; el.hidden = !texto; }
 
 function fora(texto, comLogin) {
@@ -51,7 +58,6 @@ function mostrarComp(estado) {
   $("comp-previa").hidden = estado !== "previa";
 }
 
-// selos: "Membro ativo" + a primeira ocupação, ou "Membro comum"
 function selosDe(funcao) {
   const texto = String(funcao || "");
   if (/comum/i.test(texto)) return { ativo: false, selos: ["Membro comum"] };
@@ -75,7 +81,11 @@ function rotuloDia(iso) {
 function ligar(texto) {
   return texto.replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener nofollow">${u}</a>`);
 }
+const nomeDe = (id) => (autores.get(id) || {}).nome || "Membro";
+const fotoDe = (id) => (autores.get(id) || {}).foto || "assets/img/avatar.svg";
+const desde72h = () => new Date(Date.now() - SETENTA_E_DUAS_HORAS).toISOString();
 
+// ---------- mensagens na tela ----------
 function htmlMensagem(m, anterior) {
   const a = autores.get(m.autor_id) || { nome: "Membro", foto: "", funcao: "Membro comum" };
   const meu = m.autor_id === eu.id;
@@ -87,8 +97,8 @@ function htmlMensagem(m, anterior) {
 
   const separador = mudouDia ? `<div class="dia">${esc(rotuloDia(m.criado_em))}</div>` : "";
   const foto = meu ? "" : seguida
-    ? '<span class="foto-vazia"></span>'
-    : `<img class="foto" src="${esc(a.foto || "assets/img/avatar.svg")}" alt="">`;
+    ? '<span class="msg-foto-vazia"></span>'
+    : `<img class="msg-foto" src="${esc(a.foto || "assets/img/avatar.svg")}" alt="">`;
   const cabeca = seguida ? "" : `
       <header class="cab">
         <span class="nome" style="color:${cor(m.autor_id)}">${esc(a.nome || "Membro")}</span>${ativo ? ICONE_ATIVO : ""}
@@ -98,9 +108,9 @@ function htmlMensagem(m, anterior) {
     ? `<audio class="audio" controls preload="none" src="${esc(m.imagem_url)}"></audio>`
     : m.tipo === "imagem"
       ? `<a href="${esc(m.imagem_url)}" target="_blank" rel="noopener"><img class="midia" src="${esc(m.imagem_url)}" alt="Imagem enviada no bate-papo" loading="lazy"></a>`
-      : `<p class="texto">${ligar(esc(m.texto))}</p>`;
+      : `<p class="msg-texto">${ligar(esc(m.texto))}</p>`;
 
-  return `${separador}<article class="linha ${meu ? "minha" : "outra"}${seguida ? " seguida" : ""}" data-id="${m.id}">
+  return `${separador}<article class="msg-linha ${meu ? "minha" : "outra"}${seguida ? " seguida" : ""}" data-id="${m.id}">
     ${foto}
     <div class="balao">${cabeca}
       ${corpo}
@@ -109,25 +119,227 @@ function htmlMensagem(m, anterior) {
   </article>`;
 }
 
-// ---------- quem está digitando / gravando ----------
+function estaPerto() {
+  const l = $("lista");
+  return l.scrollHeight - l.scrollTop - l.clientHeight < 160;
+}
+
+function desenhar() {
+  const lista = $("lista");
+  ids = new Set(mensagens.map((m) => m.id));
+  lista.innerHTML = mensagens.length
+    ? mensagens.map((m, i) => htmlMensagem(m, mensagens[i - 1])).join("")
+    : '<p class="chat-vazio">Ainda não há mensagens. Comece a conversa!</p>';
+  lista.scrollTop = lista.scrollHeight;
+}
+
+function acrescentar(m) {
+  if (!m || ids.has(m.id)) return;
+  const conv = m.conversa_id ?? null;
+  if (conv !== alvo.conversaId) {
+    // chegou em outra conversa: marca como não lida
+    if (conv !== null && m.autor_id !== eu.id) {
+      naoLidas.set(conv, (naoLidas.get(conv) || 0) + 1);
+      renderLateral();
+    }
+    return;
+  }
+  ultimaMudanca = Date.now();
+  const perto = estaPerto();
+  const anterior = mensagens[mensagens.length - 1];
+  mensagens.push(m);
+  ids.add(m.id);
+  const lista = $("lista");
+  const vazio = lista.querySelector(".chat-vazio");
+  if (vazio) vazio.remove();
+  lista.insertAdjacentHTML("beforeend", htmlMensagem(m, anterior));
+  if (perto || m.autor_id === eu.id) lista.scrollTop = lista.scrollHeight;
+}
+
+function removerLocal(id) {
+  ultimaMudanca = Date.now();
+  mensagens = mensagens.filter((m) => m.id !== id);
+  desenhar();
+}
+
+function sincronizar(novas) {
+  const mudou = novas.length !== mensagens.length || novas.some((m) => !ids.has(m.id));
+  mensagens = novas;
+  if (mudou) desenhar();
+}
+
+// ---------- carregar dados ----------
+async function carregarAutores() {
+  const { data } = await supa.from("membros_publicos").select("id,nome,foto,funcao");
+  autores = new Map((data || []).map((p) => [p.id, p]));
+}
+
+async function carregarConversas() {
+  const { data } = await supa.from("chat_conversas").select("id,membro_a,membro_b");
+  conversas = (data || []).map((c) => ({ id: c.id, outro: c.membro_a === eu.id ? c.membro_b : c.membro_a }));
+}
+
+async function carregarConvites() {
+  const { data } = await supa.from("chat_convites").select("id,de_id,para_id,status").eq("status", "pendente");
+  const lista = data || [];
+  convitesRecebidos = lista.filter((v) => v.para_id === eu.id).map((v) => ({ id: v.id, de_id: v.de_id }));
+  convitesEnviados = new Map(lista.filter((v) => v.de_id === eu.id).map((v) => [v.para_id, v.id]));
+}
+
+// mensagens da conversa aberta (geral: conversa_id nulo; privada: o id da conversa)
+function consultaDaConversa(base) {
+  return alvo.conversaId === null
+    ? base.is("conversa_id", null)
+    : base.eq("conversa_id", alvo.conversaId);
+}
+
+async function carregarMensagens() {
+  const inicio = Date.now();
+  const base = supa.from("chat_mensagens").select(COLUNAS).gt("criado_em", desde72h());
+  const { data, error } = await consultaDaConversa(base).order("criado_em", { ascending: true }).limit(300);
+  if (error) return avisar("Não foi possível carregar as mensagens agora. Tente de novo.");
+  if (ultimaMudanca > inicio) return;
+  sincronizar(data || []);
+}
+
+async function buscarNovas() {
+  const ultima = mensagens[mensagens.length - 1];
+  const desde = ultima ? ultima.criado_em : desde72h();
+  const base = supa.from("chat_mensagens").select(COLUNAS).gte("criado_em", desde);
+  const { data, error } = await consultaDaConversa(base).order("criado_em", { ascending: true }).limit(100);
+  if (error || !data) return;
+  data.forEach(acrescentar);
+}
+
+// ---------- lateral: chat geral, conversas, convites e membros ----------
+function renderLateral() {
+  $("btn-geral").classList.toggle("ativo", alvo.conversaId === null);
+
+  const lc = $("lista-conversas");
+  lc.innerHTML = conversas.length
+    ? conversas.map((c) => {
+        const n = naoLidas.get(c.id) || 0;
+        return `<button type="button" class="item${alvo.conversaId === c.id ? " ativo" : ""}" data-abrir="${c.id}">
+          <img src="${esc(fotoDe(c.outro))}" alt="">
+          <span>${esc(nomeDe(c.outro))}</span>${n ? `<span class="contador">${n}</span>` : ""}
+        </button>`;
+      }).join("")
+    : '<p class="muted">Nenhuma conversa privada ainda.</p>';
+
+  const ci = $("lista-convites");
+  ci.innerHTML = convitesRecebidos.length
+    ? convitesRecebidos.map((v) => `<div class="convite">
+          <span><strong>${esc(nomeDe(v.de_id))}</strong> quer conversar com você</span>
+          <span class="acoes">
+            <button type="button" class="btn-mini btn-mini--ok" data-aceitar="${v.id}">Aceitar</button>
+            <button type="button" class="btn-mini" data-recusar="${v.id}">Recusar</button>
+          </span>
+        </div>`).join("")
+    : '<p class="muted">Nenhum convite.</p>';
+
+  const busca = $("busca-membros").value.trim().toLowerCase();
+  const membros = [...autores.values()]
+    .filter((p) => p.id !== eu.id)
+    .filter((p) => !busca || String(p.nome || "").toLowerCase().includes(busca))
+    .sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR"));
+  $("lista-membros").innerHTML = membros.length
+    ? membros.map((p) => {
+        const conv = conversas.find((c) => c.outro === p.id);
+        let acao;
+        if (conv) acao = `<button type="button" class="btn-mini" data-abrir="${conv.id}">Conversar</button>`;
+        else if (convitesEnviados.has(p.id)) acao = '<span class="muted">aguardando</span>';
+        else acao = `<button type="button" class="btn-mini btn-mini--ok" data-chamar="${p.id}">Chamar</button>`;
+        return `<div class="chat-membro"><img src="${esc(p.foto || "assets/img/avatar.svg")}" alt=""><span class="chat-membro__nome">${esc(p.nome || "Membro")}</span>${acao}</div>`;
+      }).join("")
+    : '<p class="muted">Nenhum membro encontrado.</p>';
+}
+
+// ---------- trocar de conversa ----------
+function cabecalho() {
+  if (alvo.conversaId === null) {
+    $("titulo-painel").textContent = "Chat geral";
+    $("sub-painel").textContent = "Todos os membros aprovados";
+  } else {
+    const c = conversas.find((x) => x.id === alvo.conversaId);
+    $("titulo-painel").textContent = c ? nomeDe(c.outro) : "Conversa privada";
+    $("sub-painel").textContent = "Conversa privada";
+  }
+}
+
+async function trocarAlvo(novo) {
+  alvo = novo;
+  mensagens = [];
+  ids = new Set();
+  digitando.clear();
+  mostrarDigitando();
+  estadoEnviado = "parado";
+  avisar("");
+  cabecalho();
+  desenhar();
+  renderLateral();
+  await carregarMensagens();
+}
+
+function abrirGeral() { return trocarAlvo({ chave: "geral", conversaId: null }); }
+
+function abrirPrivado(id) {
+  const c = conversas.find((x) => x.id === id);
+  if (!c) return;
+  naoLidas.delete(id);
+  return trocarAlvo({ chave: "c" + id, conversaId: id });
+}
+
+// ---------- convites ----------
+async function chamar(paraId) {
+  const nome = nomeDe(paraId);
+  const { data, error } = await supa.rpc("chamar_membro", { para: paraId });
+  if (error) return avisar("Não foi possível chamar: " + error.message);
+  await carregarConvites();
+  await carregarConversas();
+  renderLateral();
+  if (data === "enviado") avisar(`Convite enviado para ${nome}. Aguarde a resposta.`);
+  else if (data === "ja_enviado") avisar(`Você já chamou ${nome}. Aguarde a resposta.`);
+  else if (data === "ja_conversa" || data === "aceito_automatico") {
+    if (data === "aceito_automatico") avisar(`${nome} já tinha chamado você: a conversa foi aberta.`);
+    const c = conversas.find((x) => x.outro === paraId);
+    if (c) abrirPrivado(c.id);
+  }
+}
+
+async function aceitar(convite) {
+  const { data, error } = await supa.rpc("aceitar_convite", { conv: convite });
+  if (error) return avisar("Não foi possível aceitar: " + error.message);
+  await carregarConvites();
+  await carregarConversas();
+  renderLateral();
+  abrirPrivado(data);
+}
+
+async function recusar(convite) {
+  const { error } = await supa.rpc("recusar_convite", { conv: convite });
+  if (error) return avisar("Não foi possível recusar: " + error.message);
+  await carregarConvites();
+  renderLateral();
+}
+
+// ---------- "digitando" e "gravando", por conversa ----------
 function avisarEstado(estado) {
   if (!canal || !eu) return;
   const agora = Date.now();
-  // "digitando" é reenviado no máximo a cada 2 s; "parado" e "gravando" são enviados na hora que mudam
   if (estado === estadoEnviado && estado !== "digitando") return;
   if (estado === "digitando" && estadoEnviado === "digitando" && agora - ultimoAviso < 2000) return;
   estadoEnviado = estado;
   ultimoAviso = agora;
-  canal.send({ type: "broadcast", event: "digitando", payload: { id: eu.id, nome: meuNome(), estado } });
+  canal.send({ type: "broadcast", event: "digitando", payload: { id: eu.id, nome: meuNome(), estado, chave: alvo.chave } });
 }
 
 function meuNome() {
-  const eu_ = autores.get(eu.id);
-  return (eu_ && eu_.nome) ? eu_.nome.split(" ")[0] : "Alguém";
+  const n = nomeDe(eu.id);
+  return n !== "Membro" ? n.split(" ")[0] : "Alguém";
 }
 
 function receberEstado(p) {
-  if (!p || !p.id || p.id === eu.id) return;
+  if (!p || !p.id || p.id === eu.id || p.chave !== alvo.chave) return;
   if (p.estado === "parado") { digitando.delete(p.id); return mostrarDigitando(); }
   digitando.set(p.id, { nome: p.nome || "Alguém", estado: p.estado, expira: Date.now() + 4000 });
   mostrarDigitando();
@@ -142,87 +354,13 @@ function mostrarDigitando() {
   const frase = (v) => v.estado === "gravando" ? `${v.nome} está gravando um áudio` : `${v.nome} está digitando`;
   let texto;
   if (itens.length === 1) texto = frase(itens[0]) + "…";
-  else if (itens.length === 2) texto = `${itens[0].nome} e ${itens[1].nome} estão ${itens.every(v => v.estado === "gravando") ? "gravando" : "digitando"}…`;
+  else if (itens.length === 2) texto = `${itens[0].nome} e ${itens[1].nome} estão ${itens.every((v) => v.estado === "gravando") ? "gravando" : "digitando"}…`;
   else texto = `${itens.length} pessoas estão conversando…`;
   el.textContent = texto;
   el.hidden = false;
 }
 
-function estaPerto() {
-  const l = $("lista");
-  return l.scrollHeight - l.scrollTop - l.clientHeight < 160;
-}
-
-// desenha tudo de uma vez (primeira carga e quando algo foi apagado)
-function desenhar() {
-  const lista = $("lista");
-  ids = new Set(mensagens.map((m) => m.id));
-  lista.innerHTML = mensagens.length
-    ? mensagens.map((m, i) => htmlMensagem(m, mensagens[i - 1])).join("")
-    : '<p class="vazio">Ainda não há mensagens. Comece a conversa!</p>';
-  lista.scrollTop = lista.scrollHeight;
-}
-
-// acrescenta só a mensagem nova (rápido, sem redesenhar a conversa)
-function acrescentar(m) {
-  if (!m || ids.has(m.id)) return;
-  ultimaMudanca = Date.now();
-  const perto = estaPerto();
-  const anterior = mensagens[mensagens.length - 1];
-  mensagens.push(m);
-  ids.add(m.id);
-  const lista = $("lista");
-  const vazio = lista.querySelector(".vazio");
-  if (vazio) vazio.remove();
-  lista.insertAdjacentHTML("beforeend", htmlMensagem(m, anterior));
-  if (perto || m.autor_id === eu.id) lista.scrollTop = lista.scrollHeight;
-}
-
-function removerLocal(id) {
-  ultimaMudanca = Date.now();
-  mensagens = mensagens.filter((m) => m.id !== id);
-  desenhar();
-}
-
-// compara com o servidor e só redesenha se algo mudou (apagado ou novo de outra pessoa)
-function sincronizar(novas) {
-  const mudou = novas.length !== mensagens.length || novas.some((m) => !ids.has(m.id));
-  mensagens = novas;
-  if (mudou) desenhar();
-}
-
-async function carregarAutores() {
-  const { data } = await supa.from("membros_publicos").select("id,nome,foto,funcao");
-  autores = new Map((data || []).map((p) => [p.id, p]));
-}
-
-// traz a conversa do servidor. Se a tela mudou enquanto a resposta vinha, descarta a resposta
-// (ela pode ser antiga e apagaria a mensagem que acabou de chegar).
-async function carregarMensagens() {
-  const inicio = Date.now();
-  const { data, error } = await supa.from("chat_mensagens")
-    .select(COLUNAS)
-    .gt("criado_em", new Date(Date.now() - SETENTA_E_DUAS_HORAS).toISOString())
-    .order("criado_em", { ascending: true })
-    .limit(300);
-  if (error) return avisar("Não foi possível carregar o bate-papo agora. Tente de novo.");
-  if (ultimaMudanca > inicio) return;
-  sincronizar(data || []);
-}
-
-// busca só o que é novo desde a última mensagem da tela (rápido, para o caso de o tempo real falhar)
-async function buscarNovas() {
-  const ultima = mensagens[mensagens.length - 1];
-  const desde = ultima ? ultima.criado_em : new Date(Date.now() - SETENTA_E_DUAS_HORAS).toISOString();
-  const { data, error } = await supa.from("chat_mensagens")
-    .select(COLUNAS)
-    .gte("criado_em", desde)
-    .order("criado_em", { ascending: true })
-    .limit(100);
-  if (error || !data) return;
-  data.forEach(acrescentar);
-}
-
+// ---------- envio ----------
 function podeEnviar() {
   const agora = Date.now();
   if (agora - ultimoEnvio < INTERVALO_ENVIO) { avisar("Espere um instante antes de enviar de novo."); return false; }
@@ -231,10 +369,9 @@ function podeEnviar() {
   return true;
 }
 
-// grava a mensagem no banco e já a mostra na tela
 async function publicar(dados) {
   const { data, error } = await supa.from("chat_mensagens")
-    .insert({ autor_id: eu.id, ...dados })
+    .insert({ autor_id: eu.id, conversa_id: alvo.conversaId, ...dados })
     .select(COLUNAS)
     .single();
   if (error) { avisar("Não foi possível enviar: " + error.message); return false; }
@@ -275,7 +412,7 @@ async function enviarImagem(arquivo) {
   await enviarArquivo(arquivo, "imagem");
 }
 
-// ---------- áudio: grava, mostra a prévia para ouvir, e só envia quando a pessoa confirma ----------
+// ---------- áudio: grava, toca a prévia e só envia quando confirmado ----------
 function atualizarTempo() {
   const s = Math.floor((Date.now() - inicioGravacao) / 1000);
   $("tempo").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -349,7 +486,6 @@ async function enviarPrevia() {
   }
 }
 
-// ---------- campo de texto ----------
 function ajustarAltura() {
   const t = $("texto");
   t.style.height = "auto";
@@ -363,6 +499,7 @@ async function apagar(id) {
   removerLocal(id);
 }
 
+// ---------- início ----------
 async function iniciar() {
   const { data: sessao } = await supa.auth.getSession();
   if (!sessao || !sessao.session) return fora("Entre na sua conta para participar do bate-papo.", true);
@@ -377,15 +514,25 @@ async function iniciar() {
   $("entrada").hidden = true;
   $("area").hidden = false;
 
+  $("btn-geral").addEventListener("click", abrirGeral);
+  $("lateral").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.abrir) return abrirPrivado(Number(b.dataset.abrir));
+    if (b.dataset.chamar) return chamar(b.dataset.chamar);
+    if (b.dataset.aceitar) return aceitar(Number(b.dataset.aceitar));
+    if (b.dataset.recusar) return recusar(Number(b.dataset.recusar));
+  });
+  $("busca-membros").addEventListener("input", renderLateral);
   $("enviar").addEventListener("click", enviarTexto);
   $("texto").addEventListener("input", () => {
     ajustarAltura();
     avisarEstado($("texto").value.trim() ? "digitando" : "parado");
   });
-  window.addEventListener("pagehide", () => avisarEstado("parado"));
   $("texto").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(pointer: fine)").matches) { e.preventDefault(); enviarTexto(); }
   });
+  window.addEventListener("pagehide", () => avisarEstado("parado"));
   $("arquivo").addEventListener("change", (e) => { const f = e.target.files[0]; e.target.value = ""; if (f) enviarImagem(f); });
   $("gravar").addEventListener("click", comecarGravacao);
   $("parar-gravacao").addEventListener("click", pararGravacao);
@@ -398,9 +545,11 @@ async function iniciar() {
   });
 
   await carregarAutores();
-  await carregarMensagens();
-  // tempo real: mensagens chegam na hora, e o aviso de "digitando" também passa por aqui
-  canal = supa.channel("chat-mensagens", { config: { broadcast: { self: false } } })
+  await carregarConversas();
+  await carregarConvites();
+  await trocarAlvo({ chave: "geral", conversaId: null });
+
+  canal = supa.channel("chat-comunidade", { config: { broadcast: { self: false } } })
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_mensagens" }, async (p) => {
       if (!autores.has(p.new.autor_id)) await carregarAutores();
       acrescentar(p.new);
@@ -408,14 +557,31 @@ async function iniciar() {
     .on("postgres_changes", { event: "DELETE", schema: "public", table: "chat_mensagens" }, (p) => {
       if (p.old && p.old.id) removerLocal(p.old.id);
     })
+    .on("postgres_changes", { event: "*", schema: "public", table: "chat_convites" }, async (p) => {
+      const novo = p.new || {};
+      if (novo.para_id === eu.id && p.eventType === "INSERT") {
+        if (!autores.has(novo.de_id)) await carregarAutores();
+        avisar(`${nomeDe(novo.de_id)} quer conversar com você. Veja em Convites.`);
+      }
+      await carregarConvites();
+      renderLateral();
+    })
+    .on("postgres_changes", { event: "*", schema: "public", table: "chat_conversas" }, async () => {
+      await carregarConversas();
+      renderLateral();
+      cabecalho();
+    })
     .on("broadcast", { event: "digitando" }, ({ payload }) => receberEstado(payload))
     .subscribe();
-  setInterval(mostrarDigitando, 1000);     // apaga o aviso quando a pessoa para de digitar
-  // reserva: confere novidades a cada 3 segundos, caso o tempo real caia
-  setInterval(buscarNovas, 3000);
-  // confere apagamentos e a conversa inteira de tempos em tempos
-  setInterval(carregarMensagens, 60000);
-  setInterval(() => {                     // some com o que passou de 72 horas
+
+  setInterval(buscarNovas, 3000);          // reserva, caso o tempo real caia
+  setInterval(mostrarDigitando, 1000);     // apaga o aviso de quem parou de digitar
+  setInterval(() => {                      // confere apagamentos e a lista de convites e conversas
+    carregarMensagens();
+    carregarConvites().then(renderLateral);
+    carregarConversas().then(renderLateral);
+  }, 60000);
+  setInterval(() => {                      // tira o que passou de 72 horas
     const agora = Date.now();
     const antes = mensagens.length;
     mensagens = mensagens.filter((m) => agora - new Date(m.criado_em).getTime() < SETENTA_E_DUAS_HORAS);
