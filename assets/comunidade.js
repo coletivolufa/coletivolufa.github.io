@@ -7,6 +7,36 @@ const ABAS_COM = [
   ["pesquisar", "Pesquisar", "pesquisar.html"],
 ];
 const REGEX_APELIDO = /^[a-z0-9_.]{3,20}$/;
+const ESTADOS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
+const SEXOS = ["Feminino", "Masculino", "Intersexo", "Prefiro não informar"];
+const GENEROS = ["Mulher cis", "Homem cis", "Mulher trans", "Homem trans", "Não-binário", "Gênero fluido", "Agênero", "Travesti", "Queer", "Prefiro não informar"];
+const ORIENTACOES = ["Heterossexual", "Homossexual (gay / lésbica)", "Bissexual", "Pansexual", "Assexual", "Prefiro não informar"];
+
+// campos de cidade, estado, sexo, gênero e orientação (todos opcionais)
+function camposPerfilHTML(v = {}) {
+  const opcoes = (lista) => lista.map((o) => `<option value="${esc(o)}">`).join("");
+  return `
+    <div class="campo-com"><label for="p-cidade">Cidade</label><input id="p-cidade" maxlength="80" value="${esc(v.cidade || "")}" autocomplete="off"></div>
+    <div class="campo-com"><label for="p-uf">Estado</label>
+      <select id="p-uf"><option value="">Não informar</option>${ESTADOS.map((e) => `<option${v.uf === e ? " selected" : ""}>${e}</option>`).join("")}</select></div>
+    <div class="campo-com"><label for="p-sexo">Sexo</label>
+      <input id="p-sexo" list="lista-sexo" maxlength="60" value="${esc(v.sexo || "")}" placeholder="Escolha ou escreva" autocomplete="off">
+      <datalist id="lista-sexo">${opcoes(SEXOS)}</datalist></div>
+    <div class="campo-com"><label for="p-genero">Gênero</label>
+      <input id="p-genero" list="lista-genero" maxlength="60" value="${esc(v.genero || "")}" placeholder="Escolha ou escreva" autocomplete="off">
+      <datalist id="lista-genero">${opcoes(GENEROS)}</datalist></div>
+    <div class="campo-com"><label for="p-orientacao">Orientação sexual</label>
+      <input id="p-orientacao" list="lista-orientacao" maxlength="60" value="${esc(v.orientacao || "")}" placeholder="Escolha ou escreva" autocomplete="off">
+      <datalist id="lista-orientacao">${opcoes(ORIENTACOES)}</datalist></div>
+    <small class="muted">Opcional. Só membros aprovados veem essas informações.</small>`;
+}
+
+function lerCamposPerfil() {
+  const v = (id) => ($(id)?.value || "").trim();
+  return { cidade: v("p-cidade"), uf: $("p-uf")?.value || "", sexo: v("p-sexo"), genero: v("p-genero"), orientacao: v("p-orientacao") };
+}
+
+// tela de cadastro: o @ e os dados. O @ é obrigatório; o resto é opcional.
 
 function montarAbas(atual) {
   const main = document.querySelector("main");
@@ -56,6 +86,7 @@ function garantirApelido(eu, perfil) {
       <form class="gate__form" novalidate>
         <span class="arroba">@</span>
         <input id="gate-apelido" maxlength="20" autocomplete="off" placeholder="seu.apelido" aria-label="Seu @apelido">
+        <div class="gate__dados">${camposPerfilHTML(perfil)}</div>
         <button class="botao-com" type="submit">Salvar</button>
       </form>
       <p class="aviso-com" id="gate-aviso" hidden></p>`;
@@ -66,6 +97,7 @@ function garantirApelido(eu, perfil) {
     gate.querySelector("form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const apelido = campo.value.trim().toLowerCase().replace(/^@/, "");
+      const dados = lerCamposPerfil();
       if (!REGEX_APELIDO.test(apelido)) {
         aviso.hidden = false;
         aviso.textContent = "Use de 3 a 20 letras minúsculas, números, ponto ou traço baixo.";
@@ -73,7 +105,7 @@ function garantirApelido(eu, perfil) {
       }
       const botao = gate.querySelector("button");
       botao.disabled = true;
-      const { error } = await supa.from("perfis").update({ apelido }).eq("id", eu.id);
+      const { error } = await supa.from("perfis").update({ apelido, ...dados }).eq("id", eu.id);
       botao.disabled = false;
       if (error) {
         aviso.hidden = false;
@@ -82,7 +114,7 @@ function garantirApelido(eu, perfil) {
           : "Não foi possível salvar: " + error.message;
         return;
       }
-      perfil.apelido = apelido;
+      Object.assign(perfil, { apelido }, dados);
       gate.remove();
       resolver(perfil);
     });
@@ -103,7 +135,7 @@ async function entrarComunidade() {
   }
   const eu = sessao.session.user;
   const { data: perfil, error } = await supa.from("perfis")
-    .select("id,nome,foto,papel,funcao,apelido").eq("id", eu.id).single();
+    .select("id,nome,foto,papel,funcao,apelido,cidade,uf,sexo,genero,orientacao").eq("id", eu.id).single();
   if (error || !perfil) {
     mostrarFora("Não foi possível abrir a comunidade agora. Atualize a página e tente de novo.", false);
     return null;
@@ -199,3 +231,59 @@ async function trocarApelido(eu, perfil, novo) {
   perfil.apelido = apelido;
   return { ok: true, apelido };
 }
+
+// ---------- mini perfil: abre ao clicar na foto ou no nome de alguém ----------
+let miniPerfilAberto = false;
+
+function fecharMiniPerfil() {
+  document.getElementById("mini-perfil")?.remove();
+  miniPerfilAberto = false;
+}
+
+function linhaDado(rotulo, valor) {
+  if (!valor) return "";
+  return `<div class="mini-perfil__dado"><span>${esc(rotulo)}</span><strong>${esc(valor)}</strong></div>`;
+}
+
+async function abrirMiniPerfil(id) {
+  if (miniPerfilAberto) return;
+  miniPerfilAberto = true;
+  const caixa = document.createElement("div");
+  caixa.id = "mini-perfil";
+  caixa.className = "modal";
+  caixa.innerHTML = `<div class="modal__caixa mini-perfil" role="dialog" aria-modal="true" aria-label="Perfil">
+    <button type="button" class="mini-perfil__fechar" aria-label="Fechar">✕</button>
+    <p class="muted">Carregando…</p>
+  </div>`;
+  document.body.appendChild(caixa);
+  caixa.addEventListener("click", (e) => { if (e.target === caixa || e.target.closest(".mini-perfil__fechar")) fecharMiniPerfil(); });
+
+  const { data, error } = await supa.rpc("perfil_detalhado", { p_id: id });
+  const p = Array.isArray(data) ? data[0] : data;
+  const corpo = caixa.querySelector(".mini-perfil");
+  if (error || !p) {
+    corpo.innerHTML = `<button type="button" class="mini-perfil__fechar" aria-label="Fechar">✕</button><p class="muted">Não foi possível abrir este perfil.</p>`;
+    return;
+  }
+  const local = [p.cidade, p.uf].filter(Boolean).join(" · ");
+  const selo = /ativo/i.test(p.funcao || "") ? '<img class="selo-ativo" src="assets/img/martelo-foice.png" alt="Membro ativo" title="Membro ativo">' : "";
+  corpo.innerHTML = `<button type="button" class="mini-perfil__fechar" aria-label="Fechar">✕</button>
+    <img class="mini-perfil__foto" src="${esc(p.foto || "assets/img/avatar.svg")}" alt="Foto de ${esc(p.nome || "")}">
+    <h2>${esc(p.nome || "Membro")} ${selo}</h2>
+    <p class="mini-perfil__arroba">${p.apelido ? "@" + esc(p.apelido) : ""}</p>
+    <div class="mini-perfil__dados">
+      ${linhaDado("Onde mora", local)}
+      ${linhaDado("Sexo", p.sexo)}
+      ${linhaDado("Gênero", p.genero)}
+      ${linhaDado("Orientação sexual", p.orientacao)}
+    </div>
+    ${!local && !p.sexo && !p.genero && !p.orientacao ? '<p class="muted">Esta pessoa ainda não preencheu os dados opcionais.</p>' : ""}`;
+}
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-perfil]");
+  if (!el) return;
+  e.preventDefault();
+  abrirMiniPerfil(el.dataset.perfil);
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") fecharMiniPerfil(); });

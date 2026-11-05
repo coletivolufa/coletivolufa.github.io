@@ -63,8 +63,8 @@ function htmlComentario(c, post, nivel) {
   const aberta = respostasAbertas.has(c.id);
   return `<div class="comentario${nivel ? " comentario--resposta" : ""}">
     <div class="comentario__topo">
-      <img class="av-mini" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
-      <span class="comentario__nome">${esc(m.nome || "Membro")}</span>
+      <img class="av-mini perfil-clicavel" data-perfil="${c.autor_id}" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+      <span class="comentario__nome perfil-clicavel" data-perfil="${c.autor_id}">${esc(m.nome || "Membro")}</span>
       <span class="comentario__apelido">${m.apelido ? "@" + esc(m.apelido) : ""} · ${dataHora(c.criado_em)}</span>
     </div>
     ${c.texto ? `<p>${textoComTags(c.texto)}</p>` : ""}
@@ -110,9 +110,9 @@ function cardPost(p) {
 
   return `<article class="card post" id="post-${p.id}" data-id="${p.id}">
     <header class="post__cab">
-      <img class="av" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+      <img class="av perfil-clicavel" data-perfil="${p.autor_id}" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="Ver perfil de ${esc(m.nome || "membro")}">
       <div class="post__quem">
-        <strong>${esc(m.nome || "Membro")}${selo}</strong>
+        <strong class="perfil-clicavel" data-perfil="${p.autor_id}">${esc(m.nome || "Membro")}${selo}</strong>
         <span class="apelido">${m.apelido ? "@" + esc(m.apelido) : ""} · ${dataHora(p.criado_em)}</span>
       </div>
       ${apagar}
@@ -463,6 +463,25 @@ async function iniciarFeed() {
     $("novo-apelido").focus();
   });
   $("cancelar-apelido").addEventListener("click", () => { $("form-apelido").hidden = true; });
+  $("editar-dados").addEventListener("click", () => {
+    $("campos-dados").innerHTML = camposPerfilHTML(perfilEu);
+    $("dados-aviso").hidden = true;
+    $("form-dados").hidden = false;
+  });
+  $("cancelar-dados").addEventListener("click", () => { $("form-dados").hidden = true; });
+  $("form-dados").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const aviso = $("dados-aviso");
+    const botao = e.target.querySelector("button[type=submit]");
+    botao.disabled = true;
+    const dados = lerCamposPerfil();
+    const { error } = await supa.from("perfis").update(dados).eq("id", eu.id);
+    botao.disabled = false;
+    if (error) { aviso.hidden = false; aviso.textContent = "Não foi possível salvar: " + error.message; return; }
+    Object.assign(perfilEu, dados);
+    $("form-dados").hidden = true;
+    avisar("Seus dados foram salvos.");
+  });
   $("form-apelido").addEventListener("submit", async (e) => {
     e.preventDefault();
     const aviso = $("apelido-aviso");

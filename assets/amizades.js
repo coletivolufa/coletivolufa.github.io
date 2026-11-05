@@ -7,8 +7,8 @@ const avisar = (t) => { const el = $("aviso-amizades"); el.textContent = t; el.h
 
 function linhaPessoa(m, extra) {
   return `<div class="linha-amizade">
-    <img class="av" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
-    <div class="linha-amizade__txt"><strong>${esc(m.nome || "Membro")}</strong><span class="apelido">${m.apelido ? "@" + esc(m.apelido) : ""}</span></div>
+    <img class="av perfil-clicavel" data-perfil="${m.id}" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+    <div class="linha-amizade__txt"><strong class="perfil-clicavel" data-perfil="${m.id}">${esc(m.nome || "Membro")}</strong><span class="apelido">${m.apelido ? "@" + esc(m.apelido) : ""}</span></div>
     ${extra}
   </div>`;
 }

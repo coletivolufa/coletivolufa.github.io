@@ -34,6 +34,7 @@
         <div style="flex:1; min-width:0">
           <strong id="meu-apelido"></strong>
           <button type="button" class="btn-pequeno btn-pequeno--link" id="trocar-apelido">trocar @arroba</button>
+          <button type="button" class="btn-pequeno btn-pequeno--link" id="editar-dados">meus dados</button>
           <span class="muted" style="display:block">Escreva, use # para criar hashtags, e anexe uma foto ou um vídeo</span>
         </div>
       </div>
@@ -46,6 +47,15 @@
           <button class="btn-pequeno btn-pequeno--suave" type="button" id="cancelar-apelido">Cancelar</button>
         </div>
         <p class="aviso-com" id="apelido-aviso" hidden></p>
+      </form>
+      <form id="form-dados" class="form-apelido" hidden>
+        <p class="muted" style="margin:0 0 8px">Esses dados ajudam todo mundo a se conhecer. Todos são opcionais.</p>
+        <div id="campos-dados"></div>
+        <div class="form-apelido__linha">
+          <button class="btn-pequeno" type="submit">Salvar dados</button>
+          <button class="btn-pequeno btn-pequeno--suave" type="button" id="cancelar-dados">Cancelar</button>
+        </div>
+        <p class="aviso-com" id="dados-aviso" hidden></p>
       </form>
       <form id="form-post">
         <textarea id="post-texto" maxlength="500" placeholder="No que você está pensando? Ex.: #lutadeclasses" aria-label="Escreva uma publicação"></textarea>

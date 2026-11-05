@@ -134,3 +134,16 @@
 .form-apelido__linha { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .form-apelido input { flex: 1; min-width: 140px; font: 16px Archivo, sans-serif; padding: 9px 10px; border: 2px solid #1C1714; border-radius: 10px; }
 .form-apelido .arroba { font-weight: 700; color: #cc2220; font-size: 18px; }
+
+/* mini perfil e campos de dados */
+.mini-perfil { text-align: center; position: relative; max-width: 360px; }
+.mini-perfil__fechar { position: absolute; top: 10px; right: 10px; background: #F7F1E3; border: 0; border-radius: 999px; width: 34px; height: 34px; cursor: pointer; font-size: 16px; }
+.mini-perfil__foto { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid #cc2220; margin: 8px auto 10px; display: block; }
+.mini-perfil h2 { font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; font-size: 2rem; color: #1C1714; margin: 0; line-height: 1.05; }
+.mini-perfil__arroba { color: #cc2220; font-weight: 700; margin: 2px 0 14px; }
+.mini-perfil__dados { text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.mini-perfil__dado { background: #F7F1E3; border-radius: 10px; padding: 8px 12px; display: flex; flex-direction: column; }
+.mini-perfil__dado span { font-size: 12px; color: #8a7e72; text-transform: uppercase; letter-spacing: .04em; }
+.mini-perfil__dado strong { font-size: 15px; }
+.gate__dados { margin: 12px 0; }
+.perfil-clicavel { cursor: pointer; }
