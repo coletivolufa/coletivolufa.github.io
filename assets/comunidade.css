@@ -147,3 +147,51 @@
 .mini-perfil__dado strong { font-size: 15px; }
 .gate__dados { margin: 12px 0; }
 .perfil-clicavel { cursor: pointer; }
+
+/* ===== interação e movimento (respeita "reduzir movimento") ===== */
+@keyframes subir { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes entrar { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes pulsar { 0% { transform: scale(1); } 35% { transform: scale(1.35); } 100% { transform: scale(1); } }
+@keyframes brilho { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
+@keyframes aparecer-aviso { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+
+/* cartões sobem suavemente ao aparecer na tela */
+.post.reveal { opacity: 0; transform: translateY(16px); transition: opacity .45s ease, transform .45s ease; }
+.post.reveal.visivel { opacity: 1; transform: none; }
+.post { transition: box-shadow .25s ease, transform .25s ease; }
+.post:hover { box-shadow: 0 6px 18px rgba(60, 40, 20, .12); }
+
+/* botões de ação reagem ao toque */
+.acao, .btn-pequeno, .botao-com, .aba-com, .tendencia { transition: transform .15s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease; }
+.acao:active, .btn-pequeno:active, .botao-com:active, .tendencia:active { transform: scale(.94); }
+.acao.pulsar svg { animation: pulsar .4s ease; }
+.acao.pulsar { animation: pulsar .4s ease; }
+
+/* abas com destaque suave */
+.aba-com:hover { transform: translateY(-2px); }
+.aba-com.ativa { box-shadow: 0 4px 12px rgba(204, 34, 32, .35); }
+
+/* tendências deslizam ao passar o mouse */
+.tendencia:hover { transform: translateX(4px); }
+
+/* aparecer dos comentários e das respostas */
+.comentario { animation: subir .3s ease both; }
+.form-comentario { animation: subir .25s ease both; }
+.post__comentarios:not([hidden]) { animation: subir .25s ease both; }
+
+/* pop-up entra com zoom e fundo esmaecido */
+.modal:not([hidden]) { animation: entrar .18s ease both; }
+.modal__caixa { transition: transform .2s ease; }
+
+/* avisos na tela entram pela direita */
+.aviso-tela { animation: aparecer-aviso .3s ease both; }
+
+/* carregamento: faixa com brilho enquanto o feed abre */
+.carregando { height: 84px; border-radius: 16px; margin-bottom: 14px;
+  background: linear-gradient(90deg, #f1e7d2 0%, #faf4e6 50%, #f1e7d2 100%);
+  background-size: 400px 100%; animation: brilho 1.4s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .post.reveal { opacity: 1; transform: none; }
+}
