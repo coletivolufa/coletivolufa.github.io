@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css?v=19">
-  <link rel="stylesheet" href="assets/comunidade.css?v=3">
+  <link rel="stylesheet" href="assets/comunidade.css?v=4">
 </head>
 <body data-pagina="amizades">
 <main class="com">
@@ -38,10 +38,22 @@
     <p class="aviso-com" id="aviso-amizades" hidden></p>
   </div>
 </main>
+<div class="modal" id="modal-desfazer" hidden role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+  <div class="modal__caixa">
+    <h2 id="modal-titulo">Desfazer amizade?</h2>
+    <p id="modal-texto">Vocês deixam de ser amigos e a conversa privada entre vocês é apagada.</p>
+    <div class="modal__acoes">
+      <button type="button" class="btn-pequeno btn-pequeno--suave" id="modal-cancelar">Cancelar</button>
+      <button type="button" class="btn-pequeno btn-pequeno--vermelho" id="modal-confirmar">Sim, desfazer</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=15"></script>
 <script src="assets/supa.js?v=6"></script>
 <script src="assets/comunidade.js?v=2"></script>
-<script src="assets/amizades.js?v=1"></script>
+<script src="assets/avisos.js?v=1"></script>
+<script src="assets/amizades.js?v=2"></script>
 </body>
 </html>
