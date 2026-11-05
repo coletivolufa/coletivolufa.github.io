@@ -237,15 +237,6 @@ function renderLateral() {
       }).join("")
     : '<p class="muted">Nenhuma conversa ainda. Peça amizade pelo feed.</p>';
 
-  $("lista-pedidos").innerHTML = pedidosRecebidos.size
-    ? [...pedidosRecebidos].map(([de, id]) => `<div class="convite">
-          <span><strong>${esc(nomeDe(de))}</strong> quer ser seu amigo</span>
-          <span class="acoes">
-            <button type="button" class="btn-mini btn-mini--ok" data-aceitar="${id}">Aceitar</button>
-            <button type="button" class="btn-mini" data-recusar="${id}">Recusar</button>
-          </span>
-        </div>`).join("")
-    : '<p class="muted">Nenhum pedido agora.</p>';
 }
 
 // ---------- trocar de conversa ----------
@@ -511,8 +502,6 @@ async function iniciar() {
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.abrir) return abrirPrivado(Number(b.dataset.abrir));
-    if (b.dataset.aceitar) return aceitarAmigo(b.dataset.aceitar);
-    if (b.dataset.recusar) return recusarAmigo(b.dataset.recusar);
   });
   $("enviar").addEventListener("click", enviarTexto);
   $("texto").addEventListener("input", () => {
@@ -551,7 +540,7 @@ async function iniciar() {
       const novo = p.new || {};
       if (novo.para_id === eu.id && p.eventType === "INSERT") {
         if (!autores.has(novo.de_id)) await carregarAutores();
-        avisar(`${nomeDe(novo.de_id)} pediu sua amizade. Veja em Pedidos de amizade.`);
+        avisar(`${nomeDe(novo.de_id)} pediu sua amizade. Veja em Amizades.`);
       }
       await recarregarAmizades();
     })

@@ -4,39 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Comunidade · Coletivo Lufã</title>
+  <title>Feed · Coletivo Lufã</title>
   <meta name="theme-color" content="#cc2220">
   <link rel="icon" href="assets/img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css?v=19">
-  <link rel="stylesheet" href="assets/comunidade.css?v=2">
+  <link rel="stylesheet" href="assets/comunidade.css?v=3">
 </head>
-<body data-pagina="comunidade">
+<body data-pagina="feed">
 <main class="com">
   <header class="com__topo">
-    <h1>Comunidade</h1>
-    <p>Publique, curta, comente e encontre companheiros pelo @apelido.</p>
+    <h1>Feed</h1>
+    <p>Publique fotos e vídeos, use hashtags e descubra o que está em alta.</p>
   </header>
 
   <div class="estado" id="estado" hidden></div>
 
   <div id="conteudo" hidden>
+    <section class="card tendencias">
+      <h2 class="titulo-bloco">Em alta agora</h2>
+      <ol class="lista-tendencias" id="tendencias"></ol>
+    </section>
+
     <section class="card compor">
       <div class="compor__topo">
         <img class="av" id="minha-foto" src="assets/img/avatar.svg" alt="">
-        <div><strong id="meu-apelido"></strong><span class="muted" style="display:block">O que você quer compartilhar?</span></div>
+        <div><strong id="meu-apelido"></strong><span class="muted" style="display:block">Escreva, use # para criar hashtags, e anexe uma foto ou um vídeo</span></div>
       </div>
       <form id="form-post">
-        <textarea id="post-texto" maxlength="500" placeholder="Escreva uma publicação…" aria-label="Escreva uma publicação"></textarea>
-        <div class="previa-foto" id="post-previa" hidden>
-          <img id="post-previa-img" alt="Prévia da foto">
-          <button type="button" class="tirar" id="post-tirar">Remover foto</button>
+        <textarea id="post-texto" maxlength="500" placeholder="No que você está pensando? Ex.: #lutadeclasses" aria-label="Escreva uma publicação"></textarea>
+        <div class="previa-midia" id="post-previa" hidden>
+          <img id="post-previa-img" alt="Prévia da foto" hidden>
+          <video id="post-previa-video" controls playsinline hidden></video>
+          <button type="button" class="tirar" id="post-tirar">Remover</button>
         </div>
         <div class="compor__acoes">
-          <label class="btn-foto">Foto
-            <input type="file" id="post-foto" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="Escolher foto">
+          <label class="btn-foto">Foto ou vídeo
+            <input type="file" id="post-foto" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime" aria-label="Escolher foto ou vídeo">
           </label>
           <span class="espaco"></span>
           <span class="muted" id="post-contador">0/500</span>
@@ -46,16 +52,10 @@
       <p class="aviso-com" id="post-aviso" hidden></p>
     </section>
 
-    <section class="card">
-      <div class="campo-com" style="margin-bottom:0">
-        <label for="buscar-apelido">Procurar uma pessoa pelo @apelido</label>
-        <div style="display:flex; gap:8px">
-          <input id="buscar-apelido" placeholder="@apelido" maxlength="22" autocomplete="off">
-          <button class="botao-com botao-com--claro" type="button" id="buscar-ir">Buscar</button>
-        </div>
-      </div>
-      <div id="resultado-busca" style="margin-top:12px"></div>
-    </section>
+    <div class="filtro-ativo" id="filtro-ativo" hidden>
+      <span id="filtro-texto"></span>
+      <button type="button" class="btn-pequeno btn-pequeno--link" id="limpar-filtro">ver tudo</button>
+    </div>
 
     <div id="feed" aria-live="polite"></div>
   </div>
@@ -63,7 +63,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=15"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/comunidade.js?v=1"></script>
-<script src="assets/feed.js?v=2"></script>
+<script src="assets/comunidade.js?v=2"></script>
+<script src="assets/feed.js?v=3"></script>
 </body>
 </html>

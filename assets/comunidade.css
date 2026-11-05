@@ -86,3 +86,25 @@
 .form-comentario { display: flex; gap: 8px; }
 .form-comentario input { flex: 1; min-width: 0; font: 15px Archivo, sans-serif; padding: 9px 12px; border: 2px solid #1C1714; border-radius: 999px; }
 @media (max-width: 560px) { .com__topo h1 { font-size: 2.6rem; } }
+
+/* tendências, hashtags, mídia e listas de amizades */
+.titulo-bloco { font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; font-size: 1.8rem; color: #cc2220; margin: 0 0 8px; line-height: 1; }
+.lista-tendencias { list-style: none; margin: 0; padding: 0; }
+.lista-tendencias li { border-bottom: 1px solid #f0e8d8; }
+.lista-tendencias li:last-child { border-bottom: 0; }
+.tendencia { display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: 0; padding: 9px 4px; text-align: left; cursor: pointer; font: 15px Archivo, sans-serif; color: #1C1714; border-radius: 10px; }
+.tendencia:hover { background: #F7F1E3; }
+.tendencia__pos { width: 26px; height: 26px; border-radius: 50%; background: #cc2220; color: #fff; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.tendencia__tag { font-weight: 700; flex: 1; }
+.tag-link { color: #cc2220; font-weight: 700; text-decoration: none; }
+.tag-link:hover { text-decoration: underline; }
+.filtro-ativo { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff4ef; border-left: 4px solid #cc2220; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-weight: 700; }
+.previa-midia { position: relative; margin: 8px 0; }
+.previa-midia img, .previa-midia video { display: block; max-height: 260px; max-width: 100%; border-radius: 12px; }
+.previa-midia .tirar { position: absolute; top: 8px; right: 8px; background: rgba(28,23,20,.8); color: #fff; border: 0; border-radius: 999px; padding: 5px 10px; font-weight: 700; cursor: pointer; }
+.post__midia { display: block; width: 100%; max-height: 600px; object-fit: cover; background: #111; }
+.linha-amizade { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f0e8d8; flex-wrap: wrap; }
+.linha-amizade:last-child { border-bottom: 0; }
+.linha-amizade__txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.linha-amizade__txt strong { font-size: 15px; }
+.acoes-linha { display: flex; gap: 6px; flex-wrap: wrap; }

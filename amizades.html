@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Amizades · Coletivo Lufã</title>
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=19">
+  <link rel="stylesheet" href="assets/comunidade.css?v=3">
+</head>
+<body data-pagina="amizades">
+<main class="com">
+  <header class="com__topo">
+    <h1>Amizades</h1>
+    <p>Pedidos que chegaram, pedidos que você enviou e seus amigos.</p>
+  </header>
+
+  <div class="estado" id="estado" hidden></div>
+
+  <div id="conteudo" hidden>
+    <section class="card">
+      <h2 class="titulo-bloco">Pedidos recebidos</h2>
+      <div id="lista-recebidos"></div>
+    </section>
+    <section class="card">
+      <h2 class="titulo-bloco">Pedidos enviados</h2>
+      <div id="lista-enviados"></div>
+    </section>
+    <section class="card">
+      <h2 class="titulo-bloco">Meus amigos</h2>
+      <div id="lista-amigos"></div>
+    </section>
+    <p class="aviso-com" id="aviso-amizades" hidden></p>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=15"></script>
+<script src="assets/supa.js?v=6"></script>
+<script src="assets/comunidade.js?v=2"></script>
+<script src="assets/amizades.js?v=1"></script>
+</body>
+</html>

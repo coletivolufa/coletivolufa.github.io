@@ -1,7 +1,9 @@
-/* Feed da comunidade (estilo Instagram/Twitter): curtir, comentar, repostar, compartilhar e pedir amizade.
-   Requer supabase/10-comunidade.sql e supabase/11-feed.sql. */
+/* Feed da comunidade: fotos e vídeos, hashtags, tendências, curtir, comentar, repostar e compartilhar.
+   Requer supabase/10-comunidade.sql, 11-feed.sql e 12-midia-hashtags.sql. */
 const LIMITE_POST = 500;
 const LIMITE_COMENTARIO = 280;
+const MAX_FOTO = 12 * 1024 * 1024;
+const MAX_VIDEO = 50 * 1024 * 1024;
 const ICONES_POST = {
   coracao: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3 5 6.6 5c2.1 0 3.6 1.2 4.4 2.5C11.8 6.2 13.3 5 15.4 5 19 5 20.9 8.6 21.5 11.8 19.5 16.4 12 21 12 21z"/></svg>',
   coracaoCheio: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3 5 6.6 5c2.1 0 3.6 1.2 4.4 2.5C11.8 6.2 13.3 5 15.4 5 19 5 20.9 8.6 21.5 11.8 19.5 16.4 12 21 12 21z"/></svg>',
@@ -16,12 +18,22 @@ let perfilEu = null;
 let membros = new Map();
 let amizades = { amigos: new Set(), enviados: new Map(), recebidos: new Map() };
 let posts = [];
-let comentarios = new Map();      // post id -> lista de comentários
+let comentarios = new Map();
 let comentariosAbertos = new Set();
+let filtroTag = null;
 let fotoEscolhida = null;
+let videoEscolhido = null;
 let recarregarAgendado = null;
 
-function avisar(texto) { const el = $("post-aviso"); el.textContent = texto; el.hidden = !texto; }
+const avisar = (texto) => { const el = $("post-aviso"); el.textContent = texto; el.hidden = !texto; };
+const normalizar = (t) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "");
+const extrairTags = (t) => [...new Set([...normalizar(t).matchAll(/#([a-z0-9_]{2,30})/gi)].map((m) => m[1].toLowerCase()))].slice(0, 10);
+
+// texto com hashtags viraram links para filtrar o feed
+function textoComTags(texto) {
+  return esc(texto).replace(/#([a-z0-9_]{2,30})/gi, (_, t) =>
+    `<a href="#" class="tag-link" data-tag="${t.toLowerCase()}">#${t}</a>`);
+}
 
 function botaoAmizade(autorId) {
   const sit = situacaoCom(amizades, eu.id, autorId);
@@ -31,10 +43,6 @@ function botaoAmizade(autorId) {
   if (sit === "recebido") return `<button type="button" class="btn-pequeno btn-pequeno--vermelho" data-aceitar="${amizades.recebidos.get(autorId)}">Aceitar amizade</button>`;
   if (!m.apelido) return "";
   return `<button type="button" class="btn-pequeno" data-amigo="${esc(m.apelido)}">Adicionar amigo</button>`;
-}
-
-function estaComAmigo(autorId) {
-  return amizades.amigos.has(autorId);
 }
 
 function listaComentarios(post) {
@@ -53,19 +61,21 @@ function listaComentarios(post) {
   return itens || '<p class="muted">Seja a primeira pessoa a comentar.</p>';
 }
 
+function midiaHTML(p, m) {
+  if (p.video_url) return `<video class="post__midia" src="${esc(p.video_url)}" controls playsinline preload="metadata"></video>`;
+  if (p.imagem_url) return `<img class="post__midia" src="${esc(p.imagem_url)}" alt="Foto publicada por ${esc(m.apelido || "um membro")}" loading="lazy" decoding="async">`;
+  return "";
+}
+
 function cardPost(p) {
   const m = membros.get(p.autor_id) || {};
-  const curtiu = p.eu_curti;
-  const repostou = p.eu_repostei;
   const apagar = (p.autor_id === eu.id || perfilEu.papel === "admin")
     ? `<button type="button" class="btn-pequeno btn-pequeno--link" data-apagar="${p.id}">apagar publicação</button>` : "";
-  const amigo = estaComAmigo(p.autor_id) && p.autor_id !== eu.id
-    ? `<a class="btn-pequeno btn-pequeno--suave" href="chat.html">Conversar</a>` : "";
-  const foto = p.imagem_url
-    ? `<img class="post__foto" src="${esc(p.imagem_url)}" alt="Foto publicada por ${esc(m.apelido || "um membro")}" loading="lazy" decoding="async">` : "";
-  const texto = p.texto ? `<p class="post__texto">${esc(p.texto)}</p>` : "";
+  const amigo = amizades.amigos.has(p.autor_id) && p.autor_id !== eu.id
+    ? '<a class="btn-pequeno btn-pequeno--suave" href="chat.html">Conversar</a>' : "";
   const aberto = comentariosAbertos.has(p.id);
   const selo = /ativo/i.test(m.funcao || "") ? ' <img class="selo-ativo" src="assets/img/martelo-foice.png" alt="Membro ativo" title="Membro ativo">' : "";
+  const texto = p.texto ? `<p class="post__texto">${textoComTags(p.texto)}</p>` : "";
 
   return `<article class="card post" id="post-${p.id}" data-id="${p.id}">
     <header class="post__cab">
@@ -77,15 +87,15 @@ function cardPost(p) {
       ${apagar}
     </header>
     ${texto}
-    ${foto}
+    ${midiaHTML(p, m)}
     <div class="post__acoes">
-      <button type="button" class="acao${curtiu ? " ativo" : ""}" data-curtir="${p.id}" aria-pressed="${curtiu}" aria-label="Curtir">
-        ${curtiu ? ICONES_POST.coracaoCheio : ICONES_POST.coracao}<span>${p.curtidas || ""}</span>
+      <button type="button" class="acao${p.eu_curti ? " ativo" : ""}" data-curtir="${p.id}" aria-pressed="${!!p.eu_curti}" aria-label="Curtir">
+        ${p.eu_curti ? ICONES_POST.coracaoCheio : ICONES_POST.coracao}<span>${p.curtidas || ""}</span>
       </button>
       <button type="button" class="acao" data-comentarios="${p.id}" aria-expanded="${aberto}" aria-label="Comentar">
         ${ICONES_POST.comentar}<span>${p.comentarios || ""}</span>
       </button>
-      <button type="button" class="acao${repostou ? " ativo" : ""}" data-repostar="${p.id}" aria-pressed="${repostou}" aria-label="Repostar">
+      <button type="button" class="acao${p.eu_repostei ? " ativo" : ""}" data-repostar="${p.id}" aria-pressed="${!!p.eu_repostei}" aria-label="Repostar">
         ${ICONES_POST.repostar}<span>${p.reposts || ""}</span>
       </button>
       <button type="button" class="acao" data-compartilhar="${p.id}" aria-label="Compartilhar">${ICONES_POST.compartilhar}</button>
@@ -103,28 +113,34 @@ function cardPost(p) {
 }
 
 function desenharFeed() {
-  const f = $("feed");
-  f.innerHTML = posts.length
+  $("feed").innerHTML = posts.length
     ? posts.map(cardPost).join("")
-    : '<p class="card muted">Ainda não há publicações. Seja a primeira pessoa a publicar!</p>';
+    : `<p class="card muted">${filtroTag ? `Ainda não há publicações com #${esc(filtroTag)}.` : "Ainda não há publicações. Seja a primeira pessoa a publicar!"}</p>`;
+  $("filtro-ativo").hidden = !filtroTag;
+  $("filtro-texto").textContent = filtroTag ? `Mostrando publicações com #${filtroTag}` : "";
   const hash = location.hash.match(/^#post-(\d+)$/);
   if (hash) { const el = $("post-" + hash[1]); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }
 }
 
-// ----- carregar -----
+// ----- tendências -----
+async function carregarTendencias() {
+  const { data } = await supa.rpc("hashtags_em_alta", { p_limite: 5, p_dias: 7 });
+  const lista = data || [];
+  $("tendencias").innerHTML = lista.length
+    ? lista.map((t, i) => `<li><button type="button" class="tendencia" data-tag="${esc(t.nome)}">
+        <span class="tendencia__pos">${i + 1}</span>
+        <span class="tendencia__tag">#${esc(t.nome)}</span>
+        <span class="muted">${t.publicacoes} ${t.publicacoes === 1 ? "publicação" : "publicações"}</span>
+      </button></li>`).join("")
+    : '<li class="muted">Ainda não há hashtags. Use # nas suas publicações para criar tendências!</li>';
+}
+
+// ----- feed -----
 async function carregarFeed() {
-  const { data, error } = await supa.rpc("feed_posts", { p_limite: 60 });
+  const { data, error } = await supa.rpc("feed_posts", { p_limite: 60, p_hashtag: filtroTag });
   if (error) return avisar("Não foi possível carregar o feed agora.");
   posts = data || [];
   desenharFeed();
-}
-
-function agendarRecarga() {
-  clearTimeout(recarregarAgendado);
-  recarregarAgendado = setTimeout(async () => {
-    await carregarFeed();
-    for (const id of comentariosAbertos) await carregarComentarios(id);
-  }, 600);
 }
 
 async function carregarComentarios(postId) {
@@ -138,36 +154,58 @@ async function carregarComentarios(postId) {
   if (bloco && post) bloco.innerHTML = listaComentarios(post);
 }
 
+function agendarRecarga() {
+  clearTimeout(recarregarAgendado);
+  recarregarAgendado = setTimeout(async () => {
+    await carregarFeed();
+    await carregarTendencias();
+    for (const id of comentariosAbertos) await carregarComentarios(id);
+  }, 600);
+}
+
 async function atualizarAmizades() {
   amizades = await carregarAmizades(eu.id);
   desenharFeed();
 }
 
+function filtrarPorTag(tag) {
+  filtroTag = tag ? tag.toLowerCase() : null;
+  history.replaceState(null, "", filtroTag ? `?tag=${filtroTag}` : location.pathname);
+  carregarFeed();
+}
+
 // ----- publicar -----
-function atualizarContador() {
-  $("post-contador").textContent = `${$("post-texto").value.length}/${LIMITE_POST}`;
+function atualizarContador() { $("post-contador").textContent = `${$("post-texto").value.length}/${LIMITE_POST}`; }
+
+async function enviarArquivo(arquivo, eImagem) {
+  const caminho = `${eu.id}/${Date.now()}.${eImagem ? "jpg" : (arquivo.name.split(".").pop() || "mp4").toLowerCase()}`;
+  if (eImagem) return enviarFotoComunidade(arquivo, eu.id);
+  const { error } = await supa.storage.from("comunidade").upload(caminho, arquivo, { contentType: arquivo.type, upsert: false });
+  if (error) throw new Error(error.message);
+  return supa.storage.from("comunidade").getPublicUrl(caminho).data.publicUrl;
 }
 
 async function publicar(e) {
   e.preventDefault();
   const texto = $("post-texto").value.trim();
-  if (!texto && !fotoEscolhida) return avisar("Escreva algo ou escolha uma foto.");
+  if (!texto && !fotoEscolhida && !videoEscolhido) return avisar("Escreva algo, escolha uma foto ou um vídeo.");
   if (texto.length > LIMITE_POST) return avisar(`A publicação pode ter no máximo ${LIMITE_POST} caracteres.`);
   const botao = $("post-publicar");
   botao.disabled = true;
   avisar("");
   try {
     let imagem_url = null;
-    if (fotoEscolhida) {
-      botao.textContent = "Enviando foto…";
-      imagem_url = await enviarFotoComunidade(fotoEscolhida, eu.id);
-    }
-    const { error } = await supa.from("posts").insert({ autor_id: eu.id, texto, imagem_url });
+    let video_url = null;
+    if (fotoEscolhida) { botao.textContent = "Enviando foto…"; imagem_url = await enviarArquivo(fotoEscolhida, true); }
+    if (videoEscolhido) { botao.textContent = "Enviando vídeo…"; video_url = await enviarArquivo(videoEscolhido, false); }
+    botao.textContent = "Publicando…";
+    const { error } = await supa.rpc("criar_post", { p_texto: texto, p_imagem_url: imagem_url, p_video_url: video_url, p_tags: extrairTags(texto) });
     if (error) throw new Error(error.message);
     $("post-texto").value = "";
-    limparFoto();
+    limparMidia();
     atualizarContador();
     await carregarFeed();
+    await carregarTendencias();
   } catch (err) {
     avisar("Não foi possível publicar: " + err.message);
   } finally {
@@ -176,21 +214,35 @@ async function publicar(e) {
   }
 }
 
-function escolherFoto(e) {
+function escolherMidia(e) {
   const f = e.target.files[0];
   e.target.value = "";
   if (!f) return;
-  if (!f.type.startsWith("image/")) return avisar("Escolha uma imagem.");
-  if (f.size > 12 * 1024 * 1024) return avisar("A foto é muito grande. Escolha uma menor.");
-  fotoEscolhida = f;
-  $("post-previa-img").src = URL.createObjectURL(f);
+  limparMidia();
+  if (f.type.startsWith("video/")) {
+    if (f.size > MAX_VIDEO) return avisar("O vídeo passa de 50 MB. Escolha um menor.");
+    videoEscolhido = f;
+    $("post-previa-video").src = URL.createObjectURL(f);
+    $("post-previa-video").hidden = false;
+  } else if (f.type.startsWith("image/")) {
+    if (f.size > MAX_FOTO) return avisar("A foto é muito grande. Escolha uma menor.");
+    fotoEscolhida = f;
+    $("post-previa-img").src = URL.createObjectURL(f);
+    $("post-previa-img").hidden = false;
+  } else {
+    return avisar("Escolha uma foto ou um vídeo.");
+  }
   $("post-previa").hidden = false;
 }
 
-function limparFoto() {
+function limparMidia() {
   fotoEscolhida = null;
+  videoEscolhido = null;
   $("post-previa").hidden = true;
+  $("post-previa-img").hidden = true;
+  $("post-previa-video").hidden = true;
   $("post-previa-img").removeAttribute("src");
+  $("post-previa-video").removeAttribute("src");
 }
 
 // ----- ações -----
@@ -261,9 +313,8 @@ async function compartilhar(postId) {
   const url = `${location.origin}${location.pathname}#post-${postId}`;
   const post = posts.find((x) => x.id === postId);
   const m = membros.get(post?.autor_id) || {};
-  const titulo = `Publicação de @${m.apelido || "membro"} · Coletivo Lufã`;
   try {
-    if (navigator.share) return await navigator.share({ title: titulo, url });
+    if (navigator.share) return await navigator.share({ title: `Publicação de @${m.apelido || "membro"} · Coletivo Lufã`, url });
     await navigator.clipboard.writeText(url);
     avisar("Link da publicação copiado.");
   } catch (_) {
@@ -300,20 +351,7 @@ async function apagarPost(id, botao) {
   if (error) { botao.disabled = false; return avisar("Não foi possível apagar: " + error.message); }
   posts = posts.filter((p) => String(p.id) !== String(id));
   desenharFeed();
-}
-
-// ----- procurar por @apelido -----
-function buscar() {
-  const termo = $("buscar-apelido").value.trim().toLowerCase().replace(/^@/, "");
-  const r = $("resultado-busca");
-  if (!termo) { r.innerHTML = ""; return; }
-  const achados = [...membros.values()].filter((m) => m.apelido && m.apelido.includes(termo) && m.id !== eu.id);
-  if (!achados.length) { r.innerHTML = '<p class="muted">Ninguém com esse @apelido.</p>'; return; }
-  r.innerHTML = achados.slice(0, 10).map((m) => `<div class="linha-autor" style="margin-bottom:10px">
-      <img class="av" src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
-      <div style="flex:1"><strong>${esc(m.nome || "Membro")}</strong><span class="apelido" style="display:block">@${esc(m.apelido)}</span></div>
-      ${botaoAmizade(m.id) || (estaComAmigo(m.id) ? '<span class="muted">Amigos</span>' : "")}
-    </div>`).join("");
+  await carregarTendencias();
 }
 
 async function iniciarFeed() {
@@ -324,20 +362,27 @@ async function iniciarFeed() {
   montarAbas("feed");
   $("minha-foto").src = perfilEu.foto || "assets/img/avatar.svg";
   $("meu-apelido").textContent = "@" + perfilEu.apelido;
+  filtroTag = new URLSearchParams(location.search).get("tag");
+  filtroTag = filtroTag ? filtroTag.toLowerCase() : null;
 
   membros = await carregarMembros();
   amizades = await carregarAmizades(eu.id);
+  await carregarTendencias();
   await carregarFeed();
 
   $("post-texto").addEventListener("input", atualizarContador);
   $("form-post").addEventListener("submit", publicar);
-  $("post-foto").addEventListener("change", escolherFoto);
-  $("post-tirar").addEventListener("click", limparFoto);
-  $("buscar-ir").addEventListener("click", buscar);
-  $("buscar-apelido").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); buscar(); } });
-  $("buscar-apelido").addEventListener("input", (e) => { if (!e.target.value.trim()) $("resultado-busca").innerHTML = ""; });
+  $("post-foto").addEventListener("change", escolherMidia);
+  $("post-tirar").addEventListener("click", limparMidia);
+  $("limpar-filtro").addEventListener("click", () => filtrarPorTag(null));
 
+  $("tendencias").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tag]");
+    if (b) filtrarPorTag(b.dataset.tag);
+  });
   $("feed").addEventListener("click", (e) => {
+    const tag = e.target.closest("[data-tag]");
+    if (tag && tag.classList.contains("tag-link")) { e.preventDefault(); return filtrarPorTag(tag.dataset.tag); }
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.curtir) return alternarCurtida(Number(b.dataset.curtir), b);
@@ -355,15 +400,8 @@ async function iniciarFeed() {
     e.preventDefault();
     enviarComentario(Number(form.dataset.comentar), form.querySelector("input"), form);
   });
-  $("resultado-busca").addEventListener("click", (e) => {
-    const b = e.target.closest("button");
-    if (!b) return;
-    if (b.dataset.amigo) return pedirAmizade(b.dataset.amigo, b);
-    if (b.dataset.aceitar) return aceitarAmizade(b.dataset.aceitar, b);
-  });
   window.addEventListener("hashchange", () => desenharFeed());
 
-  // tempo real: publicações e curtidas/comentários de outras pessoas aparecem sem recarregar
   supa.channel("feed-comunidade")
     .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, agendarRecarga)
     .on("postgres_changes", { event: "*", schema: "public", table: "post_curtidas" }, agendarRecarga)

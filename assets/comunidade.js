@@ -1,8 +1,10 @@
-/* Comunidade: abas, entrada com @apelido obrigatório e utilidades comuns (feed, encontros e bate-papo).
+/* Comunidade: abas, entrada com @apelido obrigatório e utilidades comuns (feed, bate-papo, amizades e pesquisa).
    Usa supa (assets/supa.js) e esc (assets/comum.js). */
 const ABAS_COM = [
   ["feed", "Feed", "comunidade.html"],
   ["bate-papo", "Bate-papo", "chat.html"],
+  ["amizades", "Amizades", "amizades.html"],
+  ["pesquisar", "Pesquisar", "pesquisar.html"],
 ];
 const REGEX_APELIDO = /^[a-z0-9_.]{3,20}$/;
 
