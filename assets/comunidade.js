@@ -287,3 +287,34 @@ document.addEventListener("click", (e) => {
   abrirMiniPerfil(el.dataset.perfil);
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") fecharMiniPerfil(); });
+
+// pop-up de confirmação no estilo do site. Retorna true (confirmou) ou false (cancelou).
+function confirmarAcao({ titulo = "Tem certeza?", texto = "", botao = "Sim", perigo = true } = {}) {
+  return new Promise((resolver) => {
+    const m = document.createElement("div");
+    m.className = "modal modal--confirma";
+    m.setAttribute("role", "dialog");
+    m.setAttribute("aria-modal", "true");
+    m.innerHTML = `<div class="modal__caixa">
+      <h2>${esc(titulo)}</h2>
+      <p>${esc(texto)}</p>
+      <div class="modal__acoes">
+        <button type="button" class="btn-pequeno btn-pequeno--suave" data-nao>Cancelar</button>
+        <button type="button" class="btn-pequeno${perigo ? " btn-pequeno--vermelho" : ""}" data-sim>${esc(botao)}</button>
+      </div>
+    </div>`;
+    document.body.appendChild(m);
+    const fechar = (valor) => {
+      document.removeEventListener("keydown", aoTeclar);
+      m.remove();
+      resolver(valor);
+    };
+    const aoTeclar = (e) => { if (e.key === "Escape") fechar(false); };
+    m.addEventListener("click", (e) => {
+      if (e.target.closest("[data-sim]")) fechar(true);
+      else if (e.target === m || e.target.closest("[data-nao]")) fechar(false);
+    });
+    document.addEventListener("keydown", aoTeclar);
+    m.querySelector("[data-nao]").focus();
+  });
+}

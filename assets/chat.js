@@ -6,7 +6,7 @@ const TIPOS_IMAGEM = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 const SETENTA_E_DUAS_HORAS = 72 * 3600 * 1000;
 const INTERVALO_ENVIO = 1500;
 const MAX_AUDIO_MS = 120 * 1000;
-const COLUNAS = "id,autor_id,tipo,texto,imagem_url,criado_em,conversa_id";
+const COLUNAS = "id,autor_id,tipo,texto,imagem_url,criado_em,conversa_id,resposta_de";
 const CORES = ["#C8201E", "#1F3A5F", "#8A5A00", "#2E6B3A", "#6B2E7A", "#A4471B"];
 const ICONE_ATIVO = '<img class="selo-ativo" src="assets/img/martelo-foice.png" alt="" title="Membro ativo">';
 
@@ -36,6 +36,7 @@ let temporizador = null;
 let inicioGravacao = 0;
 let cancelando = false;
 let previa = null;
+let respondendoA = null; // mensagem que a pessoa escolheu responder
 
 // ---------- utilidades ----------
 function avisar(texto) { const el = $("aviso-chat"); el.textContent = texto; el.hidden = !texto; }
@@ -111,13 +112,49 @@ function htmlMensagem(m, anterior) {
       ? `<a href="${esc(m.imagem_url)}" target="_blank" rel="noopener"><img class="midia" src="${esc(m.imagem_url)}" alt="Imagem enviada no bate-papo" loading="lazy"></a>`
       : `<p class="msg-texto">${ligar(esc(m.texto))}</p>`;
 
+  let citacao = "";
+  if (m.resposta_de) {
+    const orig = mensagens.find((x) => x.id === m.resposta_de);
+    if (orig) {
+      const trecho = orig.tipo === "texto" ? orig.texto : orig.tipo === "imagem" ? "📷 Foto" : "🎤 Áudio";
+      citacao = `<button type="button" class="citacao" data-ir-para="${orig.id}">
+        <strong>${esc(nomeDe(orig.autor_id))}</strong><span>${esc(trecho.slice(0, 100))}</span></button>`;
+    } else {
+      citacao = '<div class="citacao citacao--vazia">Resposta a uma mensagem que já saiu da conversa</div>';
+    }
+  }
   return `${separador}<article class="msg-linha ${meu ? "minha" : "outra"}${seguida ? " seguida" : ""}" data-id="${m.id}">
     ${foto}
     <div class="balao">${cabeca}
+      ${citacao}
       ${corpo}
-      <footer class="rodape-balao"><time datetime="${esc(m.criado_em)}">${hora(m.criado_em)}</time>${pode ? `<button type="button" class="apagar" data-id="${m.id}">apagar</button>` : ""}</footer>
+      <footer class="rodape-balao"><button type="button" class="responder" data-responder="${m.id}">responder</button><time datetime="${esc(m.criado_em)}">${hora(m.criado_em)}</time>${pode ? `<button type="button" class="apagar" data-id="${m.id}">apagar</button>` : ""}</footer>
     </div>
   </article>`;
+}
+
+function mostrarResposta(id) {
+  const m = mensagens.find((x) => x.id === id);
+  if (!m) return;
+  respondendoA = id;
+  const trecho = m.tipo === "texto" ? m.texto : m.tipo === "imagem" ? "📷 Foto" : "🎤 Áudio";
+  $("resposta-texto").textContent = `Respondendo a ${nomeDe(m.autor_id)}: ${trecho.slice(0, 80)}`;
+  $("resposta-bar").hidden = false;
+  $("texto").focus();
+}
+
+function cancelarResposta() {
+  respondendoA = null;
+  $("resposta-bar").hidden = true;
+  $("resposta-texto").textContent = "";
+}
+
+function irParaMensagem(id) {
+  const el = document.querySelector(`#lista [data-id="${id}"]`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  el.classList.add("destacada");
+  setTimeout(() => el.classList.remove("destacada"), 1600);
 }
 
 function estaPerto() {
@@ -252,6 +289,7 @@ function cabecalho() {
 }
 
 async function trocarAlvo(novo) {
+  cancelarResposta();
   alvo = novo;
   mensagens = [];
   ids = new Set();
@@ -352,11 +390,12 @@ function podeEnviar() {
 
 async function publicar(dados) {
   const { data, error } = await supa.from("chat_mensagens")
-    .insert({ autor_id: eu.id, conversa_id: alvo.conversaId, ...dados })
+    .insert({ autor_id: eu.id, conversa_id: alvo.conversaId, resposta_de: respondendoA, ...dados })
     .select(COLUNAS)
     .single();
   if (error) { avisar("Não foi possível enviar: " + error.message); return false; }
   acrescentar(data);
+  cancelarResposta();
   return true;
 }
 
@@ -474,7 +513,7 @@ function ajustarAltura() {
 }
 
 async function apagar(id) {
-  if (!confirm("Apagar esta mensagem?")) return;
+  if (!(await confirmarAcao({ titulo: "Apagar mensagem?", texto: "Ela some para todos na conversa e não dá para desfazer.", botao: "Sim, apagar" }))) return;
   const { error } = await supa.from("chat_mensagens").delete().eq("id", id);
   if (error) return avisar("Não foi possível apagar: " + error.message);
   removerLocal(id);
@@ -519,9 +558,14 @@ async function iniciar() {
   $("descartar-previa").addEventListener("click", () => { limparPrevia(); mostrarComp("texto"); avisar(""); });
   $("enviar-previa").addEventListener("click", enviarPrevia);
   $("lista").addEventListener("click", (e) => {
-    const b = e.target.closest(".apagar");
-    if (b) apagar(b.dataset.id);
+    const apagarBtn = e.target.closest(".apagar");
+    if (apagarBtn) return apagar(apagarBtn.dataset.id);
+    const resp = e.target.closest("[data-responder]");
+    if (resp) return mostrarResposta(Number(resp.dataset.responder));
+    const ir = e.target.closest("[data-ir-para]");
+    if (ir) irParaMensagem(Number(ir.dataset.irPara));
   });
+  $("cancelar-resposta").addEventListener("click", cancelarResposta);
 
   await carregarAutores();
   await carregarConversas();
