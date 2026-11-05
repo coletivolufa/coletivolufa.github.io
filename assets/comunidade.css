@@ -195,3 +195,9 @@
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .post.reveal { opacity: 1; transform: none; }
 }
+
+/* respostas recolhidas: só aparecem quando a pessoa abre a conversa */
+.ver-respostas { display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 6px 0; background: none; border: 0; padding: 4px 0; cursor: pointer; font: 700 13px Archivo, sans-serif; color: #cc2220; }
+.ver-respostas::before { content: ""; width: 22px; height: 2px; background: #cc2220; border-radius: 2px; }
+.ver-respostas:hover { text-decoration: underline; }
+.respostas { border-left: 2px solid #f0e0c8; margin-left: 10px; padding-left: 4px; animation: subir .25s ease both; }

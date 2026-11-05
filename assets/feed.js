@@ -26,6 +26,7 @@ let videoEscolhido = null;
 let recarregarAgendado = null;
 const fotosComentario = new Map();  // "post:pai" -> foto escolhida
 const respostasAbertas = new Set(); // comentários com a caixa de resposta aberta
+const respostasVistas = new Set();  // comentários de topo cuja conversa de respostas está aberta
 
 const avisar = (texto) => { const el = $("post-aviso"); el.textContent = texto; el.hidden = !texto; };
 const normalizar = (t) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -70,7 +71,7 @@ function htmlComentario(c, post, nivel) {
     ${c.texto ? `<p>${textoComTags(c.texto)}</p>` : ""}
     ${c.imagem_url ? `<img class="comentario__foto" src="${esc(c.imagem_url)}" alt="Foto enviada no comentário" loading="lazy" decoding="async">` : ""}
     <div class="comentario__acoes">
-      <button type="button" class="btn-pequeno btn-pequeno--link" data-responder="${c.id}">${aberta ? "fechar resposta" : "responder"}</button>
+      <button type="button" class="btn-pequeno btn-pequeno--link" data-responder="${c.id}" data-post="${post.id}">${aberta ? "fechar resposta" : "responder"}</button>
       ${pode ? `<button type="button" class="btn-pequeno btn-pequeno--link" data-apagar-comentario="${c.id}" data-post="${post.id}">apagar</button>` : ""}
     </div>
     ${aberta ? formComentario(post.id, c.id) : ""}
@@ -87,9 +88,28 @@ function listaComentarios(post) {
     filhos.get(c.parent_id).push(c);
   });
   const descendentes = (id) => (filhos.get(id) || []).flatMap((f) => [f, ...descendentes(f.id)]);
-  return lista.filter((c) => !c.parent_id)
-    .map((r) => htmlComentario(r, post, 0) + descendentes(r.id).map((d) => htmlComentario(d, post, 1)).join(""))
-    .join("");
+  return lista.filter((c) => !c.parent_id).map((r) => {
+    const respostas = descendentes(r.id);
+    const aberta = respostasVistas.has(r.id);
+    let html = htmlComentario(r, post, 0);
+    if (respostas.length) {
+      const n = respostas.length;
+      html += `<button type="button" class="ver-respostas" data-ver-respostas="${r.id}" data-post="${post.id}" aria-expanded="${aberta}">
+        ${aberta ? "ocultar respostas" : `ver ${n} ${n === 1 ? "resposta" : "respostas"}`}</button>`;
+    }
+    if (aberta && respostas.length) {
+      html += `<div class="respostas">${respostas.map((d) => htmlComentario(d, post, 1)).join("")}</div>`;
+    }
+    return html;
+  }).join("");
+}
+
+// comentário de topo ao qual pertence um comentário (ou ele mesmo)
+function topoDe(postId, id) {
+  const lista = comentarios.get(postId) || [];
+  let atual = lista.find((c) => c.id === id);
+  while (atual && atual.parent_id) atual = lista.find((c) => c.id === atual.parent_id);
+  return atual ? atual.id : id;
 }
 
 function midiaHTML(p, m) {
@@ -355,7 +375,7 @@ async function enviarComentario(form) {
     return avisar("Não foi possível comentar: " + err.message);
   }
   fotosComentario.delete(chave);
-  if (paiId) respostasAbertas.delete(paiId);
+  if (paiId) { respostasAbertas.delete(paiId); respostasVistas.add(topoDe(postId, paiId)); }
   const post = posts.find((x) => x.id === postId);
   if (post) post.comentarios = (post.comentarios || 0) + 1;
   comentariosAbertos.add(postId);
@@ -453,6 +473,12 @@ async function iniciarFeed() {
     if (b.dataset.responder) {
       const id = Number(b.dataset.responder);
       if (respostasAbertas.has(id)) respostasAbertas.delete(id); else respostasAbertas.add(id);
+      respostasVistas.add(topoDe(Number(b.dataset.post), id));
+      return desenharFeed();
+    }
+    if (b.dataset.verRespostas) {
+      const id = Number(b.dataset.verRespostas);
+      if (respostasVistas.has(id)) respostasVistas.delete(id); else respostasVistas.add(id);
       return desenharFeed();
     }
     if (b.dataset.curtir) return alternarCurtida(Number(b.dataset.curtir), b);
