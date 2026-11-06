@@ -199,6 +199,47 @@ function imagemCobrindo(ctx, img, x, y, w, h, ancora = "centro") {
 }
 
 // ---------- MODELOS ----------
+// notícia em 1080×1920. Com "transparente", a área do vídeo fica vazia (PNG com transparência)
+// para colocar o vídeo por baixo no editor. Textos ficam dentro do corte do grid (y 240–1680)
+// e acima da área que a interface do Reels/Stories cobre embaixo.
+function noticiaVertical(ctx, v, transparente) {
+  const W = 1080, H = 1920, FY = transparente ? 980 : 900;
+  ctx.clearRect(0, 0, W, H);
+  // parte de baixo (papel) e rodapé
+  ctx.fillStyle = COR.papel; ctx.fillRect(0, FY, W, H - FY);
+  // área da foto/vídeo
+  if (!transparente) {
+    if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, FY);
+    else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, FY); raios(ctx, W / 2, FY, 24, "rgba(255,255,255,.06)", 0); }
+  }
+  // degradê escuro em cima (fica por cima do vídeo também) para a assinatura aparecer
+  const g = ctx.createLinearGradient(0, 160, 0, 460); g.addColorStop(0, "rgba(30,25,22,.62)"); g.addColorStop(1, "rgba(30,25,22,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 160, W, 300);
+  assinatura(ctx, 70, 300, COR.branco, 42);
+  // faixa vermelha que separa o vídeo do texto
+  ctx.fillStyle = COR.vermelho; ctx.fillRect(0, FY, W, 16);
+  const ws = etiqueta(ctx, v.selo.toUpperCase(), 80, FY + 96, 52, COR.vermelho, COR.branco);
+  fonte(ctx, 38); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.data, 80 + ws + 24, FY + 98);
+  const RODAPE = 1580;
+  const espaco = RODAPE - (FY + 150) - (v.resumo.trim() ? 170 : 40);
+  const r = caber(ctx, v.manchete.toUpperCase(), 920, espaco, 118, 62, 0.95, FONTE.titulo);
+  let y = FY + 150;
+  r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 80, y + r.tam * 0.85 + i * r.tam * 0.95, COR.preto, COR.vermelho));
+  y += r.tam * 0.85 + (r.linhas.length - 1) * r.tam * 0.95 + 54;
+  if (v.resumo.trim()) {
+    const rb = caber(ctx, v.resumo, 920, RODAPE - 40 - y, 40, 28, 1.35, FONTE.texto);
+    rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.textAlign = "left"; ctx.fillText(l, 80, y + rb.tam + i * rb.tam * 1.35); });
+  }
+  // rodapé com fonte e @ (dentro do corte do grid)
+  ctx.fillStyle = COR.preto; ctx.fillRect(0, RODAPE, W, 100);
+  fonte(ctx, 26, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, 80, RODAPE + 60);
+  fonte(ctx, 44); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - 80, RODAPE + 64);
+  ctx.fillStyle = COR.vermelho; ctx.fillRect(0, RODAPE + 100, W, H - RODAPE - 100);
+  // grão só na parte impressa (não suja a área transparente do vídeo)
+  ctx.save(); ctx.beginPath(); ctx.rect(0, FY, W, H - FY); ctx.clip(); grao(ctx, W, H, 0.05); ctx.restore();
+  if (!transparente) { ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, FY); ctx.clip(); grao(ctx, W, H, 0.04); ctx.restore(); }
+}
+
 const MODELOS = {
   // 1) Frase / citação — feed 1080×1350
   citacao: {
@@ -545,6 +586,31 @@ const MODELOS = {
       fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - 90, H - 32);
       grao(ctx, W, H, 0.05);
     },
+  },
+
+  // Notícia vertical (story e Reels) — 1080×1920
+  noticiaStory: {
+    nome: "Notícia · story", w: 1080, h: 1920,
+    campos: [
+      { id: "selo", rotulo: "Selo", padrao: "URGENTE" },
+      { id: "data", rotulo: "Data", padrao: "03/11/2026" },
+      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
+      { id: "resumo", rotulo: "Resumo (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas. Paralisação começa na próxima segunda." },
+      { id: "fonte", rotulo: "Fonte", padrao: "Fonte: Agência Brasil" },
+      { id: "imagem", rotulo: "Foto (com crédito na fonte)", tipo: "imagem" },
+    ],
+    desenhar(ctx, v) { noticiaVertical(ctx, v, false); },
+  },
+  noticiaReels: {
+    nome: "Notícia · Reels (moldura para vídeo)", w: 1080, h: 1920,
+    campos: [
+      { id: "selo", rotulo: "Selo", padrao: "URGENTE" },
+      { id: "data", rotulo: "Data", padrao: "03/11/2026" },
+      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
+      { id: "resumo", rotulo: "Resumo (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas. Paralisação começa na próxima segunda." },
+      { id: "fonte", rotulo: "Fonte", padrao: "Fonte: Agência Brasil" },
+    ],
+    desenhar(ctx, v) { noticiaVertical(ctx, v, true); },
   },
 
   // 9) Meme — feed 1080×1350, imagem com texto em cima e embaixo
