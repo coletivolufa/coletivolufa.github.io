@@ -40,9 +40,12 @@
     .barra-texto small { font-size: 12px; color: var(--cinza); flex-basis: 100%; }
     .dica { font-size: 14px; color: var(--cinza); background: var(--papel); padding: 10px 14px; border-left: 4px solid var(--amarelo); }
     @media (max-width: 860px) { .ger { grid-template-columns: 1fr; } .ger-previa { position: static; order: -1; } }
+      .embutido .ger-topo { display: none; }
+    .embutido .ger { padding-top: 8px; }
   </style>
 </head>
 <body>
+  <script>if (new URLSearchParams(location.search).get("embutido")) document.documentElement.classList.add("embutido");</script>
   <header class="ger-topo">
     <div><h1>Gerador de Posts</h1><span>Escreva, confira a prévia e baixe o PNG pronto para o Instagram.</span></div>
     <a href="index.html">Ver o guia de identidade →</a>

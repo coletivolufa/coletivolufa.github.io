@@ -683,3 +683,9 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .membros__regimento p { margin: 0; max-width: 560px; font-size: 16px; }
 .membros__regimento .botao { font-size: 24px; padding: 14px 26px 10px; }
 @media (max-width: 600px) { .membros__regimento { padding: 18px; } .membros__regimento .botao { width: 100%; justify-content: center; } }
+/* gerador de imagens dentro de Minha conta */
+.painel--gerador { padding: 18px; }
+.gerador-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.gerador-topo h2 { margin: 0; }
+#gerador-quadro { width: 100%; height: 1500px; border: 0; background: var(--papel); }
+@media (max-width: 760px) { #gerador-quadro { height: 2400px; } .painel--gerador { padding: 10px; } }

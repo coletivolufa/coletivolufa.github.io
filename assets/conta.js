@@ -29,6 +29,14 @@ function abrirAba(nome) {
   document.querySelectorAll("[data-painel]").forEach((p) => (p.hidden = p.dataset.painel !== nome));
   if (nome === "artigos") carregarArtigos();
   if (nome === "carteirinha") carregarCarteirinha();
+  if (nome === "gerador" && !$("gerador-quadro").src) {
+    const q = $("gerador-quadro");
+    q.src = "identidade/gerador.html?embutido=1";
+    // altura do quadro acompanha o conteúdo do gerador
+    setInterval(() => {
+      try { const h = q.contentDocument && q.contentDocument.documentElement.scrollHeight; if (h && Math.abs(h - q.offsetHeight) > 8) q.style.height = h + "px"; } catch (_) {}
+    }, 700);
+  }
   if (nome === "admin") { carregarPessoas(); carregarOrdem(); }
 }
 document.querySelectorAll("[data-aba]").forEach((b) => b.addEventListener("click", () => abrirAba(b.dataset.aba)));
@@ -102,6 +110,8 @@ async function mostrar() {
   $("p-nome").value = perfil.nome; $("p-arroba").value = perfil.arroba; $("p-rede").value = perfil.rede || "instagram";
   $("p-idade").value = perfil.idade || "";
   document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
+  // gerador de imagens: só membro ativo
+  document.querySelector('[data-aba="gerador"]').hidden = !(APROVADO.includes(perfil.papel) && !ehComum(perfil));
   // artigos: só membros ativos com permissão de autor, editor ou admin
   document.querySelector('[data-aba="artigos"]').hidden = !(PODE_ESCREVER.includes(perfil.papel) && !ehComum(perfil));
   document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";

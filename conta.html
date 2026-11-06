@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=21">
+  <link rel="stylesheet" href="assets/style.css?v=22">
 </head>
 <body data-pagina="conta">
 <main>
@@ -73,6 +73,7 @@
         <div class="abas" role="tablist" id="abas-dentro">
           <button type="button" role="tab" aria-selected="true" data-aba="perfil">Meu perfil</button>
           <button type="button" role="tab" aria-selected="false" data-aba="carteirinha" hidden>Minha carteirinha</button>
+          <button type="button" role="tab" aria-selected="false" data-aba="gerador" hidden>Gerador de imagens</button>
           <button type="button" role="tab" aria-selected="false" data-aba="artigos" hidden>Meus artigos</button>
           <button type="button" role="tab" aria-selected="false" data-aba="admin" hidden>Administração</button>
         </div>
@@ -100,6 +101,15 @@
         </div>
 
         <!-- Carteirinha -->
+        <!-- Gerador de imagens (só membro ativo) -->
+        <div class="painel painel--gerador" data-painel="gerador" hidden>
+          <div class="gerador-topo">
+            <h2>Gerador de imagens</h2>
+            <a class="botao botao--claro" href="identidade/gerador.html" target="_blank" rel="noopener">Abrir em tela cheia ↗</a>
+          </div>
+          <iframe id="gerador-quadro" title="Gerador de imagens do Coletivo Lufã" loading="lazy"></iframe>
+        </div>
+
         <div class="painel" data-painel="carteirinha" hidden>
           <h2>Minha carteirinha</h2>
           <div class="minha-carteira" id="minha-carteira">
@@ -182,6 +192,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=15"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/conta.js?v=10"></script>
+<script src="assets/conta.js?v=11"></script>
 </body>
 </html>
