@@ -212,10 +212,7 @@ function noticiaVertical(ctx, v, transparente) {
     if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, FY);
     else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, FY); raios(ctx, W / 2, FY, 24, "rgba(255,255,255,.06)", 0); }
   }
-  // degradê escuro em cima (fica por cima do vídeo também) para a assinatura aparecer
-  const g = ctx.createLinearGradient(0, 160, 0, 460); g.addColorStop(0, "rgba(30,25,22,.62)"); g.addColorStop(1, "rgba(30,25,22,0)");
-  ctx.fillStyle = g; ctx.fillRect(0, 160, W, 300);
-  assinatura(ctx, 70, 300, COR.branco, 42);
+  assinatura(ctx, 70, 210, COR.branco, 42);
   // faixa vermelha que separa o vídeo do texto
   ctx.fillStyle = COR.vermelho; ctx.fillRect(0, FY, W, 16);
   const ws = etiqueta(ctx, v.selo.toUpperCase(), 80, FY + 96, 52, COR.vermelho, COR.branco);
