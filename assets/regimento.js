@@ -1,6 +1,6 @@
-/* Regimento Interno: o texto só é lido do banco por MEMBRO ATIVO.
-   A proteção de verdade está em supabase/05-regimento-so-membros-ativos.sql;
-   este arquivo só mostra a mensagem certa para cada caso. */
+/* Regimento Interno: aberto a todos, com ou sem conta.
+   Lê o texto do banco (supabase/06-regimento-publico.sql); se o banco não
+   responder, usa o arquivo regimento-interno.md do site. */
 
 const estado = document.getElementById("estado");
 const conteudo = document.getElementById("conteudo");
@@ -32,20 +32,17 @@ const mostrarAviso = (texto, html) => {
 };
 
 async function carregar() {
+  // 1) texto do banco (atualizado pelo SQL Editor); 2) se o banco recusar, o arquivo do site
   try {
-    const { data: sessao } = await supa.auth.getSession();
-    if (!sessao || !sessao.session) {
-      return mostrarAviso("", 'Esta página é só para membros ativos. <a href="conta.html">Entre na sua conta</a> para continuar.');
-    }
-    const { data: ativo, error: erroAtivo } = await supa.rpc("sou_ativo");
-    if (erroAtivo || ativo !== true) {
-      return mostrarAviso("", "Esta página é só para membros ativos. Se você é membro ativo e não consegue entrar, fale com a coordenação.");
-    }
-    const { data, error } = await supa.from("regimento").select("texto").eq("id", 1).single();
-    if (error || !data) return mostrarAviso("Não foi possível carregar o regimento agora. Tente de novo mais tarde.");
-    conteudo.innerHTML = markdownParaHTML(data.texto);
+    const { data, error } = await supa.from("regimento").select("texto").eq("id", 1).maybeSingle();
+    if (!error && data && data.texto) { conteudo.innerHTML = markdownParaHTML(data.texto); return; }
+  } catch (_) { /* segue para o arquivo */ }
+  try {
+    const r = await fetch("regimento-interno.md?v=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error();
+    conteudo.innerHTML = markdownParaHTML(await r.text());
   } catch (e) {
-    mostrarAviso("Não foi possível verificar seu acesso agora. Tente de novo mais tarde.");
+    mostrarAviso("Não foi possível carregar o regimento agora. Tente de novo mais tarde.");
   }
 }
 

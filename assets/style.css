@@ -677,3 +677,9 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .botao--amarelo { background: var(--amarelo, #EBB52A); color: var(--preto); }
 .bloco-regimento { display: flex; justify-content: center; margin: 8px 0 32px; }
 .bloco-regimento .botao { font-size: 24px; padding: 14px 28px 10px; text-align: center; }
+/* regimento interno na página inicial (seção Membros) */
+.membros__regimento { display: flex; align-items: center; justify-content: space-between; gap: 18px 28px; flex-wrap: wrap; background: var(--branco); border-left: 8px solid var(--amarelo); padding: 22px 26px; margin: 0 0 32px; box-shadow: 6px 6px 0 var(--vermelho); }
+.membros__regimento h3 { font-size: 34px; color: var(--vermelho); margin-bottom: 4px; }
+.membros__regimento p { margin: 0; max-width: 560px; font-size: 16px; }
+.membros__regimento .botao { font-size: 24px; padding: 14px 26px 10px; }
+@media (max-width: 600px) { .membros__regimento { padding: 18px; } .membros__regimento .botao { width: 100%; justify-content: center; } }
