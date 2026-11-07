@@ -5,78 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gerador de Posts · Coletivo Lufã</title>
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#cc2220">
+  <meta name="theme-color" content="#1e1916">
   <link rel="icon" href="../assets/img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Big+Shoulders+Display:wght@400;700;900&family=Literata:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;700&family=Russo+One&family=Special+Elite&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/style.css?v=9">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Bebas+Neue&family=Big+Shoulders+Display:wght@400;700;900&family=Literata:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;700&family=Russo+One&family=Special+Elite&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <style>
     /* fontes próprias (gratuitas, inclusive para uso comercial): títulos e subtítulos */
     @font-face { font-family: "Metadannye"; src: url("../assets/fonts/metadannye.ttf") format("truetype"); font-display: swap; }
     @font-face { font-family: "ST Nizhegorodsky"; src: url("../assets/fonts/st-nizhegorodsky.otf") format("opentype"); font-display: swap; }
-    body { margin: 0; }
-    .ger-topo { background: var(--vermelho); color: var(--branco); padding: 22px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; border-bottom: 6px solid var(--amarelo); }
-    .ger-topo h1 { font-size: clamp(34px, 5vw, 52px); }
-    .ger-topo a { color: var(--amarelo); font-weight: 700; }
-    .ger { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 32px; padding: 28px clamp(16px, 4vw, 48px) 60px; align-items: start; }
-    .ger-form { background: var(--branco); padding: 24px; border-top: 8px solid var(--vermelho); }
-    .ger-previa { position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-    .ger-previa canvas { width: min(100%, 520px); height: auto; box-shadow: 10px 10px 0 var(--preto); background: #ddd; }
-    .ger-previa canvas.alto { width: min(100%, 380px); }
-    .ger-acoes { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-    .slides { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-    .slides button { font-family: var(--titulo); font-size: 18px; letter-spacing: .05em; padding: 6px 12px 3px; border: 2px solid var(--preto); background: var(--branco); cursor: pointer; }
-    .slides button[aria-pressed="true"] { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); }
-    .slides-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 18px; }
-    .slides-acoes button { font: inherit; font-size: 14px; padding: 6px 10px; border: 2px solid var(--cinza); background: transparent; cursor: pointer; }
-    .bloco-ferr { border-top: 2px dashed var(--cinza); margin-top: 18px; padding-top: 14px; }
-    .bloco-ferr h3 { font-family: var(--titulo); font-size: 26px; letter-spacing: .04em; margin-bottom: 8px; }
-    .camada { border: 2px solid var(--preto); padding: 10px 12px; margin-bottom: 10px; background: #fff; }
-    .camada header { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
-    .camada label { font-size: 13px; display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-    .camada button { font-size: 13px; padding: 4px 10px; border: 2px solid var(--vermelho); background: transparent; color: var(--vermelho); cursor: pointer; }
-    .barra-texto { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items: center; }
-    .barra-texto button { font: 700 15px var(--titulo), sans-serif; min-width: 38px; padding: 5px 9px; border: 2px solid var(--preto); background: var(--branco); cursor: pointer; }
-    .barra-texto button:hover { background: var(--papel); }
-    .barra-texto input[type=color] { width: 40px; height: 34px; border: 2px solid var(--preto); padding: 0; background: none; cursor: pointer; }
-    .barra-texto small { font-size: 12px; color: var(--cinza); flex-basis: 100%; }
-    .dica { font-size: 14px; color: var(--cinza); background: var(--papel); padding: 10px 14px; border-left: 4px solid var(--amarelo); }
-    @media (max-width: 860px) { .ger { grid-template-columns: 1fr; } .ger-previa { position: static; order: -1; } }
-      .embutido .ger-topo { display: none; }
-    .embutido .ger { padding-top: 8px; }
+    /* Oficina de cartaz do Lufã: painel de papel à esquerda, prévia na mesa escura à direita; no celular, a prévia vem em cima. */
+    :root {
+      --vermelho: #cc2220; --vermelho-esc: #8c1512; --amarelo: #eab426; --amarelo-esc: #c4930c;
+      --papel: #fbf6ec; --papel-2: #efe4cf; --campo: #fffdf8; --preto: #1e1916; --mesa: #2a211d; --suave: #6b625c;
+      --titulo: "Bebas Neue", "Oswald", Impact, sans-serif; --texto: "Archivo", "Helvetica Neue", Arial, sans-serif; --maquina: "Special Elite", "Courier New", monospace;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: var(--mesa); color: var(--preto); font: 15px/1.4 var(--texto); }
+    .topo { background: var(--preto); color: var(--papel); padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px));
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap; border-bottom: 6px solid var(--vermelho); }
+    .topo img { height: 44px; width: auto; display: block; }
+    .topo h1 { margin: 0; font: 400 30px/1 var(--titulo); letter-spacing: .04em; }
+    .topo h1 b { font-weight: 400; color: var(--amarelo); }
+    .topo .acoes { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .topo a { color: var(--amarelo); font-weight: 700; font-size: 14px; }
+    .app { display: grid; grid-template-columns: minmax(320px, 440px) 1fr; }
+    .painel { background: var(--papel); padding: 20px 18px 48px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 26px;
+      max-height: calc(100vh - 70px); overflow-y: auto; }
+    .previa { position: sticky; top: 0; max-height: calc(100vh - 70px); display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 16px; min-width: 0;
+      background: radial-gradient(circle at 50% 30%, #3a2e28, var(--mesa) 70%); }
+    #previa { display: block; max-width: 100%; max-height: calc(100vh - 200px); width: auto; height: auto; background: #ddd; box-shadow: 0 18px 40px rgba(0,0,0,.5); }
+    .info { color: var(--papel-2); font: 13px/1.3 var(--maquina); text-align: center; }
+    /* títulos das seções: um bloco 3D como os da logo */
+    section h2 { display: inline-block; margin: 0 0 14px; padding: 5px 12px 2px; font: 400 22px/1 var(--titulo); letter-spacing: .06em; background: var(--amarelo); color: var(--preto);
+      transform: skewY(-3deg); box-shadow: 5px 5px 0 var(--amarelo-esc); }
+    section.vermelha h2 { background: var(--vermelho); color: var(--papel); box-shadow: 5px 5px 0 var(--vermelho-esc); }
+    .grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .grade.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grupo { grid-column: 1 / -1; font: 700 11px/1 var(--texto); letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-top: 6px; }
+    .opcao { font: 600 14px/1.15 var(--texto); color: var(--preto); background: var(--papel-2); border: 2px solid var(--preto); padding: 9px 10px; cursor: pointer; text-align: left; }
+    .opcao small { display: block; margin-top: 3px; font: 400 12px/1.3 var(--texto); color: var(--suave); }
+    .opcao:hover { background: #e8dabf; }
+    .opcao[aria-pressed="true"] { background: var(--preto); color: var(--papel); box-shadow: 4px 4px 0 var(--vermelho); }
+    .opcao[aria-pressed="true"] small { color: var(--papel-2); }
+    .grade.tres .opcao { text-align: center; padding: 8px 4px; font-size: 13px; }
+    .campo { display: flex; flex-direction: column; gap: 5px; }
+    .campo + .campo, .campo + .chk, .grade + .campo, .campo + .grade { margin-top: 14px; }
+    .campo label, .rotulo { font: 700 12px/1.2 var(--texto); letter-spacing: .08em; text-transform: uppercase; display: flex; justify-content: space-between; gap: 8px; }
+    .campo label output { color: var(--vermelho); letter-spacing: 0; text-transform: none; }
+    .campo small, .nota { font: 400 12px/1.35 var(--texto); color: var(--suave); }
+    input:not([type]), input[type="text"], textarea, select { width: 100%; font: 400 15px/1.35 var(--texto); color: var(--preto); background: var(--campo); border: 2px solid var(--preto); padding: 8px 10px; border-radius: 0; }
+    textarea { min-height: 110px; resize: vertical; }
+    input[type="range"] { width: 100%; accent-color: var(--vermelho); }
+    input[type="file"] { font-size: 13px; }
+    .chk { display: flex; gap: 8px; align-items: center; font-size: 14px; cursor: pointer; margin-top: 10px; }
+    .chk input { width: 18px; height: 18px; accent-color: var(--vermelho); }
+    .btn { font: 400 19px/1 var(--titulo); letter-spacing: .06em; cursor: pointer; background: var(--vermelho); color: var(--papel); border: 2px solid var(--preto); padding: 11px 18px 8px; box-shadow: 4px 4px 0 var(--vermelho-esc); }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--vermelho-esc); }
+    .btn.amarelo { background: var(--amarelo); color: var(--preto); box-shadow: 4px 4px 0 var(--amarelo-esc); }
+    .btn.claro { background: var(--papel); color: var(--preto); box-shadow: 4px 4px 0 var(--suave); }
+    .btn.pequeno { font-size: 15px; padding: 8px 12px 6px; }
+    .btn:disabled { opacity: .55; cursor: default; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--amarelo); outline-offset: 2px; }
+    .acoes-previa { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .slides { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .slides button { font: 400 17px/1 var(--titulo); letter-spacing: .05em; padding: 7px 11px 4px; border: 2px solid var(--preto); background: var(--papel-2); cursor: pointer; }
+    .slides button[aria-pressed="true"] { background: var(--vermelho); border-color: var(--preto); color: var(--papel); }
+    .slides-acoes { display: flex; flex-wrap: wrap; gap: 6px; }
+    .slides-acoes button { font: 600 13px var(--texto); padding: 6px 9px; border: 2px dashed var(--suave); background: transparent; cursor: pointer; }
+    .barra-texto { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+    .barra-texto button { font: 700 14px var(--texto); min-width: 36px; padding: 5px 8px; border: 2px solid var(--preto); background: var(--campo); cursor: pointer; }
+    .barra-texto button:hover { background: var(--papel-2); }
+    .barra-texto input[type=color] { width: 38px; height: 32px; border: 2px solid var(--preto); padding: 0; background: none; cursor: pointer; }
+    .barra-texto small { flex-basis: 100%; }
+    .camada { border: 2px solid var(--preto); padding: 10px 12px; margin-top: 10px; background: var(--campo); }
+    .camada header { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
+    .camada label { font-size: 12px; display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
+    .camada button { font-size: 12px; padding: 4px 9px; border: 2px solid var(--vermelho); background: transparent; color: var(--vermelho); cursor: pointer; }
+    .dica { font-size: 13px; color: var(--preto); background: var(--papel-2); padding: 9px 12px; border-left: 5px solid var(--vermelho); margin: 0; }
+    .zerar { align-self: flex-start; font: 600 13px var(--texto); background: none; border: 0; color: var(--vermelho); text-decoration: underline; cursor: pointer; padding: 0; margin-top: 12px; }
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .previa { position: static; order: -1; max-height: none; }
+      #previa { max-height: 62vh; }
+      .painel { max-height: none; overflow: visible; padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+    }
+    .embutido .topo { display: none; }
+    .embutido .painel, .embutido .previa { max-height: 100vh; }
   </style>
 </head>
 <body>
   <script>if (new URLSearchParams(location.search).get("embutido")) document.documentElement.classList.add("embutido");</script>
-  <header class="ger-topo">
-    <div><h1>Gerador de Posts</h1><span>Escreva, confira a prévia e baixe o PNG pronto para o Instagram.</span></div>
-    <a href="index.html">Ver o guia de identidade →</a>
+  <header class="topo">
+    <img src="../assets/img/logo-lufa-linha-amarela.png" alt="Coletivo Lufã">
+    <h1>Gerador de <b>posts</b></h1>
+    <div class="acoes">
+      <a href="index.html">Guia de identidade →</a>
+      <button class="btn pequeno" type="button" id="baixar-topo">Baixar PNG</button>
+    </div>
   </header>
 
-  <div class="ger">
-    <div class="ger-form">
-      <div class="campo">
-        <label for="modo">Modelo</label>
-        <select id="modo" style="font-family:var(--titulo);font-size:24px;letter-spacing:.04em">
-          <optgroup label="Feed (1080 × 1350)">
-            <option value="citacao">Frase e citação</option>
-            <option value="carrossel">Carrossel explicativo</option>
-            <option value="dado">Dado ou número</option>
-            <option value="noticia">Notícia</option>
-            <option value="evento">Aviso de evento</option>
-            <option value="meme">Meme</option>
-          </optgroup>
-          <optgroup label="Stories e Reels (1080 × 1920)">
-            <option value="reels">Capa de Reels</option>
-            <option value="eventoStory">Evento · story</option>
-            <option value="storyDivulga">Story de divulgação (artigo, episódio, livro)</option>
-            <option value="noticiaStory">Notícia · story</option>
-            <option value="noticiaReels">Notícia · Reels (moldura para vídeo, área transparente)</option>
-          </optgroup>
-        </select>
-      </div>
-      <div id="carrossel-controles" hidden>
+  <main class="app">
+    <div class="painel">
+      <section>
+        <h2>Modelo</h2>
+        <div class="grade" id="modelos">
+          <span class="grupo">Feed · 1080 × 1350</span>
+          <button class="opcao" type="button" data-modo="citacao">Frase e citação<small>aspas grandes e autor</small></button>
+          <button class="opcao" type="button" data-modo="carrossel">Carrossel<small>capa, slides e fechamento</small></button>
+          <button class="opcao" type="button" data-modo="dado">Dado ou número<small>um número gigante</small></button>
+          <button class="opcao" type="button" data-modo="noticia">Notícia<small>foto em cima, manchete</small></button>
+          <button class="opcao" type="button" data-modo="evento">Aviso de evento<small>data em bloco de calendário</small></button>
+          <button class="opcao" type="button" data-modo="meme">Meme<small>imagem ou vídeo com texto</small></button>
+          <span class="grupo">Stories e Reels · 1080 × 1920</span>
+          <button class="opcao" type="button" data-modo="reels">Capa de Reels<small>título e figura recortada</small></button>
+          <button class="opcao" type="button" data-modo="eventoStory">Evento · story<small>chamada para ato ou reunião</small></button>
+          <button class="opcao" type="button" data-modo="storyDivulga">Divulgação<small>artigo, episódio, livro</small></button>
+          <button class="opcao" type="button" data-modo="noticiaStory">Notícia · story<small>foto e manchete</small></button>
+          <button class="opcao" type="button" data-modo="noticiaReels">Notícia · Reels<small>moldura com área transparente</small></button>
+        </div>
+      </section>
+
+      <section id="carrossel-controles" class="vermelha" hidden>
+        <h2>Slides</h2>
         <div class="slides" id="slides"></div>
         <div class="slides-acoes">
           <button type="button" id="add-slide">+ Slide de conteúdo</button>
@@ -84,37 +138,88 @@
           <button type="button" id="mover-dir">Mover →</button>
           <button type="button" id="remover-slide">Remover slide</button>
         </div>
-      </div>
-      <form id="campos" onsubmit="return false"></form>
-      <div class="bloco-ferr">
-        <h3>Fontes</h3>
+      </section>
+
+      <section>
+        <h2>Texto</h2>
+        <form id="campos" onsubmit="return false"></form>
+        <p class="dica" style="margin-top:14px">No título, coloque uma palavra entre *asteriscos* para ela sair em destaque.</p>
+      </section>
+
+      <section class="vermelha">
+        <h2>Logo</h2>
+        <span class="rotulo">Posição</span>
+        <div class="grade tres" id="logo-pos" style="margin-top:6px">
+          <button class="opcao" type="button" data-pos="padrao" aria-pressed="true" style="grid-column:1/-1">Padrão do modelo</button>
+          <button class="opcao" type="button" data-pos="esquerda-topo">↖ Em cima</button>
+          <button class="opcao" type="button" data-pos="centro-topo">↑ Em cima</button>
+          <button class="opcao" type="button" data-pos="direita-topo">↗ Em cima</button>
+          <button class="opcao" type="button" data-pos="esquerda-maismeio">Mais pro meio</button>
+          <button class="opcao" type="button" data-pos="centro-maismeio">Mais pro meio</button>
+          <button class="opcao" type="button" data-pos="direita-maismeio">Mais pro meio</button>
+          <button class="opcao" type="button" data-pos="esquerda-meio">← No meio</button>
+          <button class="opcao" type="button" data-pos="centro-meio">No meio</button>
+          <button class="opcao" type="button" data-pos="direita-meio">No meio →</button>
+          <button class="opcao" type="button" data-pos="esquerda-base">↙ Embaixo</button>
+          <button class="opcao" type="button" data-pos="centro-base">↓ Embaixo</button>
+          <button class="opcao" type="button" data-pos="direita-base">↘ Embaixo</button>
+          <button class="opcao" type="button" data-pos="oculta" style="grid-column:1/-1">Sem logo</button>
+        </div>
+        <span class="rotulo" style="margin-top:14px">Versão</span>
+        <div class="grade" id="logo-tipo" style="margin-top:6px">
+          <button class="opcao" type="button" data-tipo="padrao" aria-pressed="true">Padrão do modelo</button>
+          <button class="opcao" type="button" data-tipo="linha">Em linha<small>pomba + nome</small></button>
+          <button class="opcao" type="button" data-tipo="empilhado">Empilhada<small>pomba em cima</small></button>
+          <button class="opcao" type="button" data-tipo="pomba">Só a pomba</button>
+        </div>
+        <div class="campo" style="margin-top:14px"><label for="aj-logo">Tamanho <output id="aj-logo-v"></output></label>
+          <input id="aj-logo" type="range" min="0.5" max="2" step="0.05" value="1"></div>
+      </section>
+
+      <section>
+        <h2>Espaçamento e acabamento</h2>
+        <div class="campo"><label for="aj-titulo">Entrelinha dos títulos <output id="aj-titulo-v"></output></label>
+          <input id="aj-titulo" type="range" min="0.75" max="1.5" step="0.05" value="1"></div>
+        <div class="campo"><label for="aj-texto">Entrelinha dos textos <output id="aj-texto-v"></output></label>
+          <input id="aj-texto" type="range" min="0.75" max="1.6" step="0.05" value="1"></div>
+        <div class="campo"><label for="aj-par">Espaço entre parágrafos <output id="aj-par-v"></output></label>
+          <input id="aj-par" type="range" min="0" max="1.5" step="0.1" value="0">
+          <small>Vale para os textos com mais de um parágrafo (aperte Enter no texto para separar).</small></div>
+        <label class="chk"><input type="checkbox" id="aj-sombra" checked> Sombra nos títulos e números</label>
+        <label class="chk"><input type="checkbox" id="aj-grao" checked> Grão de papel impresso</label>
+        <button class="zerar" type="button" id="aj-zerar">Voltar logo e espaçamento ao padrão</button>
+      </section>
+
+      <section class="vermelha">
+        <h2>Fontes</h2>
         <div class="campo"><label for="fonte-titulo">Títulos</label><select id="fonte-titulo"></select></div>
         <div class="campo"><label for="fonte-sub">Subtítulos e etiquetas</label><select id="fonte-sub"></select></div>
         <div class="campo"><label for="fonte-texto">Texto</label><select id="fonte-texto"></select></div>
-        <small>"Padrão" usa a fonte que cada modelo já tem.</small>
-      </div>
-      <div class="bloco-ferr">
-        <h3>Imagens PNG</h3>
-        <div class="campo"><label for="add-imagem">Adicionar imagens a este post</label>
-          <input id="add-imagem" type="file" accept="image/png,image/webp,image/jpeg" multiple></div>
-        <small>PNG sem fundo fica melhor por cima do post. Ajuste tamanho e posição de cada uma.</small>
-        <div id="camadas" style="margin-top:10px"></div>
-      </div>
-      <p class="dica">Dica: no título, coloque uma palavra entre *asteriscos* para ela sair em destaque amarelo.</p>
+        <p class="nota" style="margin:8px 0 0">"Padrão do modelo" usa a fonte que cada modelo já tem.</p>
+      </section>
+
+      <section>
+        <h2>Imagens PNG</h2>
+        <div class="campo"><label for="add-imagem">Adicionar imagens por cima do post</label>
+          <input id="add-imagem" type="file" accept="image/png,image/webp,image/jpeg" multiple>
+          <small>PNG sem fundo fica melhor. Ajuste tamanho e posição de cada uma.</small></div>
+        <div id="camadas"></div>
+      </section>
     </div>
 
-    <div class="ger-previa">
+    <div class="previa">
       <canvas id="previa" width="1080" height="1350" aria-label="Prévia do post"></canvas>
-      <div class="ger-acoes">
-        <button class="botao botao--vermelho" type="button" id="baixar">Baixar PNG</button>
-        <button class="botao botao--vermelho" type="button" id="baixar-video" hidden>Baixar vídeo (.webm)</button>
-        <button class="botao" type="button" id="baixar-tudo" hidden>Baixar carrossel completo (.zip)</button>
+      <div class="info" id="info-previa"></div>
+      <div class="acoes-previa">
+        <button class="btn" type="button" id="baixar">Baixar PNG</button>
+        <button class="btn amarelo" type="button" id="baixar-video" hidden>Baixar vídeo (.webm)</button>
+        <button class="btn claro" type="button" id="baixar-tudo" hidden>Baixar carrossel (.zip)</button>
       </div>
     </div>
-  </div>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="posts.js?v=7"></script>
+  <script src="posts.js?v=8"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     let modo = "citacao";
@@ -179,7 +284,7 @@
     }
     function renderItem(item) {
       const o = opcoesDo(item);
-      return desenharModelo(item.modelo, item.valores, { titulo: o.titulo, sub: o.sub, texto: o.texto, camadas: item.camadas });
+      return desenharModelo(item.modelo, item.valores, { titulo: o.titulo, sub: o.sub, texto: o.texto, camadas: item.camadas, ajustes: AJ });
     }
     function mostrarCamadas() {
       const item = atual(); opcoesDo(item);
@@ -190,7 +295,7 @@
           <label>Tamanho: <span>${l.tamanho}</span>%<input type="range" min="5" max="100" value="${l.tamanho}" data-prop="tamanho"></label>
           <label>Posição horizontal: <span>${l.x}</span>%<input type="range" min="0" max="100" value="${l.x}" data-prop="x"></label>
           <label>Posição vertical: <span>${l.y}</span>%<input type="range" min="0" max="100" value="${l.y}" data-prop="y"></label>
-        </div>`).join("") : '<p class="dica">Nenhuma imagem adicionada a este post.</p>';
+        </div>`).join("") : '<p class="nota" style="margin:10px 0 0">Nenhuma imagem adicionada a este post.</p>';
       $("fonte-titulo").value = o_titulo(item);
       $("fonte-sub").value = opcoesDo(item).sub;
       $("fonte-texto").value = o_texto(item);
@@ -205,12 +310,13 @@
         const item = atual(), c = await renderItem(item), p = $("previa");
         p.width = c.width; p.height = c.height; p.classList.toggle("alto", c.height > 1500);
         p.getContext("2d").drawImage(c, 0, 0);
+        $("info-previa").textContent = `${MODELOS[item.modelo].nome} · ${c.width} × ${c.height} px`;
       }, 80);
     }
 
     function trocarModo(m) {
       modo = m;
-      $("modo").value = m;
+      document.querySelectorAll("#modelos [data-modo]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.modo === m)));
       $("carrossel-controles").hidden = m !== "carrossel";
       $("baixar-tudo").hidden = m !== "carrossel";
       $("baixar-video").hidden = !(m === "meme" && videoAtivo && atual().valores.imagem === videoAtivo);
@@ -282,7 +388,27 @@
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     }
 
-    $("modo").addEventListener("change", (e) => trocarModo(e.target.value));
+    $("modelos").addEventListener("click", (e) => { const b = e.target.closest("[data-modo]"); if (b) trocarModo(b.dataset.modo); });
+    // ----- ajustes: logo, espaçamento, sombra e grão (valem para todos os modelos) -----
+    const AJ = { linhaTitulo: 1, linhaTexto: 1, paragrafo: 0, logoPos: "padrao", logoTipo: "padrao", logoTam: 1, sombra: true, grao: true };
+    const marcar = (grupo, attr, val) => document.querySelectorAll(`#${grupo} [${attr}]`).forEach((b) => b.setAttribute("aria-pressed", String(b.getAttribute(attr) === val)));
+    $("logo-pos").addEventListener("click", (e) => { const b = e.target.closest("[data-pos]"); if (!b) return; AJ.logoPos = b.dataset.pos; marcar("logo-pos", "data-pos", AJ.logoPos); redesenhar(); });
+    $("logo-tipo").addEventListener("click", (e) => { const b = e.target.closest("[data-tipo]"); if (!b) return; AJ.logoTipo = b.dataset.tipo; marcar("logo-tipo", "data-tipo", AJ.logoTipo); redesenhar(); });
+    const deslizantes = { "aj-logo": ["logoTam", (v) => Math.round(v * 100) + "%"], "aj-titulo": ["linhaTitulo", (v) => Math.round(v * 100) + "%"], "aj-texto": ["linhaTexto", (v) => Math.round(v * 100) + "%"], "aj-par": ["paragrafo", (v) => v ? "+" + Math.round(v * 100) + "%" : "nenhum"] };
+    Object.entries(deslizantes).forEach(([id, [k, fmt]]) => {
+      const r = $(id), o = $(id + "-v");
+      const atualizar = () => { AJ[k] = Number(r.value); o.textContent = fmt(AJ[k]); };
+      atualizar(); r.addEventListener("input", () => { atualizar(); redesenhar(); });
+    });
+    $("aj-sombra").addEventListener("change", (e) => { AJ.sombra = e.target.checked; redesenhar(); });
+    $("aj-grao").addEventListener("change", (e) => { AJ.grao = e.target.checked; redesenhar(); });
+    $("aj-zerar").addEventListener("click", () => {
+      Object.assign(AJ, { linhaTitulo: 1, linhaTexto: 1, paragrafo: 0, logoPos: "padrao", logoTipo: "padrao", logoTam: 1, sombra: true, grao: true });
+      $("aj-logo").value = 1; $("aj-titulo").value = 1; $("aj-texto").value = 1; $("aj-par").value = 0; $("aj-sombra").checked = true; $("aj-grao").checked = true;
+      Object.keys(deslizantes).forEach((id) => $(id).dispatchEvent(new Event("input")));
+      marcar("logo-pos", "data-pos", "padrao"); marcar("logo-tipo", "data-tipo", "padrao");
+    });
+    $("baixar-topo").addEventListener("click", () => $("baixar").click());
     preencherFontes();
     $("fonte-titulo").addEventListener("change", (e) => { opcoesDo(atual()).titulo = e.target.value; redesenhar(); });
     $("fonte-sub").addEventListener("change", (e) => { opcoesDo(atual()).sub = e.target.value; redesenhar(); });
@@ -391,7 +517,7 @@
         zip.file(nomeArquivo(s, i), await new Promise((ok) => c.toBlob(ok, "image/png")));
       }
       baixarBlob(await zip.generateAsync({ type: "blob" }), "carrossel-coletivo-lufa.zip");
-      botao.disabled = false; botao.textContent = "Baixar carrossel completo (.zip)";
+      botao.disabled = false; botao.textContent = "Baixar carrossel (.zip)";
     });
 
     function esc(t) { return String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }

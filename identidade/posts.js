@@ -13,6 +13,20 @@ const fsub = (orig) => FONTE.sub || orig;   // subtítulos, etiquetas, chamadas:
 const FONTES_TEXTO = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
 const ARROBA = "@coletivolufa";
 
+// ajustes do gerador (valem para todos os modelos; o gerador muda e o desenho volta ao padrão no fim)
+const AJUSTE_PADRAO = {
+  linhaTitulo: 1, linhaTexto: 1, paragrafo: 0,   // entrelinhas (multiplicador) e espaço extra entre parágrafos (em "linhas")
+  logoPos: "padrao", logoTipo: "padrao", logoTam: 1,   // onde fica a logo, qual versão e o tamanho
+  sombra: true, grao: true,
+};
+const AJUSTE = { ...AJUSTE_PADRAO, pendente: null };
+// altura de i linhas de um bloco {tam, linhas}: k < 1.1 é título (entrelinha apertada), o resto é texto corrido
+function yl(r, i, k) {
+  const el = k < 1.1 ? AJUSTE.linhaTitulo : AJUSTE.linhaTexto;
+  const pars = (r.linhas && r.linhas.pars || []).filter((p) => p <= i).length;
+  return i * r.tam * k * el + (k < 1.1 ? 0 : pars * r.tam * AJUSTE.paragrafo);
+}
+
 // logo novo (2026): versões em PNG sem fundo
 const _base = document.currentScript.src;
 const carregarImg = (arq) => { const i = new Image(); i.src = new URL("../assets/img/" + arq, _base).href; return i; };
@@ -94,8 +108,9 @@ function escreverRico(ctx, texto, x, y) {
 }
 
 function quebrar(ctx, texto, largura) {
-  const linhas = [];
+  const linhas = []; linhas.pars = [];
   for (const par of String(texto).split("\n")) {
+    if (linhas.length && par.trim()) linhas.pars.push(linhas.length);   // a próxima linha abre um parágrafo novo (linhas em branco não contam)
     const palavras = par.split(/\s+/).filter(Boolean);
     let linha = "";
     for (const p of palavras) {
@@ -112,7 +127,7 @@ function caber(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, es
   for (let t = max; t >= min; t -= 2) {
     fonte(ctx, t, fam, peso, estilo);
     const l = quebrar(ctx, texto, largura);
-    if (l.length * t * alturaLinha <= altura) return { tam: t, linhas: l };
+    if (yl({ tam: t, linhas: l }, l.length, alturaLinha) <= altura) return { tam: t, linhas: l };
   }
   fonte(ctx, min, fam, peso, estilo);
   return { tam: min, linhas: quebrar(ctx, texto, largura) };
@@ -155,6 +170,9 @@ const pronta = (img) => img.complete && img.naturalWidth;
 // logo centralizado em (cx, cy). d = tamanho de referência (a altura do logo fica perto de d).
 // Pequeno (d < 90): só a pomba. "anel" e "sombra" ficaram só por compatibilidade.
 function logo(ctx, cx, cy, d, anel = null, sombra = false) {
+  if (logoAdiada(ctx, "empilhado", null, d < 90 ? d * 0.8 : d * 1.25)) return;
+  if (AJUSTE.logoTipo !== "padrao") return desenharLogoTipo(ctx, AJUSTE.logoTipo, null, d < 90 ? d * 0.8 : d * 1.25, cx, cy, "centro");
+  d *= AJUSTE.logoTam;
   const img = d < 90 ? LOGO_POMBA : LOGO;
   if (!pronta(img)) return;
   const h = d < 90 ? d * 0.8 : d * 1.25, w = h * (img.naturalWidth / img.naturalHeight);
@@ -201,6 +219,7 @@ function faixa(ctx, y, altura, angulo, cor, texto, corTexto, W) {
 // grão de papel impresso (mesmo acabamento d'O Camarada, mais leve)
 let PADRAO_GRAO = null;
 function grao(ctx, W, H, forca = 0.06) {
+  if (!AJUSTE.grao) return;
   if (!PADRAO_GRAO) {
     const c = document.createElement("canvas"); c.width = c.height = 256;
     const g = c.getContext("2d"), d = g.createImageData(256, 256);
@@ -218,10 +237,47 @@ function vinheta(ctx, W, H, forca = 0.35) {
 // assinatura no topo das peças: logo em linha (pomba + COLETIVO LUFÃ).
 // Sobre fundo claro (cor vermelha) usa o bloco vermelho; sobre vermelho/escuro, o bloco amarelo.
 function assinatura(ctx, x, y, cor, tam = 40) {
+  if (logoAdiada(ctx, "linha", cor, tam * 2.3)) return;
+  if (AJUSTE.logoTipo !== "padrao") return desenharLogoTipo(ctx, AJUSTE.logoTipo, cor, tam * 2.3, x - tam * 0.2, y - tam * 0.35, "esquerda");
   const img = cor === COR.vermelho ? LOGO_LINHA : LOGO_LINHA_AM;
   if (!pronta(img)) return;
-  const h = tam * 2.3, w = h * (img.naturalWidth / img.naturalHeight);
+  const h = tam * 2.3 * AJUSTE.logoTam, w = h * (img.naturalWidth / img.naturalHeight);
   ctx.drawImage(img, x - tam * 0.2, y - tam * 0.35 - h / 2, w, h);
+}
+// imagem da logo para um tipo escolhido no gerador. A versão em linha segue a cor do fundo do modelo.
+function imagemLogo(tipo, cor) {
+  if (tipo === "empilhado") return LOGO;
+  if (tipo === "pomba") return LOGO_POMBA;
+  return cor === COR.vermelho ? LOGO_LINHA : LOGO_LINHA_AM;
+}
+// altura de referência de cada versão (a pomba e a empilhada são mais altas que a linha)
+const ALTURA_TIPO = { linha: 1, empilhado: 2.2, pomba: 1.3 };
+function desenharLogoTipo(ctx, tipo, cor, hBase, x, y, ancora) {
+  const img = imagemLogo(tipo, cor); if (!pronta(img)) return;
+  const h = hBase * AJUSTE.logoTam, w = h * (img.naturalWidth / img.naturalHeight);
+  ctx.drawImage(img, ancora === "centro" ? x - w / 2 : x, y - h / 2, w, h);
+}
+// posição escolhida no gerador: guarda a primeira logo do modelo e desenha no fim, no lugar pedido
+function logoAdiada(ctx, tipo, cor, h) {
+  if (AJUSTE.logoPos === "padrao") return false;
+  if (!AJUSTE.pendente) AJUSTE.pendente = { tipo, cor, h };
+  return true;
+}
+function desenharLogoMovida(ctx, W, H) {
+  const p = AJUSTE.pendente; AJUSTE.pendente = null;
+  if (!p || AJUSTE.logoPos === "oculta") return;
+  let tipo = AJUSTE.logoTipo === "padrao" ? p.tipo : AJUSTE.logoTipo;
+  // a logo em linha sobre fundo de foto/papel: segue a cor original; a empilhada vem da logo colorida
+  let h = p.tipo === tipo ? p.h : Math.min(p.h, 110) * ALTURA_TIPO[tipo];
+  const img = imagemLogo(tipo, p.cor || COR.branco); if (!pronta(img)) return;
+  h *= AJUSTE.logoTam;
+  const w = h * (img.naturalWidth / img.naturalHeight);
+  const alto = H > 1500;   // stories: deixa livre o topo e a base que o Instagram cobre
+  const M = 80, topo = alto ? 250 : 70, base = alto ? H - 300 : H - 70;
+  const [hor, ver] = AJUSTE.logoPos.split("-");   // ex.: "topo-centro", "base-direita", "meio-centro", "maismeio-centro"
+  const x = hor === "esquerda" ? M : hor === "direita" ? W - M - w : (W - w) / 2;
+  const y = ver === "topo" ? topo : ver === "base" ? base - h : ver === "maismeio" ? H * 0.28 - h / 2 : (H - h) / 2;
+  ctx.drawImage(img, x, y, w, h);
 }
 function imagemCobrindo(ctx, img, x, y, w, h, ancora = "centro") {
   // aceita foto (img) ou vídeo (video): cada um tem o seu tamanho natural
@@ -254,11 +310,11 @@ function noticiaVertical(ctx, v, transparente) {
   const espaco = RODAPE - (FY + 150) - (v.resumo.trim() ? 170 : 40);
   const r = caber(ctx, v.manchete.toUpperCase(), 920, espaco, 118, 62, 0.95, FONTE.titulo);
   let y = FY + 150;
-  r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 80, y + r.tam * 0.85 + i * r.tam * 0.95, COR.preto, COR.vermelho));
-  y += r.tam * 0.85 + (r.linhas.length - 1) * r.tam * 0.95 + 54;
+  r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 80, y + r.tam * 0.85 + yl(r, i, 0.95), COR.preto, COR.vermelho));
+  y += r.tam * 0.85 + yl(r, r.linhas.length - 1, 0.95) + 54;
   if (v.resumo.trim()) {
     const rb = caber(ctx, v.resumo, 920, RODAPE - 40 - y, 40, 28, 1.35, FONTE.texto);
-    rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.textAlign = "left"; ctx.fillText(l, 80, y + rb.tam + i * rb.tam * 1.35); });
+    rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.textAlign = "left"; ctx.fillText(l, 80, y + rb.tam + yl(rb, i, 1.35)); });
   }
   // rodapé com fonte e @ (dentro do corte do grid)
   ctx.fillStyle = COR.preto; ctx.fillRect(0, RODAPE, W, 100);
@@ -290,8 +346,8 @@ const MODELOS = {
       const temAutor = !!v.autor.trim();
       const caixaH = temAutor ? 560 : 700;
       const r = caber(ctx, v.texto, 900, caixaH, 96, 44, 1.32, FONTE.citacao, "400", "italic");
-      const y0 = 420 + (caixaH - r.linhas.length * r.tam * 1.32) / 2 + r.tam;
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y0 + i * r.tam * 1.32, tema[1], tema[2]));
+      const y0 = 420 + (caixaH - yl(r, r.linhas.length, 1.32)) / 2 + r.tam;
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y0 + yl(r, i, 1.32), tema[1], tema[2]));
       if (temAutor) {
         const ya = 420 + caixaH + 60;
         ctx.fillStyle = tema[2]; ctx.fillRect(90, ya - 22, 70, 7);
@@ -323,11 +379,11 @@ const MODELOS = {
       assinatura(ctx, 90, 130, COR.branco, 40);
       etiqueta(ctx, v.tema.toUpperCase(), 90, 330, 46, COR.amarelo, COR.preto);
       const r = caber(ctx, v.titulo.toUpperCase(), 900, 560, 230, 90, 0.92, FONTE.titulo);
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 420 + r.tam * 0.8 + i * r.tam * 0.92, COR.branco, COR.amarelo));
-      const yFim = 420 + r.tam * 0.8 + (r.linhas.length - 1) * r.tam * 0.92;
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 420 + r.tam * 0.8 + yl(r, i, 0.92), COR.branco, COR.amarelo));
+      const yFim = 420 + r.tam * 0.8 + yl(r, r.linhas.length - 1, 0.92);
       if (v.sub.trim()) {
         fonte(ctx, 40, fsub(FONTE.texto)); ctx.fillStyle = COR.papel;
-        quebrar(ctx, v.sub, 860).slice(0, 3).forEach((l, i) => ctx.fillText(l, 90, yFim + 90 + i * 54));
+        quebrar(ctx, v.sub, 860).slice(0, 3).forEach((l, i) => ctx.fillText(l, 90, yFim + 90 + i * 54 * AJUSTE.linhaTexto));
       }
       ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 150, W, 150);
       ctx.fillStyle = COR.amarelo; ctx.fillRect(0, H - 158, W, 8);
@@ -358,11 +414,11 @@ const MODELOS = {
         y += 250;
       } else y += 40;
       const rt = caber(ctx, v.titulo.toUpperCase(), 900, 260, 104, 60, 0.95, FONTE.titulo);
-      rt.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + rt.tam * 0.85 + i * rt.tam * 0.95, corTit, claro ? COR.preto : COR.branco));
-      y += rt.tam * 0.85 + (rt.linhas.length - 1) * rt.tam * 0.95 + 40;
+      rt.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + rt.tam * 0.85 + yl(rt, i, 0.95), corTit, claro ? COR.preto : COR.branco));
+      y += rt.tam * 0.85 + yl(rt, rt.linhas.length - 1, 0.95) + 40;
       ctx.fillStyle = corTit; ctx.fillRect(90, y, 90, 8); y += 70;
       const rb = caber(ctx, v.texto, 900, H - 180 - y, 46, 30, 1.45, FONTE.texto);
-      rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + i * rb.tam * 1.45, corTxt, corTit));
+      rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + yl(rb, i, 1.45), corTxt, corTit));
       ctx.fillStyle = claro ? COR.vermelho : COR.preto; ctx.fillRect(0, H - 22, W, 22);
       fonte(ctx, 64); ctx.fillStyle = corTit; ctx.textAlign = "right"; ctx.fillText("→", W - 90, H - 70);
       grao(ctx, W, H, 0.05);
@@ -380,7 +436,7 @@ const MODELOS = {
       raios(ctx, W / 2, H * 0.36, 24, "rgba(204,34,32,.16)", 0);
       logo(ctx, W / 2, 380, 300);
       const r = caber(ctx, v.chamada.toUpperCase(), 900, 220, 110, 60, 0.95, FONTE.titulo);
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, 640 + r.tam * 0.85 + i * r.tam * 0.95, COR.papel, COR.amarelo, "center"));
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, 640 + r.tam * 0.85 + yl(r, i, 0.95), COR.papel, COR.amarelo, "center"));
       fonte(ctx, 46); ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText("SIGA", W / 2, 965);
       fonte(ctx, 120); ctx.fillStyle = COR.amarelo; ctx.fillText(ARROBA.toUpperCase(), W / 2, 1080);
       const acoes = v.acoes.split(",").map((s) => s.trim()).filter(Boolean);
@@ -411,11 +467,11 @@ const MODELOS = {
       ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.kicker.toUpperCase(), 0, 24, 860); ctx.restore();
       const r = caber(ctx, v.titulo.toUpperCase(), 940, 300, 260, 110, 0.9, FONTE.titulo);
       r.linhas.forEach((l, i) => {
-        const y = 700 + r.tam * 0.82 + i * r.tam * 0.9;
-        ctx.save(); ctx.translate(8, 8); linhaDestacada(ctx, l.replace(/\*/g, ""), CX, y, COR.preto, COR.preto, "center"); ctx.restore();
+        const y = 700 + r.tam * 0.82 + yl(r, i, 0.9);
+        if (AJUSTE.sombra) { ctx.save(); ctx.translate(8, 8); linhaDestacada(ctx, l.replace(/\*/g, ""), CX, y, COR.preto, COR.preto, "center"); ctx.restore(); }
         linhaDestacada(ctx, l, CX, y, COR.papel, COR.amarelo, "center");
       });
-      let y = 700 + r.tam * 0.82 + (r.linhas.length - 1) * r.tam * 0.9 + 80;
+      let y = 700 + r.tam * 0.82 + yl(r, r.linhas.length - 1, 0.9) + 80;
       if (v.com.trim()) {
         fonte(ctx, 46, fsub(FONTE.titulo)); ctx.letterSpacing = "5px"; const w = ctx.measureText(v.com.toUpperCase()).width;
         ctx.fillStyle = COR.amarelo; ctx.fillRect(CX - w / 2 - 80, y - 18, 56, 6);
@@ -456,7 +512,7 @@ const MODELOS = {
       assinatura(ctx, 90, 130, COR.branco, 40);
       etiqueta(ctx, ("AGENDA · " + v.tipo).toUpperCase(), 90, 300, 46, COR.amarelo, COR.preto);
       const r = caber(ctx, v.titulo.toUpperCase(), 900, 380, 170, 80, 0.92, FONTE.titulo);
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 370 + r.tam * 0.82 + i * r.tam * 0.92, COR.branco, COR.amarelo));
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 370 + r.tam * 0.82 + yl(r, i, 0.92), COR.branco, COR.amarelo));
       // bloco de data, como um carimbo de calendário
       const y = 820;
       cubo(ctx, 90, y, 300, 330, COR.papel, 26);
@@ -467,8 +523,8 @@ const MODELOS = {
       ctx.textAlign = "left";
       fonte(ctx, 120); ctx.fillStyle = COR.amarelo; ctx.fillText(v.hora, 450, y + 120);
       fonte(ctx, 46, FONTE.texto, "700"); ctx.fillStyle = COR.branco;
-      quebrar(ctx, v.local, 540).slice(0, 2).forEach((l, i) => ctx.fillText(l, 450, y + 200 + i * 56));
-      if (v.extra.trim()) { fonte(ctx, 30, FONTE.texto); ctx.fillStyle = COR.papel; quebrar(ctx, v.extra, 560).slice(0, 2).forEach((l, i) => ctx.fillText(l, 450, y + 310 + i * 40)); }
+      quebrar(ctx, v.local, 540).slice(0, 2).forEach((l, i) => ctx.fillText(l, 450, y + 200 + i * 56 * AJUSTE.linhaTexto));
+      if (v.extra.trim()) { fonte(ctx, 30, FONTE.texto); ctx.fillStyle = COR.papel; quebrar(ctx, v.extra, 560).slice(0, 2).forEach((l, i) => ctx.fillText(l, 450, y + 310 + i * 40 * AJUSTE.linhaTexto)); }
       faixa(ctx, 1260, 70, -2, COR.amarelo, ARROBA.toUpperCase(), COR.preto, W);
       grao(ctx, W, H);
     },
@@ -495,8 +551,8 @@ const MODELOS = {
       etiqueta(ctx, v.tipo.toUpperCase(), CX, 520, 58, COR.preto, COR.papel, "center");
       const r = caber(ctx, v.titulo.toUpperCase(), 940, 420, 220, 100, 0.9, FONTE.titulo);
       r.linhas.forEach((l, i) => {
-        const y = 590 + r.tam * 0.82 + i * r.tam * 0.9;
-        ctx.save(); ctx.translate(7, 7); linhaDestacada(ctx, l.replace(/\*/g, ""), CX, y, COR.preto, COR.preto, "center"); ctx.restore();
+        const y = 590 + r.tam * 0.82 + yl(r, i, 0.9);
+        if (AJUSTE.sombra) { ctx.save(); ctx.translate(7, 7); linhaDestacada(ctx, l.replace(/\*/g, ""), CX, y, COR.preto, COR.preto, "center"); ctx.restore(); }
         linhaDestacada(ctx, l, CX, y, COR.papel, COR.amarelo, "center");
       });
       const y = 1120;
@@ -507,7 +563,7 @@ const MODELOS = {
       fonte(ctx, 36); ctx.fillStyle = COR.papel; ctx.fillText(v.semana.toUpperCase(), 270, y + 280);
       ctx.textAlign = "left"; fonte(ctx, 120); ctx.fillStyle = COR.vermelho; ctx.fillText(v.hora, 460, y + 130);
       fonte(ctx, 40, FONTE.texto, "700"); ctx.fillStyle = COR.preto;
-      quebrar(ctx, v.local, 470).slice(0, 3).forEach((l, i) => ctx.fillText(l, 460, y + 195 + i * 48));
+      quebrar(ctx, v.local, 470).slice(0, 3).forEach((l, i) => ctx.fillText(l, 460, y + 195 + i * 48 * AJUSTE.linhaTexto));
       if (v.chamada.trim()) { fonte(ctx, 58, fsub(FONTE.titulo)); ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1560, 960); }
       fonte(ctx, 44); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText("★  " + ARROBA.toUpperCase() + "  ★", CX, 1640);
       grao(ctx, W, H, 0.08); vinheta(ctx, W, H, 0.3);
@@ -540,13 +596,13 @@ const MODELOS = {
         y += ih + 70;
       } else y = 860;
       const r = caber(ctx, v.titulo.toUpperCase(), 900, v.imagem ? 220 : 330, 120, 64, 0.95, FONTE.titulo);
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.82 + i * r.tam * 0.95, COR.vermelho, COR.preto));
-      y += r.tam * 0.82 + (r.linhas.length - 1) * r.tam * 0.95 + 40;
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.82 + yl(r, i, 0.95), COR.vermelho, COR.preto));
+      y += r.tam * 0.82 + yl(r, r.linhas.length - 1, 0.95) + 40;
       if (v.autor.trim()) { fonte(ctx, 40); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.autor.toUpperCase(), 90, y + 10); y += 50; }
       ctx.fillStyle = COR.vermelho; ctx.fillRect(90, y + 10, 90, 8); y += 70;
       const rb = caber(ctx, v.texto, 900, Math.max(130, 1590 - y), 42, 28, 1.4, FONTE.texto);
-      rb.linhas = rb.linhas.slice(0, Math.max(2, Math.floor((1600 - y) / (rb.tam * 1.4))));
-      rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + i * rb.tam * 1.4, COR.preto, COR.vermelho));
+      const pars = rb.linhas.pars; rb.linhas = rb.linhas.slice(0, Math.max(2, Math.floor((1600 - y) / (rb.tam * 1.4 * AJUSTE.linhaTexto)))); rb.linhas.pars = pars;
+      rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + yl(rb, i, 1.4), COR.preto, COR.vermelho));
       ctx.fillStyle = COR.preto; ctx.fillRect(0, 1600, W, 120);
       fonte(ctx, 66, fsub(FONTE.titulo)); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1683);
       grao(ctx, W, H, 0.05);
@@ -571,11 +627,11 @@ const MODELOS = {
       etiqueta(ctx, v.kicker.toUpperCase(), W / 2, 290, 50, ver ? COR.preto : COR.vermelho, COR.papel, "center");
       let t = 480; fonte(ctx, t); while (ctx.measureText(v.numero).width > 920 && t > 160) { t -= 10; fonte(ctx, t); }
       ctx.textAlign = "center";
-      ctx.fillStyle = COR.preto; ctx.fillText(v.numero, W / 2 + 12, 400 + t * 0.78 + 12);
+      if (AJUSTE.sombra) { ctx.fillStyle = COR.preto; ctx.fillText(v.numero, W / 2 + 12, 400 + t * 0.78 + 12); }
       ctx.fillStyle = COR.amarelo; ctx.fillText(v.numero, W / 2, 400 + t * 0.78);
       const y0 = 400 + t * 0.78 + 90;
       const r = caber(ctx, v.texto, 880, H - 200 - y0, 56, 34, 1.3, FONTE.texto, "700");
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, y0 + i * r.tam * 1.3, COR.papel, COR.amarelo, "center"));
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, y0 + yl(r, i, 1.3), COR.papel, COR.amarelo, "center"));
       fonte(ctx, 26, FONTE.texto); ctx.fillStyle = COR.papel; ctx.globalAlpha = 0.75; ctx.textAlign = "center"; ctx.fillText(v.fonte, W / 2, H - 120); ctx.globalAlpha = 1;
       fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.fillText(ARROBA.toUpperCase(), W / 2, H - 60);
       grao(ctx, W, H);
@@ -606,9 +662,9 @@ const MODELOS = {
       fonte(ctx, 34); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.data, 90 + ws + 22, FY + 84);
       const r = caber(ctx, v.manchete.toUpperCase(), 900, 300, 112, 60, 0.95, FONTE.titulo);
       let y = FY + 120;
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.85 + i * r.tam * 0.95, COR.preto, COR.vermelho));
-      y += r.tam * 0.85 + (r.linhas.length - 1) * r.tam * 0.95 + 50;
-      if (v.resumo.trim()) { const rb = caber(ctx, v.resumo, 900, H - 140 - y, 38, 28, 1.35, FONTE.texto); rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.fillText(l, 90, y + i * rb.tam * 1.35); }); }
+      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.85 + yl(r, i, 0.95), COR.preto, COR.vermelho));
+      y += r.tam * 0.85 + yl(r, r.linhas.length - 1, 0.95) + 50;
+      if (v.resumo.trim()) { const rb = caber(ctx, v.resumo, 900, H - 140 - y, 38, 28, 1.35, FONTE.texto); rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.fillText(l, 90, y + yl(rb, i, 1.35)); }); }
       ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 90, W, 90);
       fonte(ctx, 24, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, 90, H - 36);
       fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - 90, H - 32);
@@ -655,17 +711,17 @@ const MODELOS = {
       const temBaixo = !!v.baixo.trim();
       fonte(ctx, 70, FONTE.texto, "700");
       const rc = caber(ctx, v.cima, 940, 300, 76, 40, 1.15, FONTE.texto, "700");
-      const topo = 60 + rc.linhas.length * rc.tam * 1.15 + 40;
+      const topo = 60 + yl(rc, rc.linhas.length, 1.15) + 40;
       ctx.fillStyle = COR.branco; ctx.fillRect(0, 0, W, topo);
       ctx.fillStyle = COR.preto; ctx.textAlign = "left";
-      rc.linhas.forEach((l, i) => linhaDestacada(ctx, l, 70, 60 + rc.tam * 0.9 + i * rc.tam * 1.15, COR.preto, COR.vermelho));
+      rc.linhas.forEach((l, i) => linhaDestacada(ctx, l, 70, 60 + rc.tam * 0.9 + yl(rc, i, 1.15), COR.preto, COR.vermelho));
       const base = temBaixo ? H - 230 : H - 110;
       if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, topo, W, base - topo);
       else { ctx.fillStyle = "#3a322d"; ctx.fillRect(0, topo, W, base - topo); fonte(ctx, 50); ctx.fillStyle = "#8a7f74"; ctx.textAlign = "center"; ctx.fillText("ESCOLHA UMA IMAGEM", W / 2, (topo + base) / 2); }
       if (temBaixo) {
         ctx.fillStyle = COR.vermelho; ctx.fillRect(0, base, W, H - base);
         const rb = caber(ctx, v.baixo.toUpperCase(), 940, 110, 90, 44, 0.95, FONTE.titulo);
-        rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, base + 30 + rb.tam * 0.85 + i * rb.tam * 0.95, COR.branco, COR.amarelo, "center"));
+        rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, base + 30 + rb.tam * 0.85 + yl(rb, i, 0.95), COR.branco, COR.amarelo, "center"));
       }
       ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 70, W, 70);
       logo(ctx, 70, H - 35, 46, null, false);
@@ -696,6 +752,7 @@ async function desenharModelo(id, valores, opcoes = {}) {
   if (opcoes.titulo && opcoes.titulo !== "padrao") FONTE.titulo = opcoes.titulo;
   if (opcoes.texto && opcoes.texto !== "padrao") { FONTE.texto = opcoes.texto; FONTE.citacao = opcoes.texto; }
   if (opcoes.sub && opcoes.sub !== "padrao") FONTE.sub = opcoes.sub;
+  Object.assign(AJUSTE, AJUSTE_PADRAO, opcoes.ajustes || {}, { pendente: null });
   try {
     const ctx = c.getContext("2d");
     ctx.fillText = function (t, x, y, max) {
@@ -704,9 +761,11 @@ async function desenharModelo(id, valores, opcoes = {}) {
       return FILLTEXT_NATIVO.call(ctx, t, x, y, max);
     };
     m.desenhar(ctx, v);
+    desenharLogoMovida(ctx, c.width, c.height);
     desenharCamadas(ctx, c.width, c.height, opcoes.camadas);
   } finally {
     Object.assign(FONTE, salvo);
+    Object.assign(AJUSTE, AJUSTE_PADRAO, { pendente: null });
   }
   return c;
 }
