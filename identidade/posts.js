@@ -162,14 +162,16 @@ function logo(ctx, cx, cy, d, anel = null, sombra = false) {
 }
 // ---------- blocos em 3D, como os da logo (COLETIVO no bloco amarelo, LUFÃ no bloco branco) ----------
 // a face da frente na cor do bloco; a espessura (embaixo e à direita) num tom mais escuro da mesma cor
-const SOMBRA_BLOCO = { "#eab426": "#b98a14", "#cc2220": "#8c1512", "#9e1715": "#6e0f0d", "#fbf6ec": "#e1d2b8", "#ffffff": "#e3d6c0", "#1e1916": "#6e0f0d" };   // bloco preto: espessura vermelho-escura (preto sobre preto não aparece)
+const SOMBRA_BLOCO = { "#eab426": "#c4930c", "#cc2220": "#8c1512", "#9e1715": "#6e0f0d", "#fbf6ec": "#e1d2b8", "#ffffff": "#e3d6c0", "#1e1916": "#6e0f0d" };   // bloco preto: espessura vermelho-escura (preto sobre preto não aparece)
 function tomEscuro(cor) {
   if (SOMBRA_BLOCO[cor.toLowerCase()]) return SOMBRA_BLOCO[cor.toLowerCase()];
   const n = parseInt(cor.slice(1), 16); if (isNaN(n)) return "rgba(0,0,0,.5)";
   return `rgb(${(n >> 16) * 0.65 | 0},${(n >> 8 & 255) * 0.65 | 0},${(n & 255) * 0.65 | 0})`;
 }
-function cubo(ctx, x, y, w, h, cor, prof = Math.max(10, h * 0.16)) {
-  const dx = prof * 0.55, dy = prof;
+// inclinação dos blocos da logo: sobem para a direita com as laterais em pé (cisalhamento, não rotação)
+const INCLINA = -0.075;
+function cubo(ctx, x, y, w, h, cor, prof = Math.max(12, h * 0.15)) {
+  const dx = prof, dy = prof;   // espessura a 45°, com o canto chanfrado, como na logo
   ctx.fillStyle = tomEscuro(cor);
   ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w + dx, y + h + dy); ctx.lineTo(x + dx, y + h + dy); ctx.closePath(); ctx.fill();   // espessura de baixo
   ctx.beginPath(); ctx.moveTo(x + w, y); ctx.lineTo(x + w + dx, y + dy); ctx.lineTo(x + w + dx, y + h + dy); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill();   // espessura da direita
@@ -178,11 +180,11 @@ function cubo(ctx, x, y, w, h, cor, prof = Math.max(10, h * 0.16)) {
 function etiqueta(ctx, texto, x, y, tam, fundo, corTexto, alinhar = "left") {
   fonte(ctx, tam, fsub(FONTE.titulo)); const w = ctx.measureText(texto).width + tam * 0.7, h = tam * 1.18;
   const x0 = alinhar === "center" ? x - w / 2 : x;
-  ctx.save(); ctx.translate(x0 + w / 2, y - h * 0.3); ctx.rotate(-0.025);   // levemente inclinado, como os blocos da logo
+  ctx.save(); ctx.translate(x0 + w / 2, y - h * 0.3); ctx.transform(1, INCLINA, 0, 1, 0, 0);   // sobe para a direita com as laterais em pé, como os blocos da logo
   cubo(ctx, -w / 2, -h / 2, w, h, fundo);
   ctx.fillStyle = corTexto; ctx.textAlign = "left"; ctx.fillText(texto, -w / 2 + tam * 0.35, -h / 2 + h * 0.8 + tam * 0.06);
   ctx.restore();
-  return w + Math.max(10, h * 0.16) * 0.55;
+  return w + Math.max(12, h * 0.15);
 }
 function faixa(ctx, y, altura, angulo, cor, texto, corTexto, W) {
   ctx.save(); ctx.translate(W / 2, y); ctx.rotate((angulo * Math.PI) / 180);
@@ -405,7 +407,7 @@ const MODELOS = {
       raios(ctx, CX, 1250, 22, "rgba(138,20,17,.5)", -0.25);
       logo(ctx, CX, 400, 200);
       fonte(ctx, 64, fsub(FONTE.titulo)); const kw = Math.min(900, ctx.measureText(v.kicker.toUpperCase()).width + 60);
-      ctx.save(); ctx.translate(CX, 606); ctx.rotate(-0.025); cubo(ctx, -kw / 2, -46, kw, 92, COR.preto);
+      ctx.save(); ctx.translate(CX, 606); ctx.transform(1, INCLINA, 0, 1, 0, 0); cubo(ctx, -kw / 2, -46, kw, 92, COR.preto);
       ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.kicker.toUpperCase(), 0, 24, 860); ctx.restore();
       const r = caber(ctx, v.titulo.toUpperCase(), 940, 300, 260, 110, 0.9, FONTE.titulo);
       r.linhas.forEach((l, i) => {
