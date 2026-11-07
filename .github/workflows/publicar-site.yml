@@ -1,0 +1,56 @@
+# Publica o site no GitHub Pages a cada mudança na branch main.
+# Substitui a publicação automática padrão do GitHub, que desiste depois de
+# 10 minutos: aqui a espera é de até 30 minutos e, se falhar, tenta de novo.
+# Para funcionar: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+name: Publicar o site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# uma publicação por vez; a mais nova espera a anterior terminar
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.tentativa2.outputs.page_url || steps.tentativa1.outputs.page_url }}
+    steps:
+      - name: Baixar o site
+        uses: actions/checkout@v4
+
+      - name: Preparar o GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar o site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Publicar (1ª tentativa)
+        id: tentativa1
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
+
+      - name: Esperar um pouco antes de tentar de novo
+        if: steps.tentativa1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Publicar (2ª tentativa)
+        id: tentativa2
+        if: steps.tentativa1.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
