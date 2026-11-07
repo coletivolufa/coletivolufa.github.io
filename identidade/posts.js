@@ -11,8 +11,13 @@ const FONTES_TITULO = ["Bebas Neue", "Big Shoulders Display", "Russo One", "Oswa
 const FONTES_TEXTO = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
 const ARROBA = "@coletivolufa";
 
-const LOGO = new Image();
-LOGO.src = new URL("../assets/img/logo.png", document.currentScript.src).href;
+// logo novo (2026): versões em PNG sem fundo
+const _base = document.currentScript.src;
+const carregarImg = (arq) => { const i = new Image(); i.src = new URL("../assets/img/" + arq, _base).href; return i; };
+const LOGO = carregarImg("logo-lufa-empilhado.png");          // pomba + COLETIVO LUFÃ empilhado
+const LOGO_LINHA = carregarImg("logo-lufa-linha.png");        // linha, bloco vermelho (fundos claros)
+const LOGO_LINHA_AM = carregarImg("logo-lufa-linha-amarela.png"); // linha, bloco amarelo (fundos vermelhos/escuros)
+const LOGO_POMBA = carregarImg("logo-lufa-pomba.png");        // só a pomba (ícone pequeno)
 
 async function prepararFontes() {
   const familias = [...FONTES_TITULO, ...FONTES_TEXTO, FONTE.titulo, FONTE.texto, FONTE.citacao];
@@ -21,7 +26,7 @@ async function prepararFontes() {
     cargas.push(document.fonts.load(`400 100px "${f}"`), document.fonts.load(`700 40px "${f}"`),
       document.fonts.load(`italic 400 60px "${f}"`));
   });
-  await Promise.all([...cargas.map((p) => p.catch(() => {})), LOGO.decode().catch(() => {})]);
+  await Promise.all([...cargas.map((p) => p.catch(() => {})), ...[LOGO, LOGO_LINHA, LOGO_LINHA_AM, LOGO_POMBA].map((i) => i.decode().catch(() => {}))]);
 }
 
 // ---------- utilidades de desenho ----------
@@ -144,10 +149,14 @@ function estrela(ctx, cx, cy, r, cor) {
   }
   ctx.closePath(); ctx.fill(); ctx.restore();
 }
-function logo(ctx, cx, cy, d, anel = COR.amarelo, sombra = true) {
-  if (sombra) { ctx.fillStyle = "rgba(30,25,22,.85)"; ctx.beginPath(); ctx.arc(cx + d * 0.04, cy + d * 0.05, d / 2 + d * 0.04, 0, 7); ctx.fill(); }
-  if (anel) { ctx.fillStyle = anel; ctx.beginPath(); ctx.arc(cx, cy, d / 2 + d * 0.04, 0, 7); ctx.fill(); }
-  if (LOGO.complete && LOGO.naturalWidth) ctx.drawImage(LOGO, cx - d / 2, cy - d / 2, d, d);
+const pronta = (img) => img.complete && img.naturalWidth;
+// logo centralizado em (cx, cy). d = tamanho de referência (a altura do logo fica perto de d).
+// Pequeno (d < 90): só a pomba. "anel" e "sombra" ficaram só por compatibilidade.
+function logo(ctx, cx, cy, d, anel = null, sombra = false) {
+  const img = d < 90 ? LOGO_POMBA : LOGO;
+  if (!pronta(img)) return;
+  const h = d < 90 ? d * 0.8 : d * 1.25, w = h * (img.naturalWidth / img.naturalHeight);
+  ctx.drawImage(img, cx - w / 2, cy - h / 2, w, h);
 }
 function etiqueta(ctx, texto, x, y, tam, fundo, corTexto, alinhar = "left") {
   fonte(ctx, tam); const w = ctx.measureText(texto).width + tam * 0.7, h = tam * 1.18;
@@ -185,10 +194,13 @@ function vinheta(ctx, W, H, forca = 0.35) {
   g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, `rgba(0,0,0,${forca})`);
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 }
+// assinatura no topo das peças: logo em linha (pomba + COLETIVO LUFÃ).
+// Sobre fundo claro (cor vermelha) usa o bloco vermelho; sobre vermelho/escuro, o bloco amarelo.
 function assinatura(ctx, x, y, cor, tam = 40) {
-  logo(ctx, x + tam * 0.75, y - tam * 0.35, tam * 1.5, null, false);
-  fonte(ctx, tam); ctx.fillStyle = cor; ctx.textAlign = "left";
-  ctx.fillText("COLETIVO LUFÃ", x + tam * 1.8, y);
+  const img = cor === COR.vermelho ? LOGO_LINHA : LOGO_LINHA_AM;
+  if (!pronta(img)) return;
+  const h = tam * 2.3, w = h * (img.naturalWidth / img.naturalHeight);
+  ctx.drawImage(img, x - tam * 0.2, y - tam * 0.35 - h / 2, w, h);
 }
 function imagemCobrindo(ctx, img, x, y, w, h, ancora = "centro") {
   // aceita foto (img) ou vídeo (video): cada um tem o seu tamanho natural
