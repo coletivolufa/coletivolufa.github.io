@@ -5,9 +5,11 @@ const COR = {
   vermelho: "#cc2220", vermelhoEsc: "#9e1715", amarelo: "#eab426",
   papel: "#fbf6ec", branco: "#ffffff", preto: "#1e1916", cinza: "#6b625c",
 };
-const FONTE = { titulo: "Bebas Neue", texto: "Archivo", citacao: "Literata" };
+const FONTE = { titulo: "Bebas Neue", texto: "Archivo", citacao: "Literata", sub: null };   // sub: fonte escolhida para subtítulos e etiquetas (null = a de cada modelo)
 // fontes que o gerador oferece (do guia de identidade do site)
-const FONTES_TITULO = ["Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald"];
+const FONTES_TITULO = ["Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald", "Metadannye"];
+const FONTES_SUB = ["ST Nizhegorodsky", "Bebas Neue", "Oswald", "Archivo"];
+const fsub = (orig) => FONTE.sub || orig;   // subtítulos, etiquetas, chamadas: a fonte escolhida ou a original do modelo
 const FONTES_TEXTO = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
 const ARROBA = "@coletivolufa";
 
@@ -20,7 +22,7 @@ const LOGO_LINHA_AM = carregarImg("logo-lufa-linha-amarela.png"); // linha, bloc
 const LOGO_POMBA = carregarImg("logo-lufa-pomba.png");        // só a pomba (ícone pequeno)
 
 async function prepararFontes() {
-  const familias = [...FONTES_TITULO, ...FONTES_TEXTO, FONTE.titulo, FONTE.texto, FONTE.citacao];
+  const familias = [...FONTES_TITULO, ...FONTES_SUB, ...FONTES_TEXTO, FONTE.titulo, FONTE.texto, FONTE.citacao];
   const cargas = [];
   familias.forEach((f) => {
     cargas.push(document.fonts.load(`400 100px "${f}"`), document.fonts.load(`700 40px "${f}"`),
@@ -158,19 +160,36 @@ function logo(ctx, cx, cy, d, anel = null, sombra = false) {
   const h = d < 90 ? d * 0.8 : d * 1.25, w = h * (img.naturalWidth / img.naturalHeight);
   ctx.drawImage(img, cx - w / 2, cy - h / 2, w, h);
 }
+// ---------- blocos em 3D, como os da logo (COLETIVO no bloco amarelo, LUFÃ no bloco branco) ----------
+// a face da frente na cor do bloco; a espessura (embaixo e à direita) num tom mais escuro da mesma cor
+const SOMBRA_BLOCO = { "#eab426": "#b98a14", "#cc2220": "#8c1512", "#9e1715": "#6e0f0d", "#fbf6ec": "#e1d2b8", "#ffffff": "#e3d6c0", "#1e1916": "#6e0f0d" };   // bloco preto: espessura vermelho-escura (preto sobre preto não aparece)
+function tomEscuro(cor) {
+  if (SOMBRA_BLOCO[cor.toLowerCase()]) return SOMBRA_BLOCO[cor.toLowerCase()];
+  const n = parseInt(cor.slice(1), 16); if (isNaN(n)) return "rgba(0,0,0,.5)";
+  return `rgb(${(n >> 16) * 0.65 | 0},${(n >> 8 & 255) * 0.65 | 0},${(n & 255) * 0.65 | 0})`;
+}
+function cubo(ctx, x, y, w, h, cor, prof = Math.max(10, h * 0.16)) {
+  const dx = prof * 0.55, dy = prof;
+  ctx.fillStyle = tomEscuro(cor);
+  ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w + dx, y + h + dy); ctx.lineTo(x + dx, y + h + dy); ctx.closePath(); ctx.fill();   // espessura de baixo
+  ctx.beginPath(); ctx.moveTo(x + w, y); ctx.lineTo(x + w + dx, y + dy); ctx.lineTo(x + w + dx, y + h + dy); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill();   // espessura da direita
+  ctx.fillStyle = cor; ctx.fillRect(x, y, w, h);
+}
 function etiqueta(ctx, texto, x, y, tam, fundo, corTexto, alinhar = "left") {
-  fonte(ctx, tam); const w = ctx.measureText(texto).width + tam * 0.7, h = tam * 1.18;
+  fonte(ctx, tam, fsub(FONTE.titulo)); const w = ctx.measureText(texto).width + tam * 0.7, h = tam * 1.18;
   const x0 = alinhar === "center" ? x - w / 2 : x;
-  ctx.fillStyle = fundo; ctx.fillRect(x0, y - h * 0.8, w, h);
-  ctx.fillStyle = corTexto; ctx.textAlign = "left"; ctx.fillText(texto, x0 + tam * 0.35, y + tam * 0.06);
-  return w;
+  ctx.save(); ctx.translate(x0 + w / 2, y - h * 0.3); ctx.rotate(-0.025);   // levemente inclinado, como os blocos da logo
+  cubo(ctx, -w / 2, -h / 2, w, h, fundo);
+  ctx.fillStyle = corTexto; ctx.textAlign = "left"; ctx.fillText(texto, -w / 2 + tam * 0.35, -h / 2 + h * 0.8 + tam * 0.06);
+  ctx.restore();
+  return w + Math.max(10, h * 0.16) * 0.55;
 }
 function faixa(ctx, y, altura, angulo, cor, texto, corTexto, W) {
   ctx.save(); ctx.translate(W / 2, y); ctx.rotate((angulo * Math.PI) / 180);
-  ctx.fillStyle = "rgba(30,25,22,.9)"; ctx.fillRect(-W, altura / 2, W * 2, 10);
+  ctx.fillStyle = tomEscuro(cor); ctx.fillRect(-W, altura / 2, W * 2, Math.max(12, altura * 0.18));   // espessura da faixa (bloco 3D)
   ctx.fillStyle = cor; ctx.fillRect(-W, -altura / 2, W * 2, altura);
   if (texto) {
-    fonte(ctx, altura * 0.62); ctx.fillStyle = corTexto; ctx.textAlign = "center";
+    fonte(ctx, altura * 0.62, fsub(FONTE.titulo)); ctx.fillStyle = corTexto; ctx.textAlign = "center";
     const unidade = `${texto}   ★   `; let linha = "";
     while (ctx.measureText(linha).width < W * 2.2) linha += unidade;
     ctx.fillText(linha, 0, altura * 0.22);
@@ -305,7 +324,7 @@ const MODELOS = {
       r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 420 + r.tam * 0.8 + i * r.tam * 0.92, COR.branco, COR.amarelo));
       const yFim = 420 + r.tam * 0.8 + (r.linhas.length - 1) * r.tam * 0.92;
       if (v.sub.trim()) {
-        fonte(ctx, 40, FONTE.texto); ctx.fillStyle = COR.papel;
+        fonte(ctx, 40, fsub(FONTE.texto)); ctx.fillStyle = COR.papel;
         quebrar(ctx, v.sub, 860).slice(0, 3).forEach((l, i) => ctx.fillText(l, 90, yFim + 90 + i * 54));
       }
       ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 150, W, 150);
@@ -385,9 +404,9 @@ const MODELOS = {
       ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, H);
       raios(ctx, CX, 1250, 22, "rgba(138,20,17,.5)", -0.25);
       logo(ctx, CX, 400, 200);
-      fonte(ctx, 64); const kw = Math.min(900, ctx.measureText(v.kicker.toUpperCase()).width + 60);
-      ctx.fillStyle = COR.preto; ctx.fillRect(CX - kw / 2, 560, kw, 92);
-      ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.kicker.toUpperCase(), CX, 630, 860);
+      fonte(ctx, 64, fsub(FONTE.titulo)); const kw = Math.min(900, ctx.measureText(v.kicker.toUpperCase()).width + 60);
+      ctx.save(); ctx.translate(CX, 606); ctx.rotate(-0.025); cubo(ctx, -kw / 2, -46, kw, 92, COR.preto);
+      ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.kicker.toUpperCase(), 0, 24, 860); ctx.restore();
       const r = caber(ctx, v.titulo.toUpperCase(), 940, 300, 260, 110, 0.9, FONTE.titulo);
       r.linhas.forEach((l, i) => {
         const y = 700 + r.tam * 0.82 + i * r.tam * 0.9;
@@ -396,7 +415,7 @@ const MODELOS = {
       });
       let y = 700 + r.tam * 0.82 + (r.linhas.length - 1) * r.tam * 0.9 + 80;
       if (v.com.trim()) {
-        fonte(ctx, 46); ctx.letterSpacing = "5px"; const w = ctx.measureText(v.com.toUpperCase()).width;
+        fonte(ctx, 46, fsub(FONTE.titulo)); ctx.letterSpacing = "5px"; const w = ctx.measureText(v.com.toUpperCase()).width;
         ctx.fillStyle = COR.amarelo; ctx.fillRect(CX - w / 2 - 80, y - 18, 56, 6);
         ctx.fillStyle = COR.papel; ctx.textAlign = "left"; ctx.fillText(v.com.toUpperCase(), CX - w / 2, y); ctx.letterSpacing = "0px";
         y += 80;
@@ -438,8 +457,7 @@ const MODELOS = {
       r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, 370 + r.tam * 0.82 + i * r.tam * 0.92, COR.branco, COR.amarelo));
       // bloco de data, como um carimbo de calendário
       const y = 820;
-      ctx.fillStyle = "rgba(30,25,22,.9)"; ctx.fillRect(102, y + 12, 300, 330);
-      ctx.fillStyle = COR.papel; ctx.fillRect(90, y, 300, 330);
+      cubo(ctx, 90, y, 300, 330, COR.papel, 26);
       ctx.fillStyle = COR.preto; ctx.fillRect(90, y, 300, 70);
       fonte(ctx, 50); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.mes.toUpperCase(), 240, y + 54);
       fonte(ctx, 210); ctx.fillStyle = COR.vermelho; ctx.fillText(v.dia, 240, y + 280);
@@ -480,8 +498,7 @@ const MODELOS = {
         linhaDestacada(ctx, l, CX, y, COR.papel, COR.amarelo, "center");
       });
       const y = 1120;
-      ctx.fillStyle = "rgba(30,25,22,.9)"; ctx.fillRect(132, y + 14, 840, 300);
-      ctx.fillStyle = COR.papel; ctx.fillRect(120, y, 840, 300);
+      cubo(ctx, 120, y, 840, 300, COR.papel, 26);
       ctx.fillStyle = COR.vermelho; ctx.fillRect(120, y, 300, 300);
       fonte(ctx, 46); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.mes.toUpperCase(), 270, y + 62);
       fonte(ctx, 190); ctx.fillStyle = COR.branco; ctx.fillText(v.dia, 270, y + 236);
@@ -489,7 +506,7 @@ const MODELOS = {
       ctx.textAlign = "left"; fonte(ctx, 120); ctx.fillStyle = COR.vermelho; ctx.fillText(v.hora, 460, y + 130);
       fonte(ctx, 40, FONTE.texto, "700"); ctx.fillStyle = COR.preto;
       quebrar(ctx, v.local, 470).slice(0, 3).forEach((l, i) => ctx.fillText(l, 460, y + 195 + i * 48));
-      if (v.chamada.trim()) { fonte(ctx, 58); ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1560, 960); }
+      if (v.chamada.trim()) { fonte(ctx, 58, fsub(FONTE.titulo)); ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1560, 960); }
       fonte(ctx, 44); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText("★  " + ARROBA.toUpperCase() + "  ★", CX, 1640);
       grao(ctx, W, H, 0.08); vinheta(ctx, W, H, 0.3);
     },
@@ -529,7 +546,7 @@ const MODELOS = {
       rb.linhas = rb.linhas.slice(0, Math.max(2, Math.floor((1600 - y) / (rb.tam * 1.4))));
       rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + i * rb.tam * 1.4, COR.preto, COR.vermelho));
       ctx.fillStyle = COR.preto; ctx.fillRect(0, 1600, W, 120);
-      fonte(ctx, 66); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1683);
+      fonte(ctx, 66, fsub(FONTE.titulo)); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center"; ctx.fillText(v.chamada.toUpperCase(), CX, 1683);
       grao(ctx, W, H, 0.05);
     },
   },
@@ -676,6 +693,7 @@ async function desenharModelo(id, valores, opcoes = {}) {
   const salvo = { ...FONTE };
   if (opcoes.titulo && opcoes.titulo !== "padrao") FONTE.titulo = opcoes.titulo;
   if (opcoes.texto && opcoes.texto !== "padrao") { FONTE.texto = opcoes.texto; FONTE.citacao = opcoes.texto; }
+  if (opcoes.sub && opcoes.sub !== "padrao") FONTE.sub = opcoes.sub;
   try {
     const ctx = c.getContext("2d");
     ctx.fillText = function (t, x, y, max) {

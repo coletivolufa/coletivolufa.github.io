@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Big+Shoulders+Display:wght@400;700;900&family=Literata:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;700&family=Russo+One&family=Special+Elite&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/style.css?v=9">
   <style>
+    /* fontes próprias (gratuitas, inclusive para uso comercial): títulos e subtítulos */
+    @font-face { font-family: "Metadannye"; src: url("../assets/fonts/metadannye.ttf") format("truetype"); font-display: swap; }
+    @font-face { font-family: "ST Nizhegorodsky"; src: url("../assets/fonts/st-nizhegorodsky.otf") format("opentype"); font-display: swap; }
     body { margin: 0; }
     .ger-topo { background: var(--vermelho); color: var(--branco); padding: 22px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; border-bottom: 6px solid var(--amarelo); }
     .ger-topo h1 { font-size: clamp(34px, 5vw, 52px); }
@@ -86,6 +89,7 @@
       <div class="bloco-ferr">
         <h3>Fontes</h3>
         <div class="campo"><label for="fonte-titulo">Títulos</label><select id="fonte-titulo"></select></div>
+        <div class="campo"><label for="fonte-sub">Subtítulos e etiquetas</label><select id="fonte-sub"></select></div>
         <div class="campo"><label for="fonte-texto">Texto</label><select id="fonte-texto"></select></div>
         <small>"Padrão" usa a fonte que cada modelo já tem.</small>
       </div>
@@ -158,21 +162,24 @@
       }).join("");
     }
 
-    const FONTES_TITULO_OPC = ["Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald"];
+    const FONTES_TITULO_OPC = ["Metadannye", "Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald"];
+    const FONTES_SUB_OPC = ["ST Nizhegorodsky", "Bebas Neue", "Oswald", "Archivo"];
     const FONTES_TEXTO_OPC = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
     function preencherFontes() {
       const op = (lista) => `<option value="padrao">Padrão do modelo</option>` + lista.map((f) => `<option value="${f}">${f}</option>`).join("");
       $("fonte-titulo").innerHTML = op(FONTES_TITULO_OPC);
+      $("fonte-sub").innerHTML = op(FONTES_SUB_OPC);
       $("fonte-texto").innerHTML = op(FONTES_TEXTO_OPC);
     }
     function opcoesDo(item) {
-      if (!item.opcoes) item.opcoes = { titulo: "padrao", texto: "padrao" };
+      if (!item.opcoes) item.opcoes = { titulo: "padrao", sub: "padrao", texto: "padrao" };
+      if (!item.opcoes.sub) item.opcoes.sub = "padrao";
       if (!item.camadas) item.camadas = [];
       return item.opcoes;
     }
     function renderItem(item) {
       const o = opcoesDo(item);
-      return desenharModelo(item.modelo, item.valores, { titulo: o.titulo, texto: o.texto, camadas: item.camadas });
+      return desenharModelo(item.modelo, item.valores, { titulo: o.titulo, sub: o.sub, texto: o.texto, camadas: item.camadas });
     }
     function mostrarCamadas() {
       const item = atual(); opcoesDo(item);
@@ -185,6 +192,7 @@
           <label>Posição vertical: <span>${l.y}</span>%<input type="range" min="0" max="100" value="${l.y}" data-prop="y"></label>
         </div>`).join("") : '<p class="dica">Nenhuma imagem adicionada a este post.</p>';
       $("fonte-titulo").value = o_titulo(item);
+      $("fonte-sub").value = opcoesDo(item).sub;
       $("fonte-texto").value = o_texto(item);
     }
     const o_titulo = (item) => opcoesDo(item).titulo;
@@ -277,6 +285,7 @@
     $("modo").addEventListener("change", (e) => trocarModo(e.target.value));
     preencherFontes();
     $("fonte-titulo").addEventListener("change", (e) => { opcoesDo(atual()).titulo = e.target.value; redesenhar(); });
+    $("fonte-sub").addEventListener("change", (e) => { opcoesDo(atual()).sub = e.target.value; redesenhar(); });
     $("fonte-texto").addEventListener("change", (e) => { opcoesDo(atual()).texto = e.target.value; redesenhar(); });
     $("add-imagem").addEventListener("change", (e) => {
       const item = atual(); opcoesDo(item);
