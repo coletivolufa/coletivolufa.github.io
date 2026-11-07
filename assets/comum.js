@@ -24,14 +24,13 @@ function montarMenu() {
   const atual = (nome) => (pagina === nome ? ' aria-current="page"' : "");
   const menu = `
     <header class="topo">
-      <a href="index.html"><img src="assets/img/logo.png" alt="">Coletivo Lufã</a>
+      <a href="index.html"><img src="assets/img/logo-lufa-pomba.png" alt="">Coletivo Lufã</a>
       <button type="button" aria-label="Abrir menu" aria-expanded="false" data-abrir-menu>${ICONES.menu}</button>
     </header>
     <div class="fundo-menu" data-fechar-menu></div>
     <aside class="menu" aria-label="Menu principal">
       <a class="menu__marca" href="index.html">
-        <img src="assets/img/logo.png" alt="Logo do Coletivo Lufã: pomba branca sobre fundo vermelho">
-        <span>Coletivo Lufã</span>
+        <img src="assets/img/logo-lufa-empilhado.png" alt="Coletivo Lufã">
       </a>
       <nav>
         <a href="index.html"${atual("inicio")}>${ICONES.inicio}Início</a>

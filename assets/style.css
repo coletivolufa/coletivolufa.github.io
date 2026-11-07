@@ -41,7 +41,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 400; letter-spacing: .02em
   box-shadow: 6px 0 0 var(--amarelo);
 }
 .menu__marca { display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none; color: inherit; margin-bottom: 34px; }
-.menu__marca img { width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--amarelo); }
+.menu__marca img { width: 200px; height: auto; }
 .menu__marca span { font-family: var(--titulo); font-size: 30px; letter-spacing: .06em; }
 .menu nav { display: flex; flex-direction: column; gap: 6px; }
 .menu nav a, .menu nav .em-breve {
@@ -90,7 +90,7 @@ main { margin-left: var(--menu); min-height: 100vh; }
 .capa h1 { font-size: clamp(72px, 11vw, 150px); line-height: .86; }
 .capa h1 em { font-style: normal; color: var(--amarelo); display: block; }
 .capa p { font-size: 19px; max-width: 520px; margin: 24px 0 32px; }
-.capa__logo { width: 100%; max-width: 420px; justify-self: center; border-radius: 50%; border: 8px solid var(--amarelo); box-shadow: 14px 14px 0 rgba(0,0,0,.18); }
+.capa__logo { width: 100%; max-width: 440px; justify-self: center; height: auto; }
 .botao {
   display: inline-flex; align-items: center; gap: 10px;
   background: var(--amarelo); color: var(--preto);
@@ -236,7 +236,7 @@ main { margin-left: var(--menu); min-height: 100vh; }
     padding: 10px 16px; border-bottom: 5px solid var(--amarelo);
   }
   .topo a { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-family: var(--titulo); font-size: 26px; letter-spacing: .05em; }
-  .topo img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--amarelo); }
+  .topo img { width: auto; height: 34px; }
   .topo button { background: none; border: 0; color: inherit; padding: 6px; cursor: pointer; }
   .topo svg { width: 32px; height: 32px; }
   main { margin-left: 0; }
