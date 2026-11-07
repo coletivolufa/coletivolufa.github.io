@@ -192,10 +192,10 @@
 
       <section class="vermelha">
         <h2>Fontes</h2>
-        <div class="campo"><label for="fonte-titulo">Títulos</label><select id="fonte-titulo"></select></div>
+        <div class="campo"><span class="rotulo">Títulos</span><p class="nota" style="margin:0;font:400 26px/1 'Metadannye'">Metadannye <small style="font:400 12px var(--texto)">· fixa em todas as artes</small></p></div>
         <div class="campo"><label for="fonte-sub">Subtítulos e etiquetas</label><select id="fonte-sub"></select></div>
         <div class="campo"><label for="fonte-texto">Texto</label><select id="fonte-texto"></select></div>
-        <p class="nota" style="margin:8px 0 0">"Padrão do modelo" usa a fonte que cada modelo já tem.</p>
+        <p class="nota" style="margin:8px 0 0">Os títulos são sempre em Metadannye. Subtítulos e texto começam em ST Nizhegorodsky e Special Elite, e podem ser trocados.</p>
       </section>
 
       <section>
@@ -267,18 +267,18 @@
       }).join("");
     }
 
-    const FONTES_TITULO_OPC = ["Metadannye", "Bebas Neue", "Big Shoulders Display", "Russo One", "Oswald"];
+    // padrão do Lufã: título fixo em Metadannye; subtítulo e texto começam nestas e podem ser trocados
+    const FONTE_TITULO_FIXA = "Metadannye", SUB_PADRAO = "ST Nizhegorodsky", TEXTO_PADRAO = "Special Elite";
     const FONTES_SUB_OPC = ["ST Nizhegorodsky", "Bebas Neue", "Oswald", "Archivo"];
-    const FONTES_TEXTO_OPC = ["Archivo", "Literata", "Special Elite", "Instrument Serif"];
+    const FONTES_TEXTO_OPC = ["Special Elite", "Archivo", "Literata", "Instrument Serif"];
     function preencherFontes() {
-      const op = (lista) => `<option value="padrao">Padrão do modelo</option>` + lista.map((f) => `<option value="${f}">${f}</option>`).join("");
-      $("fonte-titulo").innerHTML = op(FONTES_TITULO_OPC);
+      const op = (lista) => lista.map((f) => `<option value="${f}">${f}</option>`).join("");
       $("fonte-sub").innerHTML = op(FONTES_SUB_OPC);
       $("fonte-texto").innerHTML = op(FONTES_TEXTO_OPC);
     }
     function opcoesDo(item) {
-      if (!item.opcoes) item.opcoes = { titulo: "padrao", sub: "padrao", texto: "padrao" };
-      if (!item.opcoes.sub) item.opcoes.sub = "padrao";
+      if (!item.opcoes) item.opcoes = { sub: SUB_PADRAO, texto: TEXTO_PADRAO };
+      item.opcoes.titulo = FONTE_TITULO_FIXA;
       if (!item.camadas) item.camadas = [];
       return item.opcoes;
     }
@@ -296,7 +296,6 @@
           <label>Posição horizontal: <span>${l.x}</span>%<input type="range" min="0" max="100" value="${l.x}" data-prop="x"></label>
           <label>Posição vertical: <span>${l.y}</span>%<input type="range" min="0" max="100" value="${l.y}" data-prop="y"></label>
         </div>`).join("") : '<p class="nota" style="margin:10px 0 0">Nenhuma imagem adicionada a este post.</p>';
-      $("fonte-titulo").value = o_titulo(item);
       $("fonte-sub").value = opcoesDo(item).sub;
       $("fonte-texto").value = o_texto(item);
     }
@@ -410,7 +409,6 @@
     });
     $("baixar-topo").addEventListener("click", () => $("baixar").click());
     preencherFontes();
-    $("fonte-titulo").addEventListener("change", (e) => { opcoesDo(atual()).titulo = e.target.value; redesenhar(); });
     $("fonte-sub").addEventListener("change", (e) => { opcoesDo(atual()).sub = e.target.value; redesenhar(); });
     $("fonte-texto").addEventListener("change", (e) => { opcoesDo(atual()).texto = e.target.value; redesenhar(); });
     $("add-imagem").addEventListener("change", (e) => {
