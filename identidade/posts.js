@@ -18,6 +18,7 @@ const AJUSTE_PADRAO = {
   linhaTitulo: 1, linhaTexto: 1, paragrafo: 0,   // entrelinhas (multiplicador) e espaço extra entre parágrafos (em "linhas")
   logoPos: "padrao", logoTipo: "padrao", logoTam: 1,   // onde fica a logo, qual versão e o tamanho
   sombra: true, grao: true,
+  tamTitulo: 1, tamSub: 1, tamTexto: 1,   // tamanho das letras (multiplicador) de títulos, subtítulos/etiquetas e texto
 };
 const AJUSTE = { ...AJUSTE_PADRAO, pendente: null };
 // altura de i linhas de um bloco {tam, linhas}: k < 1.1 é título (entrelinha apertada), o resto é texto corrido
@@ -46,13 +47,15 @@ async function prepararFontes() {
 }
 
 // ---------- utilidades de desenho ----------
+let FONTE_CRUA = false;   // true: usa o tamanho exato (quem chamou já aplicou o ajuste)
 function fonte(ctx, tam, fam = FONTE.titulo, peso = "400", estilo = "normal") {
+  if (!FONTE_CRUA && FONTE.sub && fam === FONTE.sub) tam *= AJUSTE.tamSub;   // subtítulos e chamadas seguem a barra de subtítulos
   ctx.font = `${estilo} ${peso} ${tam}px "${fam}"`;
 }
 // marcações de formatação dentro do texto:
 // [b]negrito[/b]  [i]itálico[/i]  [+]maior[/+]  [-]menor[/-]  [c=#cc2220]cor[/c]
-const MARCA_RE = /\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?)\]/gi;
-const TEM_MARCA = /\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?)\]/i;
+const MARCA_RE = /\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?|s(?:=[0-9.]+)?)\]/gi;
+const TEM_MARCA = /\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?|s(?:=[0-9.]+)?)\]/i;
 const semMarca = (t) => String(t).replace(MARCA_RE, "");
 
 // separa o texto em trechos, cada um com o seu estilo
@@ -72,6 +75,7 @@ function segmentos(txt) {
     else if (k === "+") st.f = fecha ? 1 : 1.3;
     else if (k === "-") st.f = fecha ? 1 : 0.75;
     else if (k.startsWith("c")) st.c = fecha ? null : k.replace(/^c=/, "");
+    else if (k.startsWith("s")) st.f = fecha ? 1 : Math.min(3, Math.max(0.3, parseFloat(k.replace(/^s=/, "")) || 1));
   }
   empurra(txt.slice(pos));
   return out.map((r) => ({ ...r, t: r.t.replace(/\*/g, "") }));
@@ -107,6 +111,24 @@ function escreverRico(ctx, texto, x, y) {
   ctx.font = base; ctx.fillStyle = corBase; ctx.textAlign = alinhar;
 }
 
+// largura real de um texto com marcações (trechos maiores, negrito etc. ocupam o espaço certo)
+function medirRico(ctx, texto) {
+  const t = String(texto).replace(/\*/g, "");
+  if (!TEM_MARCA.test(t)) return ctx.measureText(t).width;
+  const base = ctx.font; let w = 0;
+  segmentos(t).forEach((r) => { ctx.font = fonteDoTrecho(base, r); w += ctx.measureText(r.t).width; });
+  ctx.font = base; return w;
+}
+// marcações ainda abertas no fim de um trecho (para a linha seguinte continuar no mesmo estilo)
+function marcasAbertas(texto) {
+  const ab = []; let m; const re = new RegExp(MARCA_RE.source, "gi");
+  while ((m = re.exec(texto))) {
+    const k = m[0].replace(/[\[\]\/]/g, "").replace(/=.*$/, "").toLowerCase();
+    if (m[0][1] === "/") { const i = ab.map((a) => a.k).lastIndexOf(k); if (i >= 0) ab.splice(i, 1); }
+    else ab.push({ k, tag: m[0] });
+  }
+  return ab.map((a) => a.tag).join("");
+}
 function quebrar(ctx, texto, largura) {
   const linhas = []; linhas.pars = [];
   for (const par of String(texto).split("\n")) {
@@ -115,7 +137,7 @@ function quebrar(ctx, texto, largura) {
     let linha = "";
     for (const p of palavras) {
       const teste = linha ? linha + " " + p : p;
-      if (ctx.measureText(semMarca(teste).replace(/\*/g, "")).width > largura && linha) { linhas.push(linha); linha = p; }
+      if (medirRico(ctx, teste) > largura && linha) { linhas.push(linha); linha = marcasAbertas(linha) + p; }
       else linha = teste;
     }
     linhas.push(linha);
@@ -123,7 +145,7 @@ function quebrar(ctx, texto, largura) {
   return linhas;
 }
 // encontra o maior tamanho de fonte em que o texto cabe na caixa
-function caber(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, estilo) {
+function caberBase(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, estilo) {
   for (let t = max; t >= min; t -= 2) {
     fonte(ctx, t, fam, peso, estilo);
     const l = quebrar(ctx, texto, largura);
@@ -132,10 +154,24 @@ function caber(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, es
   fonte(ctx, min, fam, peso, estilo);
   return { tam: min, linhas: quebrar(ctx, texto, largura) };
 }
+// título (entrelinha apertada) ou texto corrido: o tamanho encontrado é multiplicado pela barra correspondente
+function caber(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, estilo) {
+  const f = alturaLinha < 1.1 ? AJUSTE.tamTitulo : AJUSTE.tamTexto;
+  FONTE_CRUA = true;
+  try {
+    const r = caberBase(ctx, texto, largura, altura, max, min, alturaLinha, fam, peso, estilo);
+    if (f === 1) return r;
+    const t = Math.max(12, Math.round(r.tam * f));
+    fonte(ctx, t, fam, peso, estilo);
+    return { tam: t, linhas: quebrar(ctx, texto, largura) };
+  } finally { FONTE_CRUA = false; }
+}
 // escreve uma linha em que *palavras entre asteriscos* saem na cor de destaque
 function linhaDestacada(ctx, linha, x, y, cor, corDestaque, alinhar = "left") {
-  const partes = linha.split(/(\*[^*]+\*)/).filter(Boolean);
-  const total = partes.reduce((s, p) => s + ctx.measureText(semMarca(p).replace(/\*/g, "")).width, 0);
+  // cada parte herda as marcações abertas nas partes anteriores (um trecho maior pode conter um *destaque*)
+  let antes = "";
+  const partes = linha.split(/(\*[^*]+\*)/).filter(Boolean).map((p) => { const q = marcasAbertas(antes) + p; antes += p; return q; });
+  const total = partes.reduce((s, p) => s + medirRico(ctx, p), 0);
   let cx = alinhar === "center" ? x - total / 2 : x;
   ctx.textAlign = "left";
   for (const p of partes) {
@@ -143,7 +179,7 @@ function linhaDestacada(ctx, linha, x, y, cor, corDestaque, alinhar = "left") {
     const t = p.replace(/\*/g, "");
     ctx.fillStyle = d ? corDestaque : cor;
     ctx.fillText(t, cx, y);
-    cx += ctx.measureText(semMarca(t)).width;
+    cx += medirRico(ctx, t);
   }
 }
 function raios(ctx, cx, cy, n, cor, giro = 0) {
@@ -196,7 +232,8 @@ function cubo(ctx, x, y, w, h, cor, prof = Math.max(12, h * 0.15)) {
   ctx.fillStyle = cor; ctx.fillRect(x, y, w, h);
 }
 function etiqueta(ctx, texto, x, y, tam, fundo, corTexto, alinhar = "left") {
-  fonte(ctx, tam, fsub(FONTE.titulo)); const w = ctx.measureText(texto).width + tam * 0.7, h = tam * 1.18;
+  tam *= AJUSTE.tamSub; FONTE_CRUA = true; fonte(ctx, tam, fsub(FONTE.titulo)); FONTE_CRUA = false;
+  const w = ctx.measureText(texto).width + tam * 0.7, h = tam * 1.18;
   const x0 = alinhar === "center" ? x - w / 2 : x;
   ctx.save(); ctx.translate(x0 + w / 2, y - h * 0.3); ctx.transform(1, INCLINA, 0, 1, 0, 0);   // sobe para a direita com as laterais em pé, como os blocos da logo
   cubo(ctx, -w / 2, -h / 2, w, h, fundo);
@@ -209,7 +246,7 @@ function faixa(ctx, y, altura, angulo, cor, texto, corTexto, W) {
   ctx.fillStyle = tomEscuro(cor); ctx.fillRect(-W, altura / 2, W * 2, Math.max(12, altura * 0.18));   // espessura da faixa (bloco 3D)
   ctx.fillStyle = cor; ctx.fillRect(-W, -altura / 2, W * 2, altura);
   if (texto) {
-    fonte(ctx, altura * 0.62, fsub(FONTE.titulo)); ctx.fillStyle = corTexto; ctx.textAlign = "center";
+    FONTE_CRUA = true; fonte(ctx, altura * 0.62, fsub(FONTE.titulo)); FONTE_CRUA = false; ctx.fillStyle = corTexto; ctx.textAlign = "center";
     const unidade = `${texto}   ★   `; let linha = "";
     while (ctx.measureText(linha).width < W * 2.2) linha += unidade;
     ctx.fillText(linha, 0, altura * 0.22);
@@ -463,8 +500,8 @@ const MODELOS = {
       raios(ctx, CX, 1250, 22, "rgba(138,20,17,.5)", -0.25);
       logo(ctx, CX, 400, 200);
       fonte(ctx, 64, fsub(FONTE.titulo)); const kw = Math.min(900, ctx.measureText(v.kicker.toUpperCase()).width + 60);
-      ctx.save(); ctx.translate(CX, 606); ctx.transform(1, INCLINA, 0, 1, 0, 0); cubo(ctx, -kw / 2, -46, kw, 92, COR.preto);
-      ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.kicker.toUpperCase(), 0, 24, 860); ctx.restore();
+      ctx.save(); ctx.translate(CX, 606); ctx.transform(1, INCLINA, 0, 1, 0, 0); const kh = 92 * AJUSTE.tamSub; cubo(ctx, -kw / 2, -kh / 2, kw, kh, COR.preto);
+      ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(v.kicker.toUpperCase(), 0, 24 * AJUSTE.tamSub, 860); ctx.restore();
       const r = caber(ctx, v.titulo.toUpperCase(), 940, 300, 260, 110, 0.9, FONTE.titulo);
       r.linhas.forEach((l, i) => {
         const y = 700 + r.tam * 0.82 + yl(r, i, 0.9);

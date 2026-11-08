@@ -81,6 +81,9 @@
     .barra-texto button:hover { background: var(--papel-2); }
     .barra-texto input[type=color] { width: 38px; height: 32px; border: 2px solid var(--preto); padding: 0; background: none; cursor: pointer; }
     .barra-texto small { flex-basis: 100%; }
+    .tam-trecho { flex-basis: 100%; display: flex; align-items: center; gap: 8px; font: 700 12px var(--texto); letter-spacing: .04em; text-transform: uppercase; }
+    .tam-trecho input { flex: 1; min-width: 0; }
+    .tam-trecho output { min-width: 42px; text-align: right; color: var(--vermelho); }
     .camada { border: 2px solid var(--preto); padding: 10px 12px; margin-top: 10px; background: var(--campo); }
     .camada header { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
     .camada label { font-size: 12px; display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
@@ -176,6 +179,17 @@
           <input id="aj-logo" type="range" min="0.5" max="2" step="0.05" value="1"></div>
       </section>
 
+      <section class="vermelha">
+        <h2>Tamanho das letras</h2>
+        <div class="campo"><label for="aj-tt">Títulos <output id="aj-tt-v"></output></label>
+          <input id="aj-tt" type="range" min="0.5" max="1.6" step="0.05" value="1"></div>
+        <div class="campo"><label for="aj-ts">Subtítulos e etiquetas <output id="aj-ts-v"></output></label>
+          <input id="aj-ts" type="range" min="0.6" max="1.5" step="0.05" value="1"></div>
+        <div class="campo"><label for="aj-tx">Texto <output id="aj-tx-v"></output></label>
+          <input id="aj-tx" type="range" min="0.6" max="1.6" step="0.05" value="1">
+          <small>Para mudar só uma parte, selecione o trecho no campo de texto e use a barra "Tamanho do trecho".</small></div>
+      </section>
+
       <section>
         <h2>Espaçamento e acabamento</h2>
         <div class="campo"><label for="aj-titulo">Entrelinha dos títulos <output id="aj-titulo-v"></output></label>
@@ -187,7 +201,7 @@
           <small>Vale para os textos com mais de um parágrafo (aperte Enter no texto para separar).</small></div>
         <label class="chk"><input type="checkbox" id="aj-sombra" checked> Sombra nos títulos e números</label>
         <label class="chk"><input type="checkbox" id="aj-grao" checked> Grão de papel impresso</label>
-        <button class="zerar" type="button" id="aj-zerar">Voltar logo e espaçamento ao padrão</button>
+        <button class="zerar" type="button" id="aj-zerar">Voltar tamanhos, logo e espaçamento ao padrão</button>
       </section>
 
       <section class="vermelha">
@@ -219,7 +233,7 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="posts.js?v=8"></script>
+  <script src="posts.js?v=9"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     let modo = "citacao";
@@ -254,11 +268,10 @@
           <div class="barra-texto" data-barra="${f.id}">
             <button type="button" data-fmt="b" title="Negrito"><b>N</b></button>
             <button type="button" data-fmt="i" title="Itálico"><i>I</i></button>
-            <button type="button" data-fmt="+" title="Aumentar o trecho">A+</button>
-            <button type="button" data-fmt="-" title="Diminuir o trecho">A−</button>
+            <label class="tam-trecho" title="Arraste para mudar o tamanho do trecho selecionado">Tamanho do trecho <input type="range" min="0.5" max="2.5" step="0.05" value="1" data-tam-trecho><output>100%</output></label>
             <input type="color" value="#cc2220" data-cor title="Cor do trecho">
             <button type="button" data-fmt="limpar" title="Tirar a formatação do trecho">limpar</button>
-            <small>Selecione um trecho no texto e clique no botão. Sem seleção, a marcação entra na posição do cursor.</small>
+            <small>Selecione um trecho e clique no botão ou arraste a barra de tamanho. Sem seleção, a marcação entra na posição do cursor.</small>
           </div>
           <textarea id="f-${f.id}" data-campo="${f.id}" style="min-height:120px;font-family:var(--texto)">${esc(val)}</textarea></div>`;
         if (f.tipo === "opcoes") return `<div class="campo"><label for="f-${f.id}">${f.rotulo}</label><select id="f-${f.id}" data-campo="${f.id}">${Object.entries(f.opcoes).map(([k, n]) => `<option value="${k}"${k === val ? " selected" : ""}>${n}</option>`).join("")}</select></div>`;
@@ -389,11 +402,11 @@
 
     $("modelos").addEventListener("click", (e) => { const b = e.target.closest("[data-modo]"); if (b) trocarModo(b.dataset.modo); });
     // ----- ajustes: logo, espaçamento, sombra e grão (valem para todos os modelos) -----
-    const AJ = { linhaTitulo: 1, linhaTexto: 1, paragrafo: 0, logoPos: "padrao", logoTipo: "padrao", logoTam: 1, sombra: true, grao: true };
+    const AJ = { tamTitulo: 1, tamSub: 1, tamTexto: 1, linhaTitulo: 1, linhaTexto: 1, paragrafo: 0, logoPos: "padrao", logoTipo: "padrao", logoTam: 1, sombra: true, grao: true };
     const marcar = (grupo, attr, val) => document.querySelectorAll(`#${grupo} [${attr}]`).forEach((b) => b.setAttribute("aria-pressed", String(b.getAttribute(attr) === val)));
     $("logo-pos").addEventListener("click", (e) => { const b = e.target.closest("[data-pos]"); if (!b) return; AJ.logoPos = b.dataset.pos; marcar("logo-pos", "data-pos", AJ.logoPos); redesenhar(); });
     $("logo-tipo").addEventListener("click", (e) => { const b = e.target.closest("[data-tipo]"); if (!b) return; AJ.logoTipo = b.dataset.tipo; marcar("logo-tipo", "data-tipo", AJ.logoTipo); redesenhar(); });
-    const deslizantes = { "aj-logo": ["logoTam", (v) => Math.round(v * 100) + "%"], "aj-titulo": ["linhaTitulo", (v) => Math.round(v * 100) + "%"], "aj-texto": ["linhaTexto", (v) => Math.round(v * 100) + "%"], "aj-par": ["paragrafo", (v) => v ? "+" + Math.round(v * 100) + "%" : "nenhum"] };
+    const deslizantes = { "aj-logo": ["logoTam", (v) => Math.round(v * 100) + "%"], "aj-titulo": ["linhaTitulo", (v) => Math.round(v * 100) + "%"], "aj-texto": ["linhaTexto", (v) => Math.round(v * 100) + "%"], "aj-tt": ["tamTitulo", (v) => Math.round(v * 100) + "%"], "aj-ts": ["tamSub", (v) => Math.round(v * 100) + "%"], "aj-tx": ["tamTexto", (v) => Math.round(v * 100) + "%"], "aj-par": ["paragrafo", (v) => v ? "+" + Math.round(v * 100) + "%" : "nenhum"] };
     Object.entries(deslizantes).forEach(([id, [k, fmt]]) => {
       const r = $(id), o = $(id + "-v");
       const atualizar = () => { AJ[k] = Number(r.value); o.textContent = fmt(AJ[k]); };
@@ -402,8 +415,8 @@
     $("aj-sombra").addEventListener("change", (e) => { AJ.sombra = e.target.checked; redesenhar(); });
     $("aj-grao").addEventListener("change", (e) => { AJ.grao = e.target.checked; redesenhar(); });
     $("aj-zerar").addEventListener("click", () => {
-      Object.assign(AJ, { linhaTitulo: 1, linhaTexto: 1, paragrafo: 0, logoPos: "padrao", logoTipo: "padrao", logoTam: 1, sombra: true, grao: true });
-      $("aj-logo").value = 1; $("aj-titulo").value = 1; $("aj-texto").value = 1; $("aj-par").value = 0; $("aj-sombra").checked = true; $("aj-grao").checked = true;
+      Object.assign(AJ, { tamTitulo: 1, tamSub: 1, tamTexto: 1, linhaTitulo: 1, linhaTexto: 1, paragrafo: 0, logoPos: "padrao", logoTipo: "padrao", logoTam: 1, sombra: true, grao: true });
+      $("aj-tt").value = 1; $("aj-ts").value = 1; $("aj-tx").value = 1; $("aj-logo").value = 1; $("aj-titulo").value = 1; $("aj-texto").value = 1; $("aj-par").value = 0; $("aj-sombra").checked = true; $("aj-grao").checked = true;
       Object.keys(deslizantes).forEach((id) => $(id).dispatchEvent(new Event("input")));
       marcar("logo-pos", "data-pos", "padrao"); marcar("logo-tipo", "data-tipo", "padrao");
     });
@@ -446,7 +459,7 @@
     function tirarFormato(ta) {
       const ini = ta.selectionStart, fim = ta.selectionEnd, t = ta.value;
       if (fim === ini) return;
-      const limpo = t.slice(ini, fim).replace(/\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?)\]/gi, "");
+      const limpo = t.slice(ini, fim).replace(/\[\/?(?:b|i|\+|-|c(?:=#[0-9a-f]{3,8})?|s(?:=[0-9.]+)?)\]/gi, "");
       ta.value = t.slice(0, ini) + limpo + t.slice(fim);
       ta.focus(); ta.setSelectionRange(ini, ini + limpo.length);
       ta.dispatchEvent(new Event("input", { bubbles: true }));
@@ -458,6 +471,33 @@
       if (f === "limpar") return tirarFormato(ta);
       const tags = { b: ["[b]", "[/b]"], i: ["[i]", "[/i]"], "+": ["[+]", "[/+]"], "-": ["[-]", "[/-]"] }[f];
       aplicarFormato(ta, tags[0], tags[1]);
+    });
+    let trechoAtivo = null;   // { ta, ini, fim }: posição da marcação [s=..] que a barra está ajustando
+    $("campos").addEventListener("input", (e) => {
+      const r = e.target.closest("[data-tam-trecho]"); if (!r) return;
+      e.stopPropagation();
+      const ta = r.closest(".campo").querySelector("textarea"), v = Number(r.value).toFixed(2).replace(/\.?0+$/, "");
+      r.nextElementSibling.textContent = Math.round(r.value * 100) + "%";
+      const tag = `[s=${v}]`;
+      if (trechoAtivo && trechoAtivo.ta === ta) {
+        const t = ta.value, velho = t.slice(trechoAtivo.ini).match(/^\[s=[0-9.]+\]/);
+        if (velho) {
+          ta.value = t.slice(0, trechoAtivo.ini) + tag + t.slice(trechoAtivo.ini + velho[0].length);
+          atual().valores[ta.dataset.campo] = ta.value; redesenhar(); return;
+        }
+      }
+      const ini = ta.selectionStart, fim = ta.selectionEnd;
+      if (ini === fim) return;   // sem trecho selecionado: nada a ajustar
+      ta.value = ta.value.slice(0, ini) + tag + ta.value.slice(ini, fim) + "[/s]" + ta.value.slice(fim);
+      trechoAtivo = { ta, ini };
+      atual().valores[ta.dataset.campo] = ta.value; redesenhar();
+    }, true);
+    // ao mexer no texto ou mudar a seleção, a barra volta a 100% para o próximo trecho
+    $("campos").addEventListener("focusin", (e) => {
+      if (e.target.tagName !== "TEXTAREA") return;
+      trechoAtivo = null;
+      const r = e.target.closest(".campo").querySelector("[data-tam-trecho]");
+      if (r) { r.value = 1; r.nextElementSibling.textContent = "100%"; }
     });
     $("campos").addEventListener("change", (e) => {
       const cor = e.target.closest("[data-cor]"); if (!cor) return;
