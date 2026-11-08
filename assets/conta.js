@@ -29,8 +29,14 @@ function abrirCanal(depois) {
   const j = $("janela-canal"); if (!j.open) j.showModal();
 }
 $("janela-canal").addEventListener("close", () => { const f = depoisDoCanal; depoisDoCanal = null; if (f) f(); });
-document.querySelectorAll("[data-fechar-canal]").forEach((b) => b.addEventListener("click", () => $("janela-canal").close()));
-$("canal-entrar").addEventListener("click", () => setTimeout(() => $("janela-canal").close(), 300));
+// sem "agora não": a janela só fecha depois que a pessoa clica para entrar no canal
+$("janela-canal").addEventListener("cancel", (ev) => ev.preventDefault());
+const chaveCanal = () => "lufa_canal_" + (perfil ? perfil.id : "novo");
+const jaEntrouNoCanal = () => { try { return localStorage.getItem(chaveCanal()) === "1"; } catch (_) { return false; } };
+$("canal-entrar").addEventListener("click", () => {
+  try { localStorage.setItem(chaveCanal(), "1"); } catch (_) {}
+  setTimeout(() => $("janela-canal").close(), 300);
+});
 // máscara simples nos campos de celular
 document.querySelectorAll('input[type="tel"]').forEach((c) => c.addEventListener("blur", () => { if (celularValido(soNumeros(c.value))) c.value = formatarCelular(c.value); }));
 
@@ -135,6 +141,7 @@ async function mostrar() {
   $("p-celular").value = temColunaCelular ? formatarCelular(perfil.celular) : "";
   // quem já era cadastrado e ainda não tem celular: pede para atualizar
   if (temColunaCelular && !perfil.celular && !$("janela-canal").open && !$("janela-celular").open) $("janela-celular").showModal();
+  else if (!jaEntrouNoCanal() && !$("janela-canal").open && !$("janela-celular").open) abrirCanal();
   document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
   // gerador de imagens: só membro ativo
   document.querySelector('[data-aba="gerador"]').hidden = !(APROVADO.includes(perfil.papel) && !ehComum(perfil));
