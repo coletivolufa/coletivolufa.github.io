@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=23">
+  <link rel="stylesheet" href="assets/style.css?v=25">
 </head>
 <body data-pagina="conta">
 <main>
@@ -48,6 +48,7 @@
             <div class="campo"><label for="c-nome">Nome</label><input id="c-nome" required maxlength="60" autocomplete="name"></div>
             <div class="campo"><label for="c-arroba">@ no Instagram (opcional)</label><input id="c-arroba" maxlength="40" placeholder="@perfil"></div>
             <div class="campo"><label for="c-email">E-mail</label><input id="c-email" type="email" required autocomplete="email"></div>
+            <div class="campo"><label for="c-celular">Celular com DDD (WhatsApp)</label><input id="c-celular" type="tel" required inputmode="tel" autocomplete="tel-national" placeholder="(11) 91234-5678" maxlength="20"></div>
             <div class="campo"><label for="c-senha">Senha (mínimo 6 caracteres)</label><input id="c-senha" type="password" minlength="6" required autocomplete="new-password"></div>
           </div>
           <button class="botao botao--vermelho" type="submit">Criar conta</button>
@@ -89,6 +90,7 @@
               <div class="campo"><label for="p-rede">Rede social</label>
                 <select id="p-rede"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="x">X (Twitter)</option><option value="youtube">YouTube</option><option value="threads">Threads</option><option value="bluesky">Bluesky</option></select></div>
               <div class="campo"><label for="p-idade">Idade (não aparece no site)</label><input id="p-idade" type="number" min="10" max="120" inputmode="numeric"></div>
+              <div class="campo" id="campo-p-celular" hidden><label for="p-celular">Celular com DDD (não aparece no site)</label><input id="p-celular" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 91234-5678" maxlength="20"></div>
             </div>
             <div class="campo">
               <label for="p-foto">Foto de perfil</label>
@@ -192,6 +194,30 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=16"></script>
 <script src="assets/supa.js?v=6"></script>
-<script src="assets/conta.js?v=11"></script>
+<dialog class="pedir-conta" id="janela-canal" aria-labelledby="canal-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar-canal>×</button>
+  <div class="pedir-conta__corpo">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
+    <h2 id="canal-titulo">Bem-vindo(a), camarada!</h2>
+    <p>Entre no <b>canal de notícias do Coletivo Lufã no WhatsApp</b> para receber os avisos, as notícias e as convocações do coletivo.</p>
+    <div class="pedir-conta__botoes">
+      <a class="botao botao--amarelo" id="canal-entrar" href="https://whatsapp.com/channel/0029VbE3dHYLY6d1Pf9lyk1j" target="_blank" rel="noopener">Entrar no canal do WhatsApp</a>
+      <button class="botao botao--escuro" type="button" data-fechar-canal>Agora não</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="pedir-conta" id="janela-celular" aria-labelledby="celular-titulo">
+  <form class="pedir-conta__corpo" id="form-celular">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
+    <h2 id="celular-titulo">Atualize seu cadastro</h2>
+    <p>Agora o <b>celular é obrigatório</b> para todos os membros. Ele não aparece no site: serve só para a organização do coletivo falar com você.</p>
+    <div class="campo" style="text-align:left"><label for="j-celular">Celular com DDD (WhatsApp)</label><input id="j-celular" type="tel" required inputmode="tel" autocomplete="tel-national" placeholder="(11) 91234-5678" maxlength="20"></div>
+    <p id="j-celular-erro" class="aviso aviso--erro" hidden>Digite um número válido, com DDD. Exemplo: (11) 91234-5678.</p>
+    <div class="pedir-conta__botoes"><button class="botao botao--amarelo" type="submit">Salvar e continuar</button></div>
+  </form>
+</dialog>
+
+<script src="assets/conta.js?v=12"></script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+# E-mail único para os membros que já tinham cadastro: pede o celular (agora obrigatório)
+# e mostra o canal do WhatsApp. Só roda quando alguém clica em "Run workflow".
+name: E-mail · atualizar cadastro (celular) e canal do WhatsApp
+
+on:
+  workflow_dispatch:
+    inputs:
+      teste:
+        description: "Modo teste: manda 1 e-mail só para o endereço abaixo e não marca ninguém"
+        type: boolean
+        default: true
+      email_teste:
+        description: "E-mail que recebe o teste"
+        required: false
+        default: ""
+
+permissions: {}
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Enviar e-mails
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          TESTE: ${{ inputs.teste }}
+          EMAIL_TESTE: ${{ inputs.email_teste }}
+        run: node scripts/aviso-celular.mjs

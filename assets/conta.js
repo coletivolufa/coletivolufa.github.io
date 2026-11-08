@@ -13,6 +13,27 @@ function ocupado(botao, sim, texto) {
   else { botao.textContent = botao.dataset.texto || botao.textContent; botao.disabled = false; }
 }
 
+// ---------- celular e canal do WhatsApp ----------
+const CANAL_WHATSAPP = "https://whatsapp.com/channel/0029VbE3dHYLY6d1Pf9lyk1j";
+const soNumeros = (t) => String(t || "").replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "");
+const celularValido = (n) => /^\d{10,11}$/.test(n);
+function formatarCelular(n) {
+  n = soNumeros(n);
+  if (n.length === 11) return `(${n.slice(0, 2)}) ${n.slice(2, 7)}-${n.slice(7)}`;
+  if (n.length === 10) return `(${n.slice(0, 2)}) ${n.slice(2, 6)}-${n.slice(6)}`;
+  return n;
+}
+let depoisDoCanal = null;
+function abrirCanal(depois) {
+  depoisDoCanal = depois || null;
+  const j = $("janela-canal"); if (!j.open) j.showModal();
+}
+$("janela-canal").addEventListener("close", () => { const f = depoisDoCanal; depoisDoCanal = null; if (f) f(); });
+document.querySelectorAll("[data-fechar-canal]").forEach((b) => b.addEventListener("click", () => $("janela-canal").close()));
+$("canal-entrar").addEventListener("click", () => setTimeout(() => $("janela-canal").close(), 300));
+// máscara simples nos campos de celular
+document.querySelectorAll('input[type="tel"]').forEach((c) => c.addEventListener("blur", () => { if (celularValido(soNumeros(c.value))) c.value = formatarCelular(c.value); }));
+
 // ---------- volta para onde a pessoa estava (ex.: um episódio da Formação) ----------
 const params = new URLSearchParams(location.search);
 const voltar = (() => { const v = params.get("voltar") || ""; return /^[a-z0-9_-]+\.html(#[\w\-\/=]*)?$/i.test(v) ? v : ""; })();
@@ -49,26 +70,27 @@ $("form-entrar").addEventListener("submit", async (ev) => {
   ocupado(b, false);
   if (error) return avisar(mensagemErro(error), "erro");
   if (irDeVolta()) return;
-  avisar(""); if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
-if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
-mostrar();
+  avisar(""); mostrar();
 });
 
 $("form-cadastrar").addEventListener("submit", async (ev) => {
   ev.preventDefault();
+  const celular = soNumeros($("c-celular").value);
+  if (!celularValido(celular)) { $("c-celular").focus(); return avisar("Digite um número de celular válido, com DDD. Exemplo: (11) 91234-5678.", "erro"); }
   const b = ev.submitter; ocupado(b, true, "Criando conta…");
   const { data, error } = await supa.auth.signUp({
     email: $("c-email").value.trim(), password: $("c-senha").value,
-    options: { data: { nome: $("c-nome").value.trim(), arroba: $("c-arroba").value.trim().replace(/^@/, "") }, emailRedirectTo: location.origin + location.pathname },
+    options: { data: { nome: $("c-nome").value.trim(), arroba: $("c-arroba").value.trim().replace(/^@/, ""), celular }, emailRedirectTo: location.origin + location.pathname },
   });
   ocupado(b, false);
   if (error) return avisar(mensagemErro(error), "erro");
-  if (!data.session) return avisar("Conta criada! Enviamos um e-mail de confirmação: abra o link para ativar a conta e depois entre por aqui.", "ok");
-  if (irDeVolta()) return;
+  if (!data.session) {
+    avisar("Conta criada! Enviamos um e-mail de confirmação: abra o link para ativar a conta e depois entre por aqui.", "ok");
+    return abrirCanal();
+  }
   avisar("Conta criada! Você já é membro do Coletivo Lufã. Complete o seu perfil e faça a sua carteirinha.", "ok");
-  if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
-if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
-mostrar();
+  await mostrar();
+  abrirCanal(() => irDeVolta());   // pop-up do canal; ao fechar, volta para onde a pessoa estava
 });
 
 $("esqueci").addEventListener("click", async () => {
@@ -82,9 +104,7 @@ $("form-nova-senha").addEventListener("submit", async (ev) => {
   ev.preventDefault();
   const { error } = await supa.auth.updateUser({ password: $("n-senha").value });
   if (error) return avisar(mensagemErro(error), "erro");
-  $("form-nova-senha").hidden = true; avisar("Senha alterada!", "ok"); if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
-if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
-mostrar();
+  $("form-nova-senha").hidden = true; avisar("Senha alterada!", "ok"); mostrar();
 });
 
 $("sair").addEventListener("click", async () => { await supa.auth.signOut(); perfil = null; avisar(""); mostrar(); });
@@ -109,6 +129,12 @@ async function mostrar() {
   $("link-carteirinha").hidden = !APROVADO.includes(perfil.papel);
   $("p-nome").value = perfil.nome; $("p-arroba").value = perfil.arroba; $("p-rede").value = perfil.rede || "instagram";
   $("p-idade").value = perfil.idade || "";
+  const temColunaCelular = Object.prototype.hasOwnProperty.call(perfil, "celular");
+  $("campo-p-celular").hidden = !temColunaCelular;
+  $("p-celular").required = temColunaCelular;
+  $("p-celular").value = temColunaCelular ? formatarCelular(perfil.celular) : "";
+  // quem já era cadastrado e ainda não tem celular: pede para atualizar
+  if (temColunaCelular && !perfil.celular && !$("janela-canal").open && !$("janela-celular").open) $("janela-celular").showModal();
   document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
   // gerador de imagens: só membro ativo
   document.querySelector('[data-aba="gerador"]').hidden = !(APROVADO.includes(perfil.papel) && !ehComum(perfil));
@@ -143,6 +169,11 @@ $("form-perfil").addEventListener("submit", async (ev) => {
   const b = $("salvar-perfil"); ocupado(b, true, "Salvando…");
   try {
     const dados = { nome: $("p-nome").value.trim(), arroba: $("p-arroba").value.trim().replace(/^@/, ""), rede: $("p-rede").value, idade: $("p-idade").value ? Number($("p-idade").value) : null };
+    if (Object.prototype.hasOwnProperty.call(perfil, "celular")) {
+      const cel = soNumeros($("p-celular").value);
+      if (!celularValido(cel)) { ocupado(b, false); $("p-celular").focus(); return avisar("Digite um número de celular válido, com DDD. Exemplo: (11) 91234-5678.", "erro"); }
+      dados.celular = cel;
+    }
     if (fotoNova) {
       const caminho = `${perfil.id}/foto-${Date.now()}.jpg`;
       const { error: e1 } = await supa.storage.from("fotos").upload(caminho, fotoNova, { contentType: "image/jpeg", upsert: true });
@@ -152,9 +183,7 @@ $("form-perfil").addEventListener("submit", async (ev) => {
     const { error } = await supa.from("perfis").update(dados).eq("id", perfil.id);
     if (error) throw error;
     fotoNova = null; $("p-foto").value = "";
-    avisar("Perfil salvo!", "ok"); if (params.get("criar")) document.querySelector('[data-aba-fora="cadastrar"]').click();
-if (voltar.startsWith("formacao")) avisar("Entre ou crie a sua conta para assistir à formação. Depois você volta direto para o episódio.");
-mostrar();
+    avisar("Perfil salvo!", "ok"); mostrar();
   } catch (e) { avisar(mensagemErro(e), "erro"); }
   ocupado(b, false);
 });
@@ -389,6 +418,22 @@ $("ocup-salvar").addEventListener("click", async () => {
   if (ocupAlvo.id === perfil.id) mostrar();
   carregarPessoas();
 });
+
+$("form-celular").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const cel = soNumeros($("j-celular").value);
+  if (!celularValido(cel)) { $("j-celular-erro").hidden = false; return $("j-celular").focus(); }
+  $("j-celular-erro").hidden = true;
+  const b = ev.submitter; ocupado(b, true, "Salvando…");
+  const { error } = await supa.from("perfis").update({ celular: cel }).eq("id", perfil.id);
+  ocupado(b, false);
+  if (error) { $("j-celular-erro").textContent = mensagemErro(error); $("j-celular-erro").hidden = false; return; }
+  perfil.celular = cel; $("p-celular").value = formatarCelular(cel);
+  $("janela-celular").close();
+  avisar("Cadastro atualizado! Obrigado.", "ok");
+  abrirCanal();
+});
+$("janela-celular").addEventListener("cancel", (ev) => ev.preventDefault()); // não fecha com Esc: o celular é obrigatório
 
 // ---------- início ----------
 supa.auth.onAuthStateChange((evento) => {
