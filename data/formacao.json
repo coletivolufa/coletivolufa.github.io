@@ -37,7 +37,18 @@
       "apresentador": "Eduarda Prado",
       "perfil": "mariaeduardaprado__",
       "descricao": "O básico da política para quem nunca teve contato com o assunto, em linguagem simples e sem complicação.",
-      "episodios": [],
+      "episodios": [
+        {
+          "id": "ep01",
+          "numero": 1,
+          "titulo": "Você já vive a política",
+          "descricao": "Do ponto de ônibus à escola pública: o primeiro episódio mostra que a política está no seu dia a dia, explica quem decide, quais regras valem e quais recursos são usados, e como você pode participar depois do voto.",
+          "duracao": "1 min 53 s",
+          "capa": "formacao/capas/politica-ep01.jpg",
+          "video": "formacao/videos/politica-ep01.mp4",
+          "publicado_em": "2026-11-10"
+        }
+      ],
       "poster": "formacao/capas/politica-ep01.jpg",
       "banner": "formacao/capas/politica-banner.jpg",
       "publicado_em": "2026-11-05"
