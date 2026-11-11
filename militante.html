@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=30">
+  <link rel="stylesheet" href="assets/style.css?v=31">
 </head>
 <body data-pagina="militante">
 <main>
@@ -82,10 +82,41 @@
           </div>
           <p class="mil-privado" style="margin:6px 0 0">Seus dados ficam guardados e só aparecem para você e para a administração do coletivo. Para ver ou alterar, clique em “Editar cadastro”.</p>
         </div>
+
+        <div class="painel mil-convite">
+          <div class="mil-cadastro__topo">
+            <h2>Convide um militante</h2>
+            <button class="botao botao--vermelho" type="button" id="abrir-convite">Convidar</button>
+          </div>
+          <p class="mil-privado" style="margin:6px 0 0">Cada convite vale <b>1 XP</b>. Quando a pessoa se cadastra no site com o seu código de convite (<b id="meu-codigo"></b>), você ganha <b>5 XP</b>.</p>
+          <p class="mil-meu-xp" id="meu-xp"></p>
+          <h3 class="mil-rank-titulo">Camaradas em destaque</h3>
+          <ol class="mil-rank" id="ranking"><li class="mil-aviso-vazio">Carregando…</li></ol>
+          <details class="mil-novo-aviso" id="caixa-convites" hidden style="margin-top:16px">
+            <summary>Convites recebidos (só administração)</summary>
+            <ul class="mil-lista-convites" id="lista-convites"></ul>
+          </details>
+        </div>
       </div>
     </div>
   </section>
 </main>
+
+<dialog class="pedir-conta mil-janela-convite" id="janela-convite" aria-labelledby="convite-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-convite">×</button>
+  <form class="pedir-conta__corpo" id="form-convite" novalidate>
+    <h2 id="convite-titulo">Convide um militante</h2>
+    <div class="campo"><label for="cv-nome">Nome de quem você quer convidar</label><input id="cv-nome" maxlength="80" required autocomplete="off"></div>
+    <div class="campo"><label for="cv-whats">WhatsApp da pessoa (com DDD)</label><input id="cv-whats" type="tel" inputmode="tel" required placeholder="(21) 91234-5678" maxlength="20" autocomplete="off"></div>
+    <fieldset class="mil-simnao"><legend>Essa pessoa já milita ou tem alguma atuação militante?</legend>
+      <label><input type="radio" name="cv-milita" value="sim"> Sim</label>
+      <label><input type="radio" name="cv-milita" value="nao"> Não</label>
+    </fieldset>
+    <p class="aviso aviso--erro" id="convite-erro" hidden></p>
+    <div class="pedir-conta__botoes"><button class="botao botao--amarelo" type="submit">Enviar convite</button></div>
+    <small class="mil-convite-nota">Ao enviar, o WhatsApp abre com a mensagem pronta. É só apertar enviar.</small>
+  </form>
+</dialog>
 
 <!-- ficha do militante (passo a passo) -->
 <dialog class="ficha-mil" id="janela-ficha" aria-labelledby="ficha-titulo">
@@ -184,6 +215,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=4"></script>
+<script src="assets/militante.js?v=5"></script>
 </body>
 </html>

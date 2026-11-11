@@ -86,7 +86,7 @@ $("form-cadastrar").addEventListener("submit", async (ev) => {
   const b = ev.submitter; ocupado(b, true, "Criando conta…");
   const { data, error } = await supa.auth.signUp({
     email: $("c-email").value.trim(), password: $("c-senha").value,
-    options: { data: { nome: $("c-nome").value.trim(), arroba: $("c-arroba").value.trim().replace(/^@/, ""), celular }, emailRedirectTo: location.origin + location.pathname },
+    options: { data: { nome: $("c-nome").value.trim(), arroba: $("c-arroba").value.trim().replace(/^@/, ""), celular, convite: String($("c-convite").value || "").replace(/\D/g, "") }, emailRedirectTo: location.origin + location.pathname },
   });
   ocupado(b, false);
   if (error) return avisar(mensagemErro(error), "erro");
@@ -442,6 +442,9 @@ $("form-celular").addEventListener("submit", async (ev) => {
   abrirCanal();
 });
 $("janela-celular").addEventListener("cancel", (ev) => ev.preventDefault()); // não fecha com Esc: o celular é obrigatório
+
+// link de convite: conta.html?convite=001001 já abre o cadastro com o código preenchido
+if (/^\d{6}$/.test(params.get("convite") || "")) { $("c-convite").value = params.get("convite"); document.querySelector('[data-aba-fora="cadastrar"]').click(); }
 
 // ---------- início ----------
 supa.auth.onAuthStateChange((evento) => {

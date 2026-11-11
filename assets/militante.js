@@ -326,6 +326,79 @@ async function carregarLinks() {
   links = Object.fromEntries((data || []).map((n) => [n.slug, n.link]));
 }
 
+// ---------- convites e XP ----------
+const WHATS_CONVITES = "5521976254597"; // número que recebe os convites
+function nivelXP(xp) {
+  if (xp >= 30) return "Guerrilheiro(a) da organização";
+  if (xp >= 10) return "Camarada especial";
+  if (xp >= 1) return "Mobilizador(a)";
+  return "";
+}
+async function carregarRanking() {
+  $("meu-codigo").textContent = perfil.matricula || "";
+  const { data, error } = await supa.rpc("ranking_convites");
+  const ol = $("ranking");
+  if (error) { ol.innerHTML = `<li class="mil-aviso-vazio">O sistema de convites ainda não está ativado no banco de dados.</li>`; $("meu-xp").textContent = ""; return; }
+  const eu = (data || []).find((r) => r.id === perfil.id);
+  $("meu-xp").innerHTML = eu
+    ? `Você tem <b>${eu.xp} XP</b> · ${eu.enviados} convite(s) enviado(s) · ${eu.cadastrados} cadastrado(s) <span class="mil-selo">${esc(nivelXP(Number(eu.xp)))}</span>`
+    : "Você ainda não convidou ninguém. Comece agora!";
+  if (!data || !data.length) { ol.innerHTML = `<li class="mil-aviso-vazio">Ninguém convidou ainda. Seja o primeiro!</li>`; return; }
+  const medalha = ["🥇", "🥈", "🥉"];
+  ol.innerHTML = data.slice(0, 10).map((r, i) => `<li class="mil-rank__item${i < 3 ? " mil-rank__item--top" : ""}${r.id === perfil.id ? " mil-rank__item--eu" : ""}">
+      <span class="mil-rank__pos">${medalha[i] || (i + 1) + "º"}</span>
+      <img src="${esc(r.foto || "assets/img/avatar.svg")}" alt="">
+      <span class="mil-rank__nome"><b>${esc(r.nome)}</b><small>${esc(nivelXP(Number(r.xp)))}</small></span>
+      <span class="mil-rank__xp">${r.xp} XP</span>
+    </li>`).join("");
+}
+async function carregarConvitesAdmin() {
+  if (perfil.papel !== "admin") return;
+  const { data, error } = await supa.from("convites").select("*").order("criado_em", { ascending: false }).limit(100);
+  if (error) return;
+  $("caixa-convites").hidden = false;
+  const { data: quem } = await supa.from("perfis").select("id,nome,matricula").in("id", [...new Set(data.map((c) => c.de_id))]);
+  const nomes = Object.fromEntries((quem || []).map((p) => [p.id, p]));
+  $("lista-convites").innerHTML = data.length ? data.map((c) => `<li><b>${esc(c.nome)}</b> · ${esc(formatarCelular(c.whatsapp))} · ${c.milita ? "já milita" : "não milita"}
+      <small>convidado por ${esc((nomes[c.de_id] || {}).nome || "?")} (${esc((nomes[c.de_id] || {}).matricula || "")}) em ${esc(dataPorExtenso(c.criado_em))}</small></li>`).join("")
+    : `<li class="mil-aviso-vazio">Nenhum convite ainda.</li>`;
+}
+function erroConvite(t, campo) { $("convite-erro").textContent = t; $("convite-erro").hidden = false; if (campo) $(campo).focus(); }
+$("abrir-convite").addEventListener("click", () => {
+  $("form-convite").reset(); $("convite-erro").hidden = true;
+  $("janela-convite").showModal(); document.documentElement.classList.add("janela-aberta");
+});
+$("fechar-convite").addEventListener("click", () => $("janela-convite").close());
+$("janela-convite").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
+$("cv-whats").addEventListener("blur", () => { if (celularValido(celularLimpo($("cv-whats").value))) $("cv-whats").value = formatarCelular($("cv-whats").value); });
+$("form-convite").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const nome = $("cv-nome").value.trim().replace(/\s+/g, " ");
+  const whats = celularLimpo($("cv-whats").value);
+  const milita = (document.querySelector('input[name="cv-milita"]:checked') || {}).value;
+  if (nome.length < 2) return erroConvite("Escreva o nome de quem você quer convidar.", "cv-nome");
+  if (!celularValido(whats)) return erroConvite("Digite o WhatsApp com DDD. Exemplo: (21) 91234-5678.", "cv-whats");
+  if (!milita) return erroConvite("Marque se a pessoa já milita: Sim ou Não.");
+  const texto = [
+    "*CONVITE · COLETIVO LUFÃ*", "",
+    `*Convidado(a):* ${nome}`,
+    `*WhatsApp:* ${formatarCelular(whats)}`,
+    `*Já milita ou tem atuação militante:* ${milita === "sim" ? "Sim" : "Não"}`, "",
+    `*Código de convite:* ${perfil.matricula || ""}`,
+    `*Convidado por:* ${perfil.nome}`,
+  ].join("\n");
+  // abre o WhatsApp já (antes de esperar o banco, senão o navegador bloqueia a janela)
+  const url = `https://wa.me/${WHATS_CONVITES}?text=${encodeURIComponent(texto)}`;
+  const janela = window.open(url, "_blank");
+  if (!janela) location.href = url;
+  const { error } = await supa.from("convites").insert({ de_id: perfil.id, nome, whatsapp: whats, milita: milita === "sim" });
+  $("janela-convite").close();
+  if (error && /convites_sem_repetir|duplicate key/i.test(error.message || "")) avisar("Você já tinha convidado esse número, então ele não conta XP de novo. A mensagem foi aberta no WhatsApp.", "ok");
+  else if (error) avisar("A mensagem foi aberta no WhatsApp, mas não deu para registrar o XP: " + esc(mensagemErro(error)), "erro");
+  else avisar("Convite registrado: +1 XP! Agora é só enviar a mensagem no WhatsApp.", "ok");
+  carregarRanking(); carregarConvitesAdmin();
+});
+
 // ---------- central de avisos ----------
 async function carregarAvisos() {
   const ul = $("lista-avisos");
@@ -368,7 +441,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   $("area").hidden = false;
   mostrarCabecalho(); carregarCarteirinha();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
-  carregarAvisos();
+  carregarAvisos(); carregarRanking(); carregarConvitesAdmin();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
   await carregarLinks();
   if (error) { mostrarResumo(); mostrarNucleos(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }
