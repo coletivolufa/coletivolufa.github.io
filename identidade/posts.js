@@ -802,28 +802,70 @@ const MODELOS = {
       { id: "resumo", rotulo: "Descrição curta", tipo: "area", padrao: "Trabalhar seis dias para descansar um não é natural: é uma escolha de quem lucra com o nosso tempo." },
       { id: "autor", rotulo: "Nome do autor(a)", padrao: "Leonardo Duarte" },
       { id: "funcao", rotulo: "Linha abaixo do nome (opcional)", padrao: "Militante do Coletivo Lufã" },
-      { id: "imagem", rotulo: "Imagem de fundo", tipo: "imagem" },
+      { id: "imagem", rotulo: "Imagem do artigo (fica numa moldura no alto)", tipo: "imagem" },
       { id: "foto", rotulo: "Foto do autor(a) (fica no círculo)", tipo: "imagem" },
       { id: "chamada", rotulo: "Chamada acima do link", padrao: "LEIA O ARTIGO COMPLETO" },
       { id: "link", rotulo: "Área do link", tipo: "opcoes", opcoes: { caixa: "Caixa marcada para o adesivo de link", texto: "Escrever o endereço na arte", nada: "Só a chamada com a seta" }, padrao: "caixa" },
       { id: "endereco", rotulo: "Endereço (se escolher escrever na arte)", padrao: "coletivolufa.github.io" },
     ],
     desenhar(ctx, v) {
+      // a imagem fica numa moldura no alto; todo o texto fica embaixo, sobre fundo liso (nunca em cima da foto)
       const W = 1080, H = 1920, X = 90, LARG = 900, CX = W / 2;
-      if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, H);
-      else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, H); raios(ctx, CX, 560, 30, "rgba(255,255,255,.06)", 0); }
-      let g = ctx.createLinearGradient(0, 0, 0, 420); g.addColorStop(0, "rgba(30,25,22,.6)"); g.addColorStop(1, "rgba(30,25,22,0)");
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 420);
-      g = ctx.createLinearGradient(0, H * 0.32, 0, H); g.addColorStop(0, "rgba(30,25,22,0)"); g.addColorStop(0.4, "rgba(30,25,22,.84)"); g.addColorStop(1, "rgba(30,25,22,.97)");
-      ctx.fillStyle = g; ctx.fillRect(0, H * 0.32, W, H * 0.68);
-      assinatura(ctx, X, 290, COR.branco, 44);
+      ctx.fillStyle = COR.preto; ctx.fillRect(0, 0, W, H);
+      const CORTE = 700;   // fim do bloco vermelho do alto
+      ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, CORTE - 60); ctx.lineTo(0, CORTE + 60); ctx.closePath(); ctx.clip();
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, CORTE + 60);
+      raios(ctx, CX, 640, 30, "rgba(255,255,255,.07)", 0);
+      ctx.restore();
+      if (v.imagem) assinatura(ctx, X, 290, COR.branco, 44);
+      else logo(ctx, CX, 500, 300);   // sem imagem: a logo grande ocupa o alto
 
-      // área do link: acima da faixa que a interface do story cobre (y > 1680)
-      const LY = 1500, LW = 640, LH = 130;
-      fonte(ctx, 52, fsub(FONTE.titulo)); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center";
-      ctx.fillText(v.chamada.toUpperCase() + "  ↓", CX, LY - 34);
+      // foto em moldura, com sombra dura e aro amarelo
+      let topo;
+      if (v.imagem) {
+        const IX = X, IY = 370, IW = 900, IH = 450;
+        ctx.fillStyle = "#000"; ctx.fillRect(IX + 18, IY + 18, IW, IH);
+        ctx.fillStyle = COR.amarelo; ctx.fillRect(IX - 8, IY - 8, IW + 16, IH + 16);
+        imagemCobrindo(ctx, v.imagem, IX, IY, IW, IH);
+      }
+      topo = 920;
+
+      // área do link, acima da faixa que a interface do story cobre
+      const LY = 1590, LW = 680, LH = 120;
+      // autor
+      const R = 58, CYa = LY - 120 - R;
+      const limite = CYa - R - 46;   // o texto acaba aqui
+
+      etiqueta(ctx, v.selo.toUpperCase(), X, topo, 56, COR.amarelo, COR.preto);
+      let y = topo + 50;
+      const temResumo = v.resumo.trim().length > 0;
+      const espaco = limite - y;
+      const rt = caber(ctx, v.titulo.toUpperCase(), LARG, temResumo ? espaco * 0.6 : espaco, 112, 56, 0.95, FONTE.titulo);
+      fonte(ctx, rt.tam, FONTE.titulo); ctx.textAlign = "left";
+      rt.linhas.forEach((l, k) => {
+        const yy = y + rt.tam * 0.85 + yl(rt, k, 0.95);
+        if (AJUSTE.sombra) linhaDestacada(ctx, l.replace(/\*/g, ""), X + 6, yy + 6, COR.vermelhoEsc, COR.vermelhoEsc);
+        linhaDestacada(ctx, l, X, yy, COR.branco, COR.amarelo);
+      });
+      y += rt.tam * 0.85 + yl(rt, rt.linhas.length - 1, 0.95) + 40;
+      if (temResumo) {
+        ctx.fillStyle = COR.vermelho; ctx.fillRect(X, y, 80, 7); y += 30;
+        const rb = caber(ctx, v.resumo, LARG, Math.max(60, limite - y), 38, 26, 1.35, FONTE.texto);
+        const caberLinhas = Math.floor((limite - y - rb.tam * 0.3) / (rb.tam * 1.35 * AJUSTE.linhaTexto)) + 1;
+        if (caberLinhas < rb.linhas.length) {   // corta o que não cabe e fecha com reticências
+          const pars = rb.linhas.pars; rb.linhas = rb.linhas.slice(0, Math.max(0, caberLinhas)); rb.linhas.pars = pars;
+          if (rb.linhas.length) rb.linhas[rb.linhas.length - 1] = rb.linhas[rb.linhas.length - 1].replace(/[\s,.;:]*\S*$/, "") + "…";
+        }
+        fonte(ctx, rb.tam, FONTE.texto); ctx.textAlign = "left";
+        rb.linhas.forEach((l, k) => linhaDestacada(ctx, l, X, y + rb.tam * 0.85 + yl(rb, k, 1.35), "#e9dfcf", COR.amarelo));
+      }
+      ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(X, CYa - R - 24, LARG, 2);
+      autorRedondo(ctx, v, X + R, CYa, R, W);
+
+      fonte(ctx, 50, fsub(FONTE.titulo)); ctx.fillStyle = COR.amarelo; ctx.textAlign = "center";
+      ctx.fillText(v.chamada.toUpperCase() + "  ↓", CX, LY - 30);
       if (v.link === "caixa") {
-        ctx.save(); ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.strokeStyle = COR.branco; ctx.lineWidth = 4; ctx.setLineDash([18, 12]);
+        ctx.save(); ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.strokeStyle = COR.branco; ctx.lineWidth = 4; ctx.setLineDash([18, 12]);
         ctx.beginPath(); ctx.roundRect(CX - LW / 2, LY, LW, LH, 26); ctx.fill(); ctx.stroke(); ctx.restore();
         fonte(ctx, 36, fsub(FONTE.titulo)); ctx.fillStyle = COR.branco; ctx.textAlign = "center";
         ctx.fillText("COLOQUE AQUI O ADESIVO DE LINK", CX, LY + LH / 2 + 13);
@@ -833,32 +875,6 @@ const MODELOS = {
         ctx.save(); ctx.fillStyle = COR.branco; ctx.beginPath(); ctx.roundRect(CX - w / 2, LY, w, LH, LH / 2); ctx.fill(); ctx.restore();
         ctx.fillStyle = COR.vermelho; ctx.textAlign = "center"; ctx.fillText(v.endereco, CX, LY + LH / 2 + t * 0.35);
       }
-      // de baixo para cima: autor, resumo, título, selo
-      const R = 66, CYa = LY - 150 - R;
-      const temResumo = v.resumo.trim().length > 0;
-      let rb = null, hRes = 0;
-      if (temResumo) {
-        rb = caber(ctx, v.resumo, LARG, 200, 40, 30, 1.35, FONTE.texto);
-        const pars = rb.linhas.pars; rb.linhas = rb.linhas.slice(0, 4); rb.linhas.pars = pars;
-        hRes = yl(rb, rb.linhas.length - 1, 1.35) + rb.tam;
-      }
-      const rt = caber(ctx, v.titulo.toUpperCase(), LARG, 440, 130, 66, 0.95, FONTE.titulo);
-      const hTit = yl(rt, rt.linhas.length - 1, 0.95) + rt.tam * 0.85;
-      const fimRes = CYa - R - 50, iniRes = fimRes - hRes;
-      const fimTit = temResumo ? iniRes - 38 : fimRes, iniTit = fimTit - hTit;
-      etiqueta(ctx, v.selo.toUpperCase(), X, iniTit - 52, 58, COR.amarelo, COR.preto);
-      fonte(ctx, rt.tam, FONTE.titulo); ctx.textAlign = "left";
-      rt.linhas.forEach((l, i) => {
-        const y = iniTit + rt.tam * 0.85 + yl(rt, i, 0.95);
-        if (AJUSTE.sombra) linhaDestacada(ctx, l.replace(/\*/g, ""), X + 6, y + 6, "rgba(0,0,0,.55)", "rgba(0,0,0,.55)");
-        linhaDestacada(ctx, l, X, y, COR.branco, COR.amarelo);
-      });
-      if (temResumo) {
-        ctx.fillStyle = COR.amarelo; ctx.fillRect(X, iniRes - 20, 80, 7);
-        fonte(ctx, rb.tam, FONTE.texto); ctx.textAlign = "left";
-        rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, X, iniRes + rb.tam * 0.85 + yl(rb, i, 1.35), "#efe6d6", COR.amarelo));
-      }
-      autorRedondo(ctx, v, X + R, CYa, R, W);
       grao(ctx, W, H, 0.05);
     },
   },
