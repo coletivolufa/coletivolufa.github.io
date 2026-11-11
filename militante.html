@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=32">
+  <link rel="stylesheet" href="assets/style.css?v=33">
 </head>
 <body data-pagina="militante">
 <main>
@@ -80,27 +80,15 @@
           <div class="mil-grade-nucleos" id="meus-nucleos"></div>
         </div>
 
-        <div class="painel mil-cadastro">
-          <div class="mil-cadastro__topo">
+        <div class="mil-linhas">
+          <div class="mil-linha">
             <h2>Meu cadastro</h2>
-            <button class="botao botao--vermelho" type="button" id="editar-cadastro">Editar cadastro</button>
+            <button class="botao botao--vermelho" type="button" id="editar-cadastro">Editar</button>
           </div>
-          <p class="mil-privado" style="margin:6px 0 0">Seus dados ficam guardados e só aparecem para você e para a administração do coletivo. Para ver ou alterar, clique em “Editar cadastro”.</p>
-        </div>
-
-        <div class="painel mil-convite">
-          <div class="mil-cadastro__topo">
+          <div class="mil-linha">
             <h2>Convide um militante</h2>
             <button class="botao botao--vermelho" type="button" id="abrir-convite">Convidar</button>
           </div>
-          <p class="mil-privado" style="margin:6px 0 0">Cada convite vale <b>1 XP</b>. Quando a pessoa se cadastra no site com o seu código de convite (<b id="meu-codigo"></b>), você ganha <b>5 XP</b>.</p>
-          <p class="mil-meu-xp" id="meu-xp"></p>
-          <h3 class="mil-rank-titulo">Camaradas em destaque</h3>
-          <ol class="mil-rank" id="ranking"><li class="mil-aviso-vazio">Carregando…</li></ol>
-          <details class="mil-novo-aviso" id="caixa-convites" hidden style="margin-top:16px">
-            <summary>Convites recebidos (só administração)</summary>
-            <ul class="mil-lista-convites" id="lista-convites"></ul>
-          </details>
         </div>
       </div>
     </div>
@@ -120,6 +108,14 @@
     <p class="aviso aviso--erro" id="convite-erro" hidden></p>
     <div class="pedir-conta__botoes"><button class="botao botao--amarelo" type="submit">Enviar convite</button></div>
     <small class="mil-convite-nota">Ao enviar, o WhatsApp abre com a mensagem pronta. É só apertar enviar.</small>
+    <div class="mil-convite-xp">
+      <p id="meu-xp"></p>
+      <p class="mil-convite-regra">1 XP por convite · 5 XP quando a pessoa se cadastra com o seu código <b id="meu-codigo"></b></p>
+    </div>
+    <details class="mil-convites-admin" id="caixa-convites" hidden>
+      <summary>Convites recebidos (administração)</summary>
+      <ul class="mil-lista-convites" id="lista-convites"></ul>
+    </details>
   </form>
 </dialog>
 
@@ -220,6 +216,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=6"></script>
+<script src="assets/militante.js?v=7"></script>
 </body>
 </html>

@@ -354,21 +354,12 @@ function mostrarEngajados(lista) {
 async function carregarRanking() {
   $("meu-codigo").textContent = perfil.matricula || "";
   const { data, error } = await supa.rpc("ranking_convites");
-  const ol = $("ranking");
-  if (error) { ol.innerHTML = `<li class="mil-aviso-vazio">O sistema de convites ainda não está ativado no banco de dados.</li>`; $("meu-xp").textContent = ""; return; }
+  if (error) { $("meu-xp").textContent = ""; return; }
   mostrarEngajados(data || []);
   const eu = (data || []).find((r) => r.id === perfil.id);
   $("meu-xp").innerHTML = eu
-    ? `Você tem <b>${eu.xp} XP</b> · ${eu.enviados} convite(s) enviado(s) · ${eu.cadastrados} cadastrado(s) <span class="mil-selo">${esc(nivelXP(Number(eu.xp)))}</span>`
+    ? `Você tem <b>${eu.xp} XP</b> · ${eu.enviados} convite(s) enviado(s) · ${eu.cadastrados} cadastrado(s) <br><span class="mil-selo">${esc(nivelXP(Number(eu.xp)))}</span>`
     : "Você ainda não convidou ninguém. Comece agora!";
-  if (!data || !data.length) { ol.innerHTML = `<li class="mil-aviso-vazio">Ninguém convidou ainda. Seja o primeiro!</li>`; return; }
-  const medalha = ["🥇", "🥈", "🥉"];
-  ol.innerHTML = data.slice(0, 10).map((r, i) => `<li class="mil-rank__item${i < 3 ? " mil-rank__item--top" : ""}${r.id === perfil.id ? " mil-rank__item--eu" : ""}">
-      <span class="mil-rank__pos">${medalha[i] || (i + 1) + "º"}</span>
-      <img src="${esc(r.foto || "assets/img/avatar.svg")}" alt="">
-      <span class="mil-rank__nome"><b>${esc(r.nome)}</b><small>${esc(nivelXP(Number(r.xp)))}</small></span>
-      <span class="mil-rank__xp">${r.xp} XP</span>
-    </li>`).join("");
 }
 async function carregarConvitesAdmin() {
   if (perfil.papel !== "admin") return;

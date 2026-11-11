@@ -907,3 +907,17 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-eng small { font-size: 11px; color: var(--amarelo); font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { .mil-engajados__fila { animation: none; } .mil-engajados__pista { overflow-x: auto; } }
 @media (max-width: 700px) { .mil-engajados { box-shadow: 5px 5px 0 var(--amarelo); } .mil-engajados__topo h2 { font-size: 26px; } }
+
+/* Área do Militante · linhas compactas (Meu cadastro / Convide um militante) */
+.mil-linhas { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.mil-linha { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--branco); border-left: 6px solid var(--vermelho); padding: 12px 16px; }
+.mil-linha h2 { margin: 0; font-size: clamp(22px, 3vw, 30px); line-height: 1; color: var(--vermelho); }
+.mil-linha .botao { flex: none; font-size: 17px; padding: 9px 16px 6px; box-shadow: 4px 4px 0 var(--preto); }
+/* janela do convite: rola por dentro se precisar */
+.mil-janela-convite { max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+.mil-convite-xp { margin-top: 18px; padding-top: 14px; border-top: 2px solid rgba(255,255,255,.3); text-align: center; font-size: 14px; }
+.mil-convite-xp p { margin: 0 0 6px; }
+.mil-convite-xp .mil-selo { margin: 6px 0 0; }
+.mil-convite-regra { opacity: .85; font-size: 13px; }
+.mil-convites-admin { margin-top: 14px; background: var(--branco); color: var(--preto); padding: 10px 12px; font-size: 14px; }
+.mil-convites-admin summary { cursor: pointer; font-weight: 700; color: var(--vermelho); }
