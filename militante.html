@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=33">
+  <link rel="stylesheet" href="assets/style.css?v=34">
 </head>
 <body data-pagina="militante">
 <main>
@@ -89,11 +89,28 @@
             <h2>Convide um militante</h2>
             <button class="botao botao--vermelho" type="button" id="abrir-convite">Convidar</button>
           </div>
+          <div class="mil-linha">
+            <h2>Criação de conteúdo</h2>
+            <button class="botao botao--vermelho" type="button" id="abrir-gerador">Editar</button>
+          </div>
+        </div>
+
+        <div class="bloco-regimento">
+          <a class="botao botao--amarelo" href="regimento.html">Leia o regimento interno</a>
         </div>
       </div>
     </div>
   </section>
 </main>
+
+<dialog class="mil-janela-gerador" id="janela-gerador" aria-label="Criação de conteúdo">
+  <div class="mil-janela-gerador__topo">
+    <h2>Criação de conteúdo</h2>
+    <a class="botao botao--claro" href="identidade/gerador.html" target="_blank" rel="noopener">Abrir em outra aba ↗</a>
+    <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-gerador">×</button>
+  </div>
+  <iframe id="gerador-quadro" title="Gerador de imagens do Coletivo Lufã"></iframe>
+</dialog>
 
 <dialog class="pedir-conta mil-janela-convite" id="janela-convite" aria-labelledby="convite-titulo">
   <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-convite">×</button>
@@ -216,6 +233,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=7"></script>
+<script src="assets/militante.js?v=8"></script>
 </body>
 </html>

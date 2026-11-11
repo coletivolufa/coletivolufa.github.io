@@ -408,6 +408,15 @@ $("form-convite").addEventListener("submit", async (ev) => {
   carregarRanking(); carregarConvitesAdmin();
 });
 
+// ---------- criação de conteúdo (gerador de imagens) ----------
+$("abrir-gerador").addEventListener("click", () => {
+  const q = $("gerador-quadro");
+  if (!q.src) q.src = "identidade/gerador.html?embutido=1";
+  $("janela-gerador").showModal(); document.documentElement.classList.add("janela-aberta");
+});
+$("fechar-gerador").addEventListener("click", () => $("janela-gerador").close());
+$("janela-gerador").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
+
 // ---------- central de avisos ----------
 async function carregarAvisos() {
   const ul = $("lista-avisos");

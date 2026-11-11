@@ -68,15 +68,9 @@
           <button type="button" class="botao botao--claro" id="sair">Sair</button>
         </div>
 
-        <div class="bloco-regimento" id="bloco-regimento" hidden>
-          <a class="botao botao--amarelo" href="regimento.html">Leia o regimento interno</a>
-          <a class="botao botao--vermelho" href="militante.html" id="link-militante" hidden>Área do militante</a>
-        </div>
-
         <div class="abas" role="tablist" id="abas-dentro">
           <button type="button" role="tab" aria-selected="true" data-aba="perfil">Meu perfil</button>
           <button type="button" role="tab" aria-selected="false" data-aba="carteirinha" hidden>Minha carteirinha</button>
-          <button type="button" role="tab" aria-selected="false" data-aba="gerador" hidden>Gerador de imagens</button>
           <button type="button" role="tab" aria-selected="false" data-aba="artigos" hidden>Meus artigos</button>
           <button type="button" role="tab" aria-selected="false" data-aba="admin" hidden>Administração</button>
         </div>
@@ -105,15 +99,6 @@
         </div>
 
         <!-- Carteirinha -->
-        <!-- Gerador de imagens (só membro ativo) -->
-        <div class="painel painel--gerador" data-painel="gerador" hidden>
-          <div class="gerador-topo">
-            <h2>Gerador de imagens</h2>
-            <a class="botao botao--claro" href="identidade/gerador.html" target="_blank" rel="noopener">Abrir em tela cheia ↗</a>
-          </div>
-          <iframe id="gerador-quadro" title="Gerador de imagens do Coletivo Lufã" loading="lazy"></iframe>
-        </div>
-
         <div class="painel" data-painel="carteirinha" hidden>
           <h2>Minha carteirinha</h2>
           <div class="minha-carteira" id="minha-carteira">
@@ -218,6 +203,6 @@
   </form>
 </dialog>
 
-<script src="assets/conta.js?v=15"></script>
+<script src="assets/conta.js?v=16"></script>
 </body>
 </html>
