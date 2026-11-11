@@ -32,7 +32,7 @@ $("janela-canal").addEventListener("close", () => { const f = depoisDoCanal; dep
 // militante (membro ativo): toda vez que entra em Minha conta, um aviso leva para a Área do Militante.
 // Só fecha pelo botão "Entrar agora" (que abre a Área do Militante); espera as outras janelas obrigatórias.
 function abrirAvisoMilitante() {
-  if (!perfil || !APROVADO.includes(perfil.papel) || ehComum(perfil)) return;
+  if (!perfil || !APROVADO.includes(perfil.papel) || ehComum(perfil) || perfil.papel === "admin") return;   // admin não vê
   if (["janela-canal", "janela-celular", "janela-militante"].some((id) => $(id).open)) return;
   $("janela-militante").showModal();
 }
