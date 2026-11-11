@@ -411,6 +411,12 @@ $("form-convite").addEventListener("submit", async (ev) => {
 // ---------- conheça outros camaradas ----------
 const REDES = { instagram: "https://www.instagram.com/", tiktok: "https://www.tiktok.com/@", x: "https://x.com/", youtube: "https://www.youtube.com/@", threads: "https://www.threads.net/@", bluesky: "https://bsky.app/profile/" };
 let camaradas = [];
+const NOMES_PARTIDOS = { PCB: "Partido Comunista Brasileiro", PCdoB: "Partido Comunista do Brasil", PCO: "Partido da Causa Operária",
+  PDT: "Partido Democrático Trabalhista", PSB: "Partido Socialista Brasileiro", PSOL: "Partido Socialismo e Liberdade",
+  PSTU: "Partido Socialista dos Trabalhadores Unificado", PT: "Partido dos Trabalhadores", PV: "Partido Verde",
+  "Rede Sustentabilidade": "Rede Sustentabilidade (REDE)", Solidariedade: "Solidariedade", "UP (Unidade Popular)": "Unidade Popular (UP)" };
+const partidoPorExtenso = (p) => (NOMES_PARTIDOS[p] && p.length <= 6 ? `${NOMES_PARTIDOS[p]} (${p})` : NOMES_PARTIDOS[p] || p);
+const temValor = (t) => { const v = String(t || "").trim(); return v && !/^(não|nao|nenhum|nenhuma|não sou filiado\(a\))\.?$/i.test(v); };
 async function carregarCamaradas() {
   const { data, error } = await supa.rpc("camaradas_ativos");
   camaradas = error ? [] : (data || []);
@@ -440,6 +446,8 @@ function abrirCamarada(c) {
       <div><dt>No coletivo desde</dt><dd>${esc(dataPorExtenso(c.membro_desde))}</dd></div>
       ${ocup.length ? `<div><dt>O que faz no coletivo</dt><dd>${ocup.map(esc).join(" · ")}</dd></div>` : ""}
       ${nomesNucleos.length ? `<div><dt>Núcleos</dt><dd>${nomesNucleos.map(esc).join(" · ")}</dd></div>` : ""}
+      ${temValor(c.partido) ? `<div><dt>Partido</dt><dd>${esc(partidoPorExtenso(c.partido))}</dd></div>` : ""}
+      ${temValor(c.movimento) ? `<div><dt>Movimento</dt><dd>${esc(c.movimento)}</dd></div>` : ""}
       ${rede ? `<div><dt>Nas redes</dt><dd>${rede}</dd></div>` : ""}
     </dl>`;
   $("janela-camarada").showModal(); document.documentElement.classList.add("janela-aberta");
