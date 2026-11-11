@@ -766,7 +766,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   $("area").hidden = false;
   mostrarCabecalho(); carregarCarteirinha();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
-  $("linha-artigo").hidden = !PODE_ESCREVER.includes(perfil.papel);
+  $("linha-artigo").hidden = false; // todo militante pode publicar artigos
   carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas(); carregarInscricoes();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
   await carregarLinks();

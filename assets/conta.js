@@ -136,7 +136,8 @@ async function mostrar() {
   else if (!jaEntrouNoCanal() && !$("janela-canal").open && !$("janela-celular").open) abrirCanal();
   document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
   // artigos: só membros ativos com permissão de autor, editor ou admin
-  document.querySelector('[data-aba="artigos"]').hidden = !(PODE_ESCREVER.includes(perfil.papel) && !ehComum(perfil));
+  // todo membro ativo pode escrever artigos (e editar os próprios)
+  document.querySelector('[data-aba="artigos"]').hidden = !(APROVADO.includes(perfil.papel) && !ehComum(perfil));
   document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";
   $("titulo-lista-artigos").textContent = ["editor", "admin"].includes(perfil.papel) ? "Artigos do site" : "Meus artigos";
 }
