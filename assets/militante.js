@@ -34,7 +34,9 @@ const NUCLEOS = [
   { slug: "lgbtqia", nome: "Núcleo LGBTQIA+" },
   { slug: "povos", nome: "Núcleo dos Povos Originários" },
   { slug: "cultural", nome: "Núcleo Cultural" },
+  { slug: "estudantil", nome: "Núcleo Estudantil" },   // obrigatório para quem entrou com 13 a 17 anos
 ];
+const IDADE_MINIMA = 13, IDADE_ESTUDANTIL = 17;
 const MAX_NUCLEOS = 3, MIN_PAUTAS = 3;
 const PAUTAS = [
   ["Trabalho e renda", ["Fim da escala 6x1 e redução da jornada", "Salário mínimo e valorização do trabalho", "Direitos dos trabalhadores de aplicativo",
@@ -65,16 +67,42 @@ opcoes("f-escolaridade", ESCOLARIDADES); opcoes("f-partido", PARTIDOS);
 $("f-pautas").innerHTML = PAUTAS.map(([grupo, itens]) => `<div class="mil-chips__grupo"><span>${grupo}</span>${itens.map((p) =>
   `<label class="mil-chip"><input type="checkbox" value="${esc(p)}"><i>${esc(p)}</i></label>`).join("")}</div>`).join("");
 $("f-nucleos").innerHTML = NUCLEOS.map((n) => `<label class="mil-nucleo-op${n.fixo ? " fixo" : ""}"><input type="checkbox" value="${n.slug}"${n.fixo ? " checked disabled" : ""}>
-  <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><b>${esc(n.nome)}</b>${n.fixo ? "<em>obrigatório</em>" : ""}</label>`).join("");
+  <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><b>${esc(n.nome)}</b><em${n.fixo ? "" : " hidden"}>obrigatório</em></label>`).join("");
 const pautasMarcadas = () => [...document.querySelectorAll("#f-pautas input:checked")].map((i) => i.value);
 const nucleosMarcados = () => [...document.querySelectorAll("#f-nucleos input:checked")].map((i) => i.value);
 function contarPautas() { const n = pautasMarcadas().length; $("pautas-conta").textContent = n === 1 ? "1 escolhida" : `${n} escolhidas`; }
 $("f-pautas").addEventListener("change", contarPautas);
-// no máximo 3 núcleos (o Marxista já conta): ao chegar no limite, trava os que sobraram
-function travarNucleos() {
-  const cheio = nucleosMarcados().length >= MAX_NUCLEOS;
-  document.querySelectorAll("#f-nucleos input").forEach((i) => { if (i.value !== "marxista") { i.disabled = cheio && !i.checked; i.closest("label").classList.toggle("travado", i.disabled); } });
+// idade na data de entrada no coletivo (aprovação ou cadastro; sem essas datas, hoje)
+function idadeNaEntrada(nasc) {
+  const d = new Date(nasc + "T12:00:00"); if (!nasc || isNaN(d)) return null;
+  const e = new Date((perfil && (perfil.aprovado_em || perfil.criado_em)) || Date.now()); if (isNaN(e)) return null;
+  let i = e.getFullYear() - d.getFullYear();
+  if (e.getMonth() < d.getMonth() || (e.getMonth() === d.getMonth() && e.getDate() < d.getDate())) i--;
+  return i;
 }
+const estudantilObrigatorio = (nasc) => { const i = idadeNaEntrada(nasc); return i !== null && i <= IDADE_ESTUDANTIL; };
+// núcleos obrigatórios: o Marxista para todos; o Estudantil para quem entrou com até 17 anos
+const nucleosFixos = () => ["marxista", ...(estudantilObrigatorio($("f-nascimento").value) ? ["estudantil"] : [])];
+// marca e trava o Estudantil conforme a data de nascimento (chamado ao mudar a data e ao abrir a ficha)
+function aplicarEstudantil() {
+  const i = document.querySelector('#f-nucleos input[value="estudantil"]'); if (!i) return;
+  const obrig = nucleosFixos().includes("estudantil"), lab = i.closest("label");
+  if (obrig) i.checked = true;
+  else if (lab.classList.contains("fixo")) i.checked = false;   // deixou de ser obrigatório (data corrigida)
+  lab.classList.toggle("fixo", obrig); lab.querySelector("em").hidden = !obrig;
+  travarNucleos();
+}
+// no máximo 3 núcleos escolhidos (o Marxista conta; o Estudantil obrigatório fica por fora do limite)
+const limiteNucleos = () => MAX_NUCLEOS + (nucleosFixos().includes("estudantil") ? 1 : 0);
+function travarNucleos() {
+  const fixos = nucleosFixos(), cheio = nucleosMarcados().length >= limiteNucleos();
+  document.querySelectorAll("#f-nucleos input").forEach((i) => {
+    if (i.value === "marxista") return;
+    if (fixos.includes(i.value)) { i.checked = true; i.disabled = true; i.closest("label").classList.remove("travado"); return; }
+    i.disabled = cheio && !i.checked; i.closest("label").classList.toggle("travado", i.disabled);
+  });
+}
+$("f-nascimento").addEventListener("change", aplicarEstudantil);
 $("f-nucleos").addEventListener("change", travarNucleos);
 
 // ---------- utilidades ----------
@@ -212,7 +240,8 @@ function conferirPasso(n) {
     if (!vazio("f-nome", "nome completo")) return false;
     if (!$("f-nascimento").value) return erroFicha("Preencha a data de nascimento.", "f-nascimento");
     const idade = idadeDe($("f-nascimento").value);
-    if (idade === null || idade < 10 || idade > 120) return erroFicha("Confira a data de nascimento.", "f-nascimento");
+    if (idade === null || idade > 120 || idade < 0) return erroFicha("Confira a data de nascimento.", "f-nascimento");
+    if (idade < IDADE_MINIMA) return erroFicha(`O coletivo aceita militantes a partir de ${IDADE_MINIMA} anos.`, "f-nascimento");
     if (!celularValido(celularLimpo($("f-celular").value))) return erroFicha("Digite um celular válido, com DDD. Exemplo: (11) 91234-5678.", "f-celular");
     return vazio("f-sexo", "sexo") && vazio("f-genero", "identidade de gênero") && vazio("f-orientacao", "orientação sexual");
   }
@@ -263,7 +292,7 @@ function preencherFicha() {
   const pt = f.pautas || [], nc = f.nucleos || [];
   document.querySelectorAll("#f-pautas input").forEach((i) => (i.checked = pt.includes(i.value)));
   document.querySelectorAll("#f-nucleos input").forEach((i) => (i.checked = i.value === "marxista" || nc.includes(i.value)));
-  contarPautas(); travarNucleos();
+  contarPautas(); aplicarEstudantil();
   $("f-partido").value = f.partido || ""; $("f-movimento").value = f.movimento || "";
   $("f-consentimento").checked = !!f.consentimento_em;
   $("cep-status").textContent = "";
@@ -316,7 +345,7 @@ $("form-ficha").addEventListener("submit", async (ev) => {
       cpf: $("f-sem-cpf").checked ? "" : soNumeros($("f-cpf").value), nome_mae: $("f-mae").value.trim(), religiao: $("f-religiao").value,
       ocupacao: $("f-ocupacao").value === "Outra" ? $("f-ocupacao-outra").value.trim() : $("f-ocupacao").value,
       renda: $("f-renda").value, escolaridade: $("f-escolaridade").value,
-      pautas: pautasMarcadas(), nucleos: [...new Set(["marxista", ...nucleosMarcados()])].slice(0, MAX_NUCLEOS),
+      pautas: pautasMarcadas(), nucleos: [...new Set([...nucleosFixos(), ...nucleosMarcados()])].slice(0, limiteNucleos()),
       partido: $("f-partido").value, movimento: $("f-movimento").value.trim(),
       consentimento_em: (ficha && ficha.consentimento_em) || agora,
       completo_em: (ficha && ficha.completo_em) || agora,
@@ -361,7 +390,8 @@ function carregarCarteirinha() {
 
 // ---------- seus núcleos ----------
 function mostrarNucleos() {
-  const meus = (ficha && ficha.nucleos && ficha.nucleos.length) ? ficha.nucleos : ["marxista"];
+  const meus = [...new Set([...((ficha && ficha.nucleos && ficha.nucleos.length) ? ficha.nucleos : ["marxista"]),
+    ...(ficha && ficha.nascimento && estudantilObrigatorio(ficha.nascimento) ? ["estudantil"] : [])])];
   const admin = perfil.papel === "admin";
   const lista = admin ? NUCLEOS : NUCLEOS.filter((n) => meus.includes(n.slug));
   $("meus-nucleos").innerHTML = lista.map((n) => {
