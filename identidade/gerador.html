@@ -98,6 +98,8 @@
     }
     .embutido .topo { display: none; }
     .embutido .painel, .embutido .previa { max-height: 100vh; }
+    /* no celular, dentro da Área do Militante: o painel cresce com o conteúdo (sem sobrar fundo escuro) */
+    @media (max-width: 860px) { .embutido .painel, .embutido .previa { max-height: none; } .embutido body { background: var(--papel); } }
   </style>
 </head>
 <body>
