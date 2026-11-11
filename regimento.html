@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=27">
+  <link rel="stylesheet" href="assets/style.css?v=36">
   <style>
     .regimento { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; font-family: Literata, Georgia, serif; line-height: 1.6; }
     .regimento h1, .regimento h2, .regimento h3 { font-family: "Bebas Neue", Impact, sans-serif; letter-spacing: .02em; }
@@ -22,12 +22,67 @@
   </style>
 </head>
 <body data-pagina="regimento">
-<main class="regimento" id="conteudo">
-  <p class="regimento__aviso" id="estado">Carregando o regimento…</p>
+<main>
+  <header class="cabecalho-pagina reg-topo">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Regimento interno</span>
+      <h1>Seja militante do Coletivo Lufã</h1>
+      <p>Leia o regimento e, se você concorda com os nossos objetivos e compromissos, faça a sua inscrição.</p>
+      <button class="botao botao--amarelo reg-quero" type="button" id="quero-militar">★ Quero me tornar um militante</button>
+    </div>
+  </header>
+  <article class="regimento" id="conteudo">
+    <p class="regimento__aviso" id="estado">Carregando o regimento…</p>
+  </article>
+  <div class="reg-fim">
+    <button class="botao botao--vermelho reg-quero" type="button" id="quero-militar-2">★ Quero me tornar um militante</button>
+  </div>
 </main>
+
+<dialog class="ficha-mil" id="janela-inscricao" aria-labelledby="insc-titulo">
+  <form id="form-inscricao" novalidate>
+    <div class="ficha-mil__topo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Inscrição</span>
+      <h2 id="insc-titulo">Quero me tornar um militante</h2>
+      <p>Preencha os seus dados. A secretaria do coletivo vai analisar e falar com você pelo WhatsApp.</p>
+    </div>
+    <div class="ficha-mil__corpo">
+      <fieldset class="ficha-mil__passo">
+        <div class="linha-campos">
+          <div class="campo" style="grid-column:1/-1"><label for="i-nome">Nome completo</label><input id="i-nome" maxlength="120" required autocomplete="name"></div>
+          <div class="campo"><label for="i-nascimento">Data de nascimento</label><input id="i-nascimento" type="date" required></div>
+          <div class="campo"><label for="i-cpf">CPF</label><input id="i-cpf" inputmode="numeric" required placeholder="000.000.000-00" maxlength="14"></div>
+          <div class="campo"><label for="i-email">E-mail</label><input id="i-email" type="email" required autocomplete="email" maxlength="160"></div>
+          <div class="campo"><label for="i-celular">Celular com DDD (WhatsApp)</label><input id="i-celular" type="tel" inputmode="tel" required placeholder="(21) 91234-5678" maxlength="20" autocomplete="tel-national"></div>
+          <div class="campo"><label for="i-cep">CEP</label><input id="i-cep" inputmode="numeric" required placeholder="00000-000" maxlength="9" autocomplete="postal-code"><small id="i-cep-status"></small></div>
+          <div class="campo"><label for="i-partido">Você é filiado(a) a algum partido? Se sim, qual?</label><select id="i-partido" required></select></div>
+          <div class="campo" style="grid-column:1/-1"><label for="i-movimento">Participa de algum movimento popular ou estudantil? Se sim, qual?</label>
+            <input id="i-movimento" maxlength="200" required placeholder="Ex.: coletivo, grêmio estudantil, sindicato…"><small>Caso não participe, escreva <b>Não</b>.</small></div>
+        </div>
+        <input type="text" id="i-site" tabindex="-1" autocomplete="off" aria-hidden="true" class="reg-isca">
+        <label class="mil-check mil-check--lgpd"><input type="checkbox" id="i-consentimento" required>
+          Autorizo o Coletivo Lufã a guardar estes dados para analisar a minha inscrição. Eles não aparecem no site: só a administração tem acesso.</label>
+      </fieldset>
+      <p class="aviso aviso--erro" id="insc-erro" hidden></p>
+    </div>
+    <div class="ficha-mil__botoes">
+      <button class="botao botao--claro" type="button" id="insc-cancelar">Cancelar</button>
+      <button class="botao botao--vermelho" type="submit" id="insc-enviar">Inscrever-se</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="pedir-conta" id="janela-inscrito" aria-labelledby="inscrito-titulo">
+  <div class="pedir-conta__corpo">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
+    <h2 id="inscrito-titulo">Inscrição enviada!</h2>
+    <p>Obrigado, camarada. A secretaria do Coletivo Lufã vai analisar a sua inscrição e falar com você pelo WhatsApp.</p>
+    <div class="pedir-conta__botoes"><button class="botao botao--amarelo" type="button" id="inscrito-ok">Voltar ao regimento</button></div>
+  </div>
+</dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/regimento.js?v=2"></script>
+<script src="assets/regimento.js?v=3"></script>
 </body>
 </html>

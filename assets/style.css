@@ -952,3 +952,44 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-camarada__dados dt { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--amarelo); font-weight: 700; }
 .mil-camarada__dados dd { margin: 2px 0 0; font-size: 16px; }
 .mil-camarada__dados a { color: var(--branco); }
+
+/* Regimento: topo com o botão de inscrição */
+.reg-topo { padding-bottom: 56px; }
+.reg-topo h1 { font-size: clamp(48px, 8vw, 96px); }
+.reg-quero { font-size: clamp(22px, 3.4vw, 32px); padding: 16px 28px 12px; margin-top: 24px; box-shadow: 8px 8px 0 var(--preto); }
+.reg-fim { display: flex; justify-content: center; padding: 0 16px 64px; }
+.reg-fim .reg-quero { margin: 0; }
+.reg-isca { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+#janela-inscricao { height: auto; max-height: min(860px, calc(100dvh - 24px)); }
+@media (max-width: 700px) { #janela-inscricao { height: 100dvh; max-height: 100dvh; } .reg-quero { width: 100%; justify-content: center; text-align: center; } }
+
+/* Área do Militante · Novos militantes (admin) */
+.mil-linha--admin { border-left-color: var(--preto); background: #f4ede1; }
+.mil-linha--admin h2 { font-size: clamp(20px, 2.6vw, 26px); color: var(--preto); display: flex; align-items: center; gap: 8px; }
+.mil-contador { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 999px; background: var(--vermelho); color: var(--branco); font-family: var(--texto, sans-serif); font-size: 14px; font-weight: 700; }
+.mil-janela-novos { height: min(860px, calc(100dvh - 24px)); }
+.mil-novos { display: flex; flex-direction: column; width: 100%; min-height: 0; }
+.mil-novos__lista { list-style: none; margin: 0; padding: 18px 26px 4px; display: flex; flex-direction: column; gap: 14px; }
+.mil-novo { background: var(--branco); border-left: 6px solid var(--vermelho); padding: 14px 16px; }
+.mil-novo__topo { display: flex; align-items: baseline; gap: 8px 12px; flex-wrap: wrap; }
+.mil-novo__topo strong { font-family: var(--titulo); font-size: 26px; line-height: 1; letter-spacing: .02em; }
+.mil-novo__topo time { color: var(--cinza); font-size: 13px; margin-left: auto; }
+.mil-novo__selo { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; background: var(--linha); padding: 2px 8px; }
+.mil-novo__selo--ok { background: #d9efd9; color: #1d5e20; }
+.mil-novo dl { margin: 10px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+.mil-novo dl div { padding: 5px 0; border-bottom: 1px solid var(--linha); min-width: 0; }
+.mil-novo dt { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--cinza); font-weight: 700; }
+.mil-novo dd { margin: 1px 0 0; font-size: 15px; overflow-wrap: anywhere; }
+.mil-novo__acoes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.mil-novo__acoes .botao { font-size: 16px; padding: 9px 14px 6px; box-shadow: 3px 3px 0 var(--preto); }
+.mil-novos__antigos { margin: 12px 26px 0; }
+.mil-novos__antigos summary { cursor: pointer; font-weight: 700; color: var(--vermelho); }
+.mil-novos__antigos .mil-novos__lista { padding: 12px 0 0; }
+.mil-novos__antigos .mil-novo { opacity: .85; border-left-color: var(--linha); }
+@media (max-width: 700px) {
+  .mil-janela-novos { height: 100dvh; }
+  .mil-novos__lista { padding: 14px 14px 4px; }
+  .mil-novos__antigos { margin: 12px 14px 0; }
+  .mil-novo dl { grid-template-columns: 1fr; }
+  .mil-novo__acoes .botao { flex: 1; justify-content: center; text-align: center; }
+}

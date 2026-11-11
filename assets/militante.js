@@ -456,6 +456,74 @@ $("fechar-camarada").addEventListener("click", () => $("janela-camarada").close(
 $("janela-camarada").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
 $("janela-camarada").addEventListener("click", (ev) => { if (ev.target === $("janela-camarada")) $("janela-camarada").close(); });
 
+// ---------- novos militantes (inscrições pelo regimento; só administração) ----------
+let inscricoes = [];
+const boasVindas = (nome) => [
+  `Olá, ${primeiroNome(nome)}!`,
+  "Seja bem-vindo(a) ao recrutamento do Coletivo Lufã.",
+  "Para dar andamento ao seu recrutamento, peço que me informe o seu perfil do Instagram para avaliação e que resuma brevemente como você deseja contribuir para o coletivo.",
+].join("\n\n");
+async function carregarInscricoes() {
+  if (perfil.papel !== "admin") return;
+  const { data, error } = await supa.from("inscricoes").select("*").order("criado_em", { ascending: false }).limit(200);
+  if (error) return; // tabela ainda não criada: a linha continua escondida
+  inscricoes = data || [];
+  $("linha-novos").hidden = false;
+  const n = inscricoes.filter((i) => i.situacao === "pendente").length;
+  $("novos-contador").hidden = !n; $("novos-contador").textContent = n;
+  mostrarInscricoes();
+}
+function cartaoInscricao(i) {
+  const idade = idadeDe(i.nascimento);
+  const linhas = [
+    ["Nascimento", `${new Date(i.nascimento + "T12:00:00").toLocaleDateString("pt-BR")}${idade !== null ? ` (${idade} anos)` : ""}`],
+    ["E-mail", i.email], ["WhatsApp", formatarCelular(i.celular)], ["CPF", formatarCPF(i.cpf)],
+    ["CEP", `${formatarCEP(i.cep)}${i.cidade ? ` · ${i.cidade}/${i.uf}` : ""}`],
+    ["Partido", i.partido], ["Movimento", i.movimento],
+  ];
+  const selo = i.situacao === "aceita" ? `<span class="mil-novo__selo mil-novo__selo--ok">Aceito</span>` : i.situacao === "recusada" ? `<span class="mil-novo__selo">Recusado</span>` : "";
+  return `<li class="mil-novo">
+    <div class="mil-novo__topo"><strong>${esc(i.nome)}</strong>${selo}<time>${esc(dataPorExtenso(i.criado_em))}</time></div>
+    <dl>${linhas.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+    <div class="mil-novo__acoes">
+      ${i.situacao === "pendente" ? `<button class="botao botao--vermelho" type="button" data-aceitar="${i.id}">Aceitar e enviar boas-vindas</button>
+        <button class="botao botao--claro" type="button" data-recusar="${i.id}">Recusar</button>`
+      : i.situacao === "aceita" ? `<button class="botao botao--claro" type="button" data-whats="${i.id}">Abrir WhatsApp de novo</button>` : ""}
+    </div>
+  </li>`;
+}
+function mostrarInscricoes() {
+  const pend = inscricoes.filter((i) => i.situacao === "pendente"), dec = inscricoes.filter((i) => i.situacao !== "pendente");
+  $("lista-novos").innerHTML = pend.length ? pend.map(cartaoInscricao).join("") : `<li class="mil-aviso-vazio">Nenhum pedido novo por enquanto.</li>`;
+  $("caixa-decididos").hidden = !dec.length; $("lista-decididos").innerHTML = dec.map(cartaoInscricao).join("");
+}
+function abrirWhatsBoasVindas(i) {
+  const url = `https://wa.me/55${i.celular}?text=${encodeURIComponent(boasVindas(i.nome))}`;
+  if (!window.open(url, "_blank")) location.href = url;
+}
+async function decidir(id, situacao) {
+  const { error } = await supa.from("inscricoes").update({ situacao, decidido_por: perfil.id, decidido_em: new Date().toISOString() }).eq("id", id);
+  if (error) { avisar(mensagemErro(error), "erro"); return false; }
+  const i = inscricoes.find((x) => x.id === id); if (i) i.situacao = situacao;
+  const n = inscricoes.filter((x) => x.situacao === "pendente").length;
+  $("novos-contador").hidden = !n; $("novos-contador").textContent = n;
+  mostrarInscricoes(); return true;
+}
+$("janela-novos").addEventListener("click", async (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  if (b.dataset.aceitar) {
+    const i = inscricoes.find((x) => x.id === Number(b.dataset.aceitar));
+    abrirWhatsBoasVindas(i);          // abre já, para o navegador não bloquear
+    await decidir(i.id, "aceita");
+  } else if (b.dataset.recusar) {
+    const i = inscricoes.find((x) => x.id === Number(b.dataset.recusar));
+    if (confirm(`Recusar o pedido de ${i.nome}?`)) await decidir(i.id, "recusada");
+  } else if (b.dataset.whats) abrirWhatsBoasVindas(inscricoes.find((x) => x.id === Number(b.dataset.whats)));
+});
+$("abrir-novos").addEventListener("click", () => { mostrarInscricoes(); $("janela-novos").showModal(); document.documentElement.classList.add("janela-aberta"); });
+$("fechar-novos").addEventListener("click", () => $("janela-novos").close());
+$("janela-novos").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
+
 // ---------- criação de conteúdo (gerador de imagens) ----------
 $("abrir-gerador").addEventListener("click", () => {
   const q = $("gerador-quadro");
@@ -507,7 +575,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   $("area").hidden = false;
   mostrarCabecalho(); carregarCarteirinha();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
-  carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas();
+  carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas(); carregarInscricoes();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
   await carregarLinks();
   if (error) { mostrarResumo(); mostrarNucleos(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=35">
+  <link rel="stylesheet" href="assets/style.css?v=36">
 </head>
 <body data-pagina="militante">
 <main>
@@ -93,6 +93,10 @@
             <h2>Criação de conteúdo</h2>
             <button class="botao botao--vermelho" type="button" id="abrir-gerador">Editar</button>
           </div>
+          <div class="mil-linha mil-linha--admin" id="linha-novos" hidden>
+            <h2>Novos militantes <span class="mil-contador" id="novos-contador" hidden></span></h2>
+            <button class="botao botao--vermelho" type="button" id="abrir-novos">Conferir</button>
+          </div>
         </div>
 
         <section class="mil-engajados mil-camaradas" id="camaradas" hidden aria-label="Conheça outros camaradas">
@@ -111,6 +115,24 @@
 <dialog class="pedir-conta mil-janela-camarada" id="janela-camarada" aria-labelledby="camarada-nome">
   <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-camarada">×</button>
   <div class="pedir-conta__corpo" id="camarada-corpo"></div>
+</dialog>
+
+<dialog class="ficha-mil mil-janela-novos" id="janela-novos" aria-labelledby="novos-titulo">
+  <div class="mil-novos">
+    <div class="ficha-mil__topo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Administração</span>
+      <h2 id="novos-titulo">Novos militantes</h2>
+      <p>Pedidos feitos pelo botão “Quero me tornar um militante”, na página do regimento.</p>
+    </div>
+    <div class="ficha-mil__corpo">
+      <ul class="mil-novos__lista" id="lista-novos"></ul>
+      <details class="mil-novos__antigos" id="caixa-decididos" hidden>
+        <summary>Já respondidos</summary>
+        <ul class="mil-novos__lista" id="lista-decididos"></ul>
+      </details>
+    </div>
+    <div class="ficha-mil__botoes"><button class="botao botao--claro" type="button" id="fechar-novos">Fechar</button></div>
+  </div>
 </dialog>
 
 <dialog class="mil-janela-gerador" id="janela-gerador" aria-label="Criação de conteúdo">
@@ -243,6 +265,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=10"></script>
+<script src="assets/militante.js?v=11"></script>
 </body>
 </html>
