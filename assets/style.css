@@ -886,3 +886,24 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-simnao input { width: 22px; height: 22px; accent-color: var(--amarelo); }
 .mil-janela-convite .aviso { color: var(--preto); }
 .mil-convite-nota { display: block; text-align: center; margin-top: 12px; opacity: .9; }
+
+/* Área do Militante · Camaradas engajados (faixa vermelha com fotos passando) */
+.mil-engajados { background: var(--vermelho); color: var(--branco); margin: 0 0 30px; padding: 16px 0 14px; box-shadow: 8px 8px 0 var(--amarelo); overflow: hidden; }
+.mil-engajados__topo { padding: 0 20px 10px; display: flex; align-items: baseline; gap: 6px 16px; flex-wrap: wrap; }
+.mil-engajados__topo h2 { margin: 0; font-size: 30px; color: var(--amarelo); line-height: 1; }
+.mil-engajados__topo p { margin: 0; font-size: 14px; opacity: .92; }
+.mil-engajados__pista { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.mil-engajados__fila { display: flex; width: max-content; animation: engajados-correr 30s linear infinite; }
+.mil-engajados:hover .mil-engajados__fila { animation-play-state: paused; }
+@keyframes engajados-correr { to { transform: translateX(-50%); } }
+.mil-eng { margin: 0; padding: 4px 11px 0; width: 92px; flex: none; text-align: center; }
+.mil-eng__foto { position: relative; display: block; width: 64px; height: 64px; margin: 0 auto; }
+.mil-eng__foto img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; border: 3px solid var(--branco); background: var(--branco); }
+.mil-eng--top .mil-eng__foto img { border-color: var(--amarelo); }
+.mil-eng__foto i { position: absolute; right: -6px; bottom: -4px; font-style: normal; font-size: 12px; font-weight: 700; background: var(--preto); color: var(--branco); border-radius: 999px; min-width: 24px; height: 24px; display: grid; place-items: center; padding: 0 4px; }
+.mil-eng--top .mil-eng__foto i { background: none; font-size: 20px; }
+.mil-eng figcaption { margin-top: 6px; line-height: 1.15; }
+.mil-eng b { display: block; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mil-eng small { font-size: 11px; color: var(--amarelo); font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .mil-engajados__fila { animation: none; } .mil-engajados__pista { overflow-x: auto; } }
+@media (max-width: 700px) { .mil-engajados { box-shadow: 5px 5px 0 var(--amarelo); } .mil-engajados__topo h2 { font-size: 26px; } }

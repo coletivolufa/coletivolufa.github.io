@@ -334,11 +334,29 @@ function nivelXP(xp) {
   if (xp >= 1) return "Mobilizador(a)";
   return "";
 }
+// faixa "Camaradas engajados": fotos em círculos passando sozinhas, na ordem do ranking
+function mostrarEngajados(lista) {
+  const top = lista.slice(0, 15);
+  $("engajados").hidden = !top.length;
+  if (!top.length) return;
+  const medalha = ["🥇", "🥈", "🥉"];
+  const um = top.map((r, i) => `<figure class="mil-eng${i < 3 ? " mil-eng--top" : ""}">
+      <span class="mil-eng__foto"><img src="${esc(r.foto || "assets/img/avatar.svg")}" alt="" loading="lazy"><i>${medalha[i] || (i + 1) + "º"}</i></span>
+      <figcaption><b>${esc(primeiroNome(r.nome))}</b><small>${r.xp} XP</small></figcaption>
+    </figure>`).join("");
+  // repete a fila até encher a largura e duplica, para o movimento não ter emenda
+  const vezes = Math.max(1, Math.ceil(14 / top.length));
+  const bloco = um.repeat(vezes);
+  const fila = $("engajados-fila");
+  fila.innerHTML = bloco + bloco;
+  fila.style.animationDuration = Math.max(18, top.length * vezes * 2.6) + "s";
+}
 async function carregarRanking() {
   $("meu-codigo").textContent = perfil.matricula || "";
   const { data, error } = await supa.rpc("ranking_convites");
   const ol = $("ranking");
   if (error) { ol.innerHTML = `<li class="mil-aviso-vazio">O sistema de convites ainda não está ativado no banco de dados.</li>`; $("meu-xp").textContent = ""; return; }
+  mostrarEngajados(data || []);
   const eu = (data || []).find((r) => r.id === perfil.id);
   $("meu-xp").innerHTML = eu
     ? `Você tem <b>${eu.xp} XP</b> · ${eu.enviados} convite(s) enviado(s) · ${eu.cadastrados} cadastrado(s) <span class="mil-selo">${esc(nivelXP(Number(eu.xp)))}</span>`
