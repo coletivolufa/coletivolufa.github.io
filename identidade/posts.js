@@ -709,6 +709,87 @@ const MODELOS = {
     },
   },
 
+  // 9) Anúncio de artigo novo — feed 1080×1350: imagem de fundo, título, resumo e autor com foto redonda
+  artigo: {
+    nome: "Novo artigo", w: 1080, h: 1350,
+    campos: [
+      { id: "selo", rotulo: "Selo", padrao: "NOVO ARTIGO" },
+      { id: "titulo", rotulo: "Título do artigo (use *asteriscos* para destacar)", tipo: "area", padrao: "Por que o fim da escala 6x1 é *urgente*" },
+      { id: "resumo", rotulo: "Descrição curta", tipo: "area", padrao: "Trabalhar seis dias para descansar um não é natural: é uma escolha de quem lucra com o nosso tempo." },
+      { id: "autor", rotulo: "Nome do autor(a)", padrao: "Leonardo Duarte" },
+      { id: "funcao", rotulo: "Linha abaixo do nome (opcional)", padrao: "Militante do Coletivo Lufã" },
+      { id: "imagem", rotulo: "Imagem de fundo", tipo: "imagem" },
+      { id: "foto", rotulo: "Foto do autor(a) (fica no círculo)", tipo: "imagem" },
+      { id: "chamada", rotulo: "Chamada", padrao: "LEIA NO SITE · LINK NA BIO" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1350, X = 90, LARG = 900;
+      // fundo: a imagem cobrindo tudo; sem imagem, vermelho com raios
+      if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, H);
+      else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, H); raios(ctx, W / 2, 420, 26, "rgba(255,255,255,.06)", 0); }
+      // escurece o topo (logo) e a metade de baixo (texto) para ler em qualquer foto
+      let g = ctx.createLinearGradient(0, 0, 0, 260); g.addColorStop(0, "rgba(30,25,22,.65)"); g.addColorStop(1, "rgba(30,25,22,0)");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 260);
+      g = ctx.createLinearGradient(0, H * 0.3, 0, H); g.addColorStop(0, "rgba(30,25,22,0)"); g.addColorStop(0.45, "rgba(30,25,22,.82)"); g.addColorStop(1, "rgba(30,25,22,.96)");
+      ctx.fillStyle = g; ctx.fillRect(0, H * 0.3, W, H * 0.7);
+      assinatura(ctx, 70, 110, COR.branco, 38);
+
+      // de baixo para cima: faixa da chamada, linha do autor, resumo, título, selo
+      const FAIXA = H - 96;
+      const R = 62, CYa = FAIXA - 48 - R;   // círculo da foto
+      const temResumo = v.resumo.trim().length > 0;
+      let rb = null, hRes = 0;
+      if (temResumo) {
+        rb = caber(ctx, v.resumo, LARG, 150, 36, 27, 1.35, FONTE.texto);
+        const pars = rb.linhas.pars; rb.linhas = rb.linhas.slice(0, 3); rb.linhas.pars = pars;
+        hRes = yl(rb, rb.linhas.length - 1, 1.35) + rb.tam;
+      }
+      const rt = caber(ctx, v.titulo.toUpperCase(), LARG, 330, 116, 60, 0.95, FONTE.titulo);
+      const hTit = yl(rt, rt.linhas.length - 1, 0.95) + rt.tam * 0.85;
+      const fimRes = CYa - R - 44;
+      const iniRes = fimRes - hRes;
+      const fimTit = temResumo ? iniRes - 34 : fimRes;
+      const iniTit = fimTit - hTit;
+      // selo
+      etiqueta(ctx, v.selo.toUpperCase(), X, iniTit - 46, 50, COR.amarelo, COR.preto);
+      // título
+      fonte(ctx, rt.tam, FONTE.titulo); ctx.textAlign = "left";
+      rt.linhas.forEach((l, i) => {
+        const y = iniTit + rt.tam * 0.85 + yl(rt, i, 0.95);
+        if (AJUSTE.sombra) linhaDestacada(ctx, l.replace(/\*/g, ""), X + 6, y + 6, "rgba(0,0,0,.55)", "rgba(0,0,0,.55)");
+        linhaDestacada(ctx, l, X, y, COR.branco, COR.amarelo);
+      });
+      // resumo
+      if (temResumo) {
+        ctx.fillStyle = COR.amarelo; ctx.fillRect(X, iniRes - 18, 70, 6);
+        fonte(ctx, rb.tam, FONTE.texto); ctx.textAlign = "left";
+        rb.linhas.forEach((l, i) => linhaDestacada(ctx, l, X, iniRes + rb.tam * 0.85 + yl(rb, i, 1.35), "#efe6d6", COR.amarelo));
+      }
+      // autor: foto redonda com aro amarelo + nome
+      const CX = X + R;
+      ctx.save(); ctx.beginPath(); ctx.arc(CX, CYa, R + 7, 0, Math.PI * 2); ctx.fillStyle = COR.amarelo; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.arc(CX, CYa, R, 0, Math.PI * 2); ctx.clip();
+      if (v.foto) imagemCobrindo(ctx, v.foto, CX - R, CYa - R, R * 2, R * 2);
+      else {
+        ctx.fillStyle = COR.vermelho; ctx.fillRect(CX - R, CYa - R, R * 2, R * 2);
+        const ini = v.autor.trim().split(/\s+/).filter(Boolean); const sig = ((ini[0] || "?")[0] + (ini.length > 1 ? ini[ini.length - 1][0] : "")).toUpperCase();
+        fonte(ctx, 56, FONTE.titulo); ctx.fillStyle = COR.branco; ctx.textAlign = "center"; ctx.fillText(sig, CX, CYa + 20);
+      }
+      ctx.restore();
+      const NX = CX + R + 30, temFuncao = v.funcao.trim().length > 0;
+      fonte(ctx, 22, FONTE.texto, "700"); ctx.fillStyle = COR.amarelo; ctx.textAlign = "left";
+      ctx.fillText("POR", NX, CYa - (temFuncao ? 34 : 22));
+      let tn = 50; fonte(ctx, tn, fsub(FONTE.titulo)); while (ctx.measureText(v.autor.toUpperCase()).width > W - NX - 70 && tn > 28) { tn -= 2; fonte(ctx, tn, fsub(FONTE.titulo)); }
+      ctx.fillStyle = COR.branco; ctx.fillText(v.autor.toUpperCase(), NX, CYa + (temFuncao ? 14 : 22));
+      if (temFuncao) { fonte(ctx, 26, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.fillText(v.funcao, NX, CYa + 50); }
+      // faixa da chamada
+      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, FAIXA, W, H - FAIXA);
+      fonte(ctx, 40, fsub(FONTE.titulo)); ctx.fillStyle = COR.branco; ctx.textAlign = "left"; ctx.fillText(v.chamada.toUpperCase(), X, FAIXA + 62);
+      fonte(ctx, 34); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - X, FAIXA + 60);
+      grao(ctx, W, H, 0.05);
+    },
+  },
+
   // Notícia vertical (story e Reels) — 1080×1920
   noticiaStory: {
     nome: "Notícia · story", w: 1080, h: 1920,
