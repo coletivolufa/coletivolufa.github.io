@@ -1060,3 +1060,9 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 @media (max-width: 420px) { .ficha-foto { flex-direction: column; text-align: center; } .ficha-foto__texto { align-items: center; } .ficha-foto__botao { align-self: center; } }
 .ficha-foto--pisca { animation: foto-pisca .5s ease-in-out 2; }
 @keyframes foto-pisca { 50% { box-shadow: 0 0 0 5px var(--vermelho); } }
+/* opção em bolinha (ex.: "Prefiro não anexar" no CPF) */
+.mil-check--bolinha { align-items: center; }
+.mil-check--bolinha input { appearance: none; -webkit-appearance: none; box-sizing: border-box; width: 24px !important; height: 24px !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; border: 2px solid var(--vermelho); border-radius: 50%; background: #fff; box-shadow: none; display: grid; place-content: center; flex: none; }
+.mil-check--bolinha input::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--vermelho); transform: scale(0); transition: transform .12s; }
+.mil-check--bolinha input:checked::before { transform: scale(1); }
+#f-cpf:disabled { opacity: .5; background: #eee; }

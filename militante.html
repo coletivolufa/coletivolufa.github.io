@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=40">
+  <link rel="stylesheet" href="assets/style.css?v=41">
 </head>
 <body data-pagina="militante">
 <main>
@@ -288,7 +288,8 @@
     <!-- passo 3 -->
     <fieldset class="ficha-mil__passo" data-passo="3" hidden>
       <legend>Cadastro completo</legend>
-      <div class="campo"><label for="f-cpf">CPF</label><input id="f-cpf" inputmode="numeric" required placeholder="000.000.000-00" maxlength="14"></div>
+      <div class="campo"><label for="f-cpf">CPF</label><input id="f-cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+        <label class="mil-check mil-check--bolinha" style="margin:10px 0 0"><input type="checkbox" id="f-sem-cpf"> Prefiro não anexar</label></div>
       <div class="campo"><label for="f-mae">Nome da mãe</label><input id="f-mae" maxlength="120" required></div>
       <div class="campo"><label for="f-religiao">Religião</label><select id="f-religiao" required></select></div>
       <div class="campo"><label for="f-ocupacao">Ocupação</label><select id="f-ocupacao" required></select></div>
@@ -333,6 +334,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=20"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=15"></script>
+<script src="assets/militante.js?v=16"></script>
 </body>
 </html>

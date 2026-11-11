@@ -112,6 +112,13 @@ function bloquear(titulo, texto, link, rotulo) {
   if (link) { $("bloqueio-link").href = link; $("bloqueio-link").textContent = rotulo; $("bloqueio-link").hidden = false; } else $("bloqueio-link").hidden = true;
 }
 ["f-celular"].forEach((id) => $(id).addEventListener("blur", () => { if (celularValido(celularLimpo($(id).value))) $(id).value = formatarCelular($(id).value); }));
+// CPF é opcional: "Prefiro não anexar" libera seguir sem ele
+function trocarSemCPF() {
+  const sem = $("f-sem-cpf").checked;
+  $("f-cpf").disabled = sem;
+  if (sem) { $("f-cpf").value = ""; $("f-cpf").classList.remove("campo-erro"); $("ficha-erro").hidden = true; }
+}
+$("f-sem-cpf").addEventListener("change", trocarSemCPF);
 $("f-cpf").addEventListener("input", () => { const c = soNumeros($("f-cpf").value).slice(0, 11); $("f-cpf").value = c.length === 11 ? formatarCPF(c) : c; });
 $("f-cep").addEventListener("input", () => { const c = soNumeros($("f-cep").value).slice(0, 8); $("f-cep").value = c.length > 5 ? c.slice(0, 5) + "-" + c.slice(5) : c; if (c.length === 8) buscarCEP(); });
 $("f-ocupacao").addEventListener("change", () => { $("campo-ocupacao-outra").hidden = $("f-ocupacao").value !== "Outra"; });
@@ -215,7 +222,10 @@ function conferirPasso(n) {
       vazio("f-uf", "estado") && vazio("f-nasc-cidade", "cidade de nascimento") && vazio("f-nasc-uf", "estado de nascimento");
   }
   if (n === 3) {
-    if (!cpfValido($("f-cpf").value)) return erroFicha("CPF inválido. Confira os números.", "f-cpf");
+    if (!$("f-sem-cpf").checked) {
+      if (!soNumeros($("f-cpf").value)) return erroFicha("Digite o seu CPF ou marque \"Prefiro não anexar\".", "f-cpf");
+      if (!cpfValido($("f-cpf").value)) return erroFicha("CPF inválido. Confira os números ou marque \"Prefiro não anexar\".", "f-cpf");
+    }
     if (!vazio("f-mae", "nome da mãe") || !vazio("f-religiao", "religião") || !vazio("f-ocupacao", "ocupação")) return false;
     if ($("f-ocupacao").value === "Outra" && !vazio("f-ocupacao-outra", "qual é a sua ocupação")) return false;
     return vazio("f-renda", "renda mensal") && vazio("f-escolaridade", "escolaridade");
@@ -242,6 +252,7 @@ function preencherFicha() {
   $("f-bairro").value = f.bairro || ""; $("f-cidade").value = f.cidade || perfil.cidade || ""; $("f-uf").value = f.uf || perfil.uf || "";
   $("f-nasc-cidade").value = f.nasc_cidade || ""; $("f-nasc-uf").value = f.nasc_uf || "";
   $("f-cpf").value = formatarCPF(f.cpf || ""); $("f-mae").value = f.nome_mae || "";
+  $("f-sem-cpf").checked = !!(f.completo_em && !f.cpf); trocarSemCPF();
   $("f-religiao").value = f.religiao || "";
   const naLista = OCUPACOES.includes(f.ocupacao);
   $("f-ocupacao").value = f.ocupacao ? (naLista ? f.ocupacao : "Outra") : "";
@@ -302,7 +313,7 @@ $("form-ficha").addEventListener("submit", async (ev) => {
       cep: soNumeros($("f-cep").value), rua: $("f-rua").value.trim(), numero: $("f-numero").value.trim(),
       complemento: $("f-complemento").value.trim(), bairro: $("f-bairro").value.trim(), cidade: $("f-cidade").value.trim(), uf: $("f-uf").value,
       nasc_cidade: $("f-nasc-cidade").value.trim(), nasc_uf: $("f-nasc-uf").value,
-      cpf: soNumeros($("f-cpf").value), nome_mae: $("f-mae").value.trim(), religiao: $("f-religiao").value,
+      cpf: $("f-sem-cpf").checked ? "" : soNumeros($("f-cpf").value), nome_mae: $("f-mae").value.trim(), religiao: $("f-religiao").value,
       ocupacao: $("f-ocupacao").value === "Outra" ? $("f-ocupacao-outra").value.trim() : $("f-ocupacao").value,
       renda: $("f-renda").value, escolaridade: $("f-escolaridade").value,
       pautas: pautasMarcadas(), nucleos: [...new Set(["marxista", ...nucleosMarcados()])].slice(0, MAX_NUCLEOS),
