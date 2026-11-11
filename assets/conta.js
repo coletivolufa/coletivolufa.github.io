@@ -28,7 +28,15 @@ function abrirCanal(depois) {
   depoisDoCanal = depois || null;
   const j = $("janela-canal"); if (!j.open) j.showModal();
 }
-$("janela-canal").addEventListener("close", () => { const f = depoisDoCanal; depoisDoCanal = null; if (f) f(); });
+$("janela-canal").addEventListener("close", () => { const f = depoisDoCanal; depoisDoCanal = null; if (f) f(); abrirAvisoMilitante(); });
+// militante (membro ativo): toda vez que entra em Minha conta, um aviso leva para a Área do Militante.
+// Só fecha pelo botão "Entrar agora" (que abre a Área do Militante); espera as outras janelas obrigatórias.
+function abrirAvisoMilitante() {
+  if (!perfil || !APROVADO.includes(perfil.papel) || ehComum(perfil)) return;
+  if (["janela-canal", "janela-celular", "janela-militante"].some((id) => $(id).open)) return;
+  $("janela-militante").showModal();
+}
+$("janela-militante").addEventListener("cancel", (ev) => ev.preventDefault());
 // sem "agora não": a janela só fecha depois que a pessoa clica para entrar no canal
 $("janela-canal").addEventListener("cancel", (ev) => ev.preventDefault());
 const chaveCanal = () => "lufa_canal_" + (perfil ? perfil.id : "novo");
@@ -116,7 +124,7 @@ async function mostrar() {
   try { perfil = await meuPerfil(); } catch (e) { return avisar(mensagemErro(e), "erro"); }
   if (!perfil) return avisar("Seu perfil ainda está sendo criado. Recarregue a página em alguns segundos.", "erro");
   $("titulo").textContent = "Olá, " + (perfil.nome.split(" ")[0] || "camarada") + "!";
-  $("subtitulo").textContent = APROVADO.includes(perfil.papel) ? "Bem-vindo(a) à área do militante." : "Sua conta foi criada.";
+  $("subtitulo").textContent = APROVADO.includes(perfil.papel) ? "Bem-vindo(a) à área do membro." : "Sua conta foi criada.";
   $("topo-nome").textContent = perfil.nome || perfil.email;
   $("topo-status").textContent = APROVADO.includes(perfil.papel) ? `${textoOcupacao(perfil)} · ${PAPEIS[perfil.papel]}` : (PAPEIS[perfil.papel] || perfil.papel);
   $("topo-status").dataset.papel = perfil.papel;
@@ -134,6 +142,7 @@ async function mostrar() {
   // quem já era cadastrado e ainda não tem celular: pede para atualizar
   if (temColunaCelular && !perfil.celular && !$("janela-canal").open && !$("janela-celular").open) $("janela-celular").showModal();
   else if (!jaEntrouNoCanal() && !$("janela-canal").open && !$("janela-celular").open) abrirCanal();
+  abrirAvisoMilitante();
   document.querySelector('[data-aba="carteirinha"]').hidden = !APROVADO.includes(perfil.papel);
   // artigos: só membros ativos com permissão de autor, editor ou admin
   // todo membro ativo pode escrever artigos (e editar os próprios)
