@@ -1066,3 +1066,12 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-check--bolinha input::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--vermelho); transform: scale(0); transition: transform .12s; }
 .mil-check--bolinha input:checked::before { transform: scale(1); }
 #f-cpf:disabled { opacity: .5; background: #eee; }
+/* grupo geral dos militantes */
+.mil-grupo { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--vermelho); color: var(--branco); padding: 18px 20px; margin: 0 0 24px; box-shadow: 6px 6px 0 var(--amarelo); }
+.mil-grupo h2 { font-family: var(--titulo); font-size: 34px; line-height: 1; margin: 0 0 4px; color: var(--branco); }
+.mil-grupo p { margin: 0; font-size: 15px; opacity: .92; max-width: 420px; }
+.mil-grupo__texto { flex: 1 1 260px; }
+.mil-grupo__botao { font-size: 20px; text-transform: uppercase; white-space: nowrap; }
+.mil-grupo__breve { font-weight: 700; opacity: .85; }
+.mil-grupo .mil-nucleo__link { color: var(--branco); flex-basis: 100%; text-align: left; }
+@media (max-width: 520px) { .mil-grupo__botao { width: 100%; text-align: center; } }

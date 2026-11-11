@@ -421,6 +421,25 @@ async function carregarLinks() {
   links = Object.fromEntries((data || []).map((n) => [n.slug, n.link]));
 }
 
+// ---------- grupo geral dos militantes (o link fica no banco, junto com os dos núcleos, e só militantes leem) ----------
+function mostrarGrupoGeral() {
+  const link = links.geral || "", admin = perfil.papel === "admin";
+  $("grupo-geral").hidden = !link && !admin;
+  $("grupo-geral-link").hidden = !link; if (link) $("grupo-geral-link").href = link;
+  $("grupo-geral-breve").hidden = !!link;
+  $("grupo-geral-trocar").hidden = !admin;
+  $("grupo-geral-trocar").textContent = link ? "Trocar link do grupo" : "Definir link do grupo";
+}
+$("grupo-geral-trocar").addEventListener("click", async () => {
+  const novo = prompt("Cole o link do grupo geral no WhatsApp (começa com https://). Deixe vazio para tirar o link:", links.geral || "");
+  if (novo === null) return;
+  const link = novo.trim();
+  if (link && !/^https:\/\//i.test(link)) return avisar("O link precisa começar com https://", "erro");
+  const { error } = await supa.from("nucleos_grupos").update({ link }).eq("slug", "geral");
+  if (error) return avisar(mensagemErro(error), "erro");
+  links.geral = link; mostrarGrupoGeral(); avisar("Link do grupo geral atualizado.", "ok");
+});
+
 // ---------- convites e XP ----------
 const WHATS_CONVITES = "5521976254597"; // número que recebe os convites
 function nivelXP(xp) {
@@ -810,7 +829,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   $("linha-artigo").hidden = false; // todo militante pode publicar artigos
   carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas(); carregarInscricoes();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
-  await carregarLinks();
+  await carregarLinks(); mostrarGrupoGeral();
   if (error) { mostrarResumo(); mostrarNucleos(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }
   ficha = data; mostrarResumo(); mostrarNucleos();
   // cadastro completo = passou pelos 4 passos (inclusive a parte de militância)
