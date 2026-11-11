@@ -799,3 +799,8 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .mil-novo-aviso form { margin-top: 12px; }
 .ficha-mil__passos li { min-width: 120px; }
 @media (max-width: 700px) { .mil-escolha-nucleos { grid-template-columns: repeat(2, 1fr); } .mil-grade-nucleos { grid-template-columns: repeat(2, 1fr); gap: 12px; } .mil-nucleo h3 { font-size: 19px; } }
+
+/* cabeçalho com a faixa que corre (Área do Militante) */
+.cabecalho-pagina--faixa { padding-bottom: 150px; }
+.cabecalho-pagina--faixa::after { display: none; }
+.cabecalho-pagina--faixa .faixa { z-index: 2; }
