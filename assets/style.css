@@ -1078,8 +1078,8 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 /* aviso para militantes em Minha conta: Che em silhueta e botão piscando vermelho/amarelo */
 .pedir-conta--militante { width: min(500px, calc(100vw - 28px)); max-height: calc(100dvh - 24px); overflow: auto; }
 .pedir-conta--militante .pedir-conta__corpo { padding: 0 26px 30px; }
-.pedir-conta__che { background: var(--branco); margin: 0 -26px 22px; padding: 22px 0 0; border-bottom: 8px solid var(--amarelo); }
-.pedir-conta__che img { display: block; width: min(230px, 52vw); height: auto; margin: 0 auto; }
+.pedir-conta__che { padding: 28px 0 0; margin: 0 0 18px; }
+.pedir-conta__che img { display: block; width: min(250px, 58vw); height: auto; margin: 0 auto; filter: drop-shadow(6px 6px 0 rgba(0,0,0,.25)); }
 .pedir-conta--militante h2 { font-family: var(--titulo); font-size: clamp(30px, 8vw, 40px); line-height: 1.02; margin: 0 0 12px; color: var(--branco); }
 .pedir-conta--militante h2 span { color: var(--amarelo); }
 .pedir-conta--militante p { font-size: 16px; line-height: 1.45; margin: 0 0 22px; }
