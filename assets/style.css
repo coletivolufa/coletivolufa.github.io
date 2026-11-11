@@ -757,3 +757,45 @@ main.catalogo { background: var(--preto); color: var(--papel); }
   .ficha-mil .aviso { margin: 0 18px 14px; }
   .ficha-mil__passos li { min-width: 0; font-size: 15px; padding: 6px 8px; }
 }
+
+/* Área do Militante · passo 4, núcleos e avisos compactos */
+.mil-chips { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; max-height: 340px; overflow: auto; border: 2px solid var(--linha); background: var(--branco); padding: 14px; }
+.mil-chips__grupo { display: flex; flex-wrap: wrap; gap: 8px; }
+.mil-chips__grupo > span { flex-basis: 100%; font-family: var(--titulo); font-size: 19px; letter-spacing: .04em; color: var(--vermelho); }
+.mil-chip { cursor: pointer; }
+.mil-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.mil-chip i { display: inline-block; font-style: normal; font-size: 14px; padding: 7px 12px; border: 2px solid var(--preto); background: var(--branco); line-height: 1.2; }
+.mil-chip input:checked + i { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); font-weight: 700; }
+.mil-chip input:checked + i::before { content: "✓ "; }
+.mil-chip input:focus-visible + i { outline: 3px solid var(--amarelo); }
+.mil-escolha-nucleos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
+.mil-nucleo-op { position: relative; display: flex; flex-direction: column; gap: 6px; border: 3px solid var(--linha); background: var(--branco); padding: 8px; cursor: pointer; text-align: center; font-size: 14px; }
+.mil-nucleo-op img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.mil-nucleo-op input { position: absolute; top: 12px; left: 12px; width: 22px; height: 22px; accent-color: var(--vermelho); }
+.mil-nucleo-op:has(input:checked) { border-color: var(--vermelho); box-shadow: 5px 5px 0 var(--amarelo); }
+.mil-nucleo-op.travado { opacity: .45; cursor: not-allowed; }
+.mil-nucleo-op em { font-style: normal; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--vermelho); font-weight: 700; }
+.mil-nucleos h2 { margin: 0 0 18px; }
+.mil-grade-nucleos { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+.mil-nucleo { display: flex; flex-direction: column; gap: 10px; align-items: stretch; text-align: center; }
+.mil-nucleo img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; box-shadow: 6px 6px 0 var(--preto); }
+.mil-nucleo h3 { font-family: var(--titulo); font-size: 24px; margin: 4px 0 0; line-height: 1; }
+.mil-nucleo .botao { justify-content: center; text-align: center; }
+.mil-nucleo__breve { background: var(--linha); color: var(--cinza); box-shadow: none; cursor: default; }
+.mil-nucleo__link { background: none; border: 0; color: var(--vermelho); text-decoration: underline; cursor: pointer; font: inherit; font-size: 13px; padding: 0; }
+.mil-nucleo small { color: var(--cinza); font-size: 12px; }
+.mil-nucleo--fora img { opacity: .55; }
+/* avisos menores */
+.mil-avisos { padding-top: 22px; padding-bottom: 22px; }
+.mil-avisos h2 { font-size: 34px; margin-bottom: 12px; }
+.mil-lista-avisos { gap: 8px; max-height: 300px; overflow: auto; }
+.mil-aviso { padding: 9px 14px; border-left-width: 5px; }
+.mil-aviso__topo strong { font-family: var(--texto, inherit); font-size: 16px; letter-spacing: 0; font-weight: 700; }
+.mil-aviso__topo time { font-size: 12px; }
+.mil-aviso__texto { margin-top: 3px; font-size: 14px; line-height: 1.45; }
+.mil-aviso__apagar { margin-top: 4px; font-size: 12px; }
+.mil-novo-aviso { padding: 10px 14px; margin-bottom: 12px; }
+.mil-novo-aviso summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var(--vermelho); }
+.mil-novo-aviso form { margin-top: 12px; }
+.ficha-mil__passos li { min-width: 120px; }
+@media (max-width: 700px) { .mil-escolha-nucleos { grid-template-columns: repeat(2, 1fr); } .mil-grade-nucleos { grid-template-columns: repeat(2, 1fr); gap: 12px; } .mil-nucleo h3 { font-size: 19px; } }

@@ -37,6 +37,11 @@ create table if not exists public.fichas (
   religiao           text not null default '' check (char_length(religiao) <= 60),
   ocupacao           text not null default '' check (char_length(ocupacao) <= 80),
   renda              text not null default '' check (char_length(renda) <= 60),
+  escolaridade       text not null default '' check (char_length(escolaridade) <= 60),
+  pautas             text[] not null default '{}',
+  nucleos            text[] not null default '{}',
+  partido            text not null default '' check (char_length(partido) <= 60),
+  movimento          text not null default '' check (char_length(movimento) <= 200),
   consentimento_em   timestamptz,
   completo_em        timestamptz,
   atualizado_em      timestamptz not null default now()
@@ -99,7 +104,33 @@ create policy "avisos: admin apaga" on public.avisos_militantes
 revoke all on public.avisos_militantes from anon;
 grant select, insert, update, delete on public.avisos_militantes to authenticated;
 
--- ---------- 4. fim da Comunidade ----------
+-- (se a tabela fichas já existia de uma versão anterior, garante as colunas novas)
+alter table public.fichas add column if not exists escolaridade text not null default '';
+alter table public.fichas add column if not exists pautas text[] not null default '{}';
+alter table public.fichas add column if not exists nucleos text[] not null default '{}';
+alter table public.fichas add column if not exists partido text not null default '';
+alter table public.fichas add column if not exists movimento text not null default '';
+
+-- ---------- 4. grupos de WhatsApp dos núcleos (militantes leem; só admin altera) ----------
+create table if not exists public.nucleos_grupos (
+  slug  text primary key check (slug in ('marxista', 'racial', 'povos', 'feminista', 'cultural', 'lgbtqia')),
+  link  text not null default '' check (link = '' or link ~ '^https://')
+);
+insert into public.nucleos_grupos (slug) values
+  ('marxista'), ('racial'), ('povos'), ('feminista'), ('cultural'), ('lgbtqia')
+on conflict (slug) do nothing;
+
+alter table public.nucleos_grupos enable row level security;
+drop policy if exists "nucleos: militantes leem" on public.nucleos_grupos;
+create policy "nucleos: militantes leem" on public.nucleos_grupos
+  for select using (public.sou_militante() or public.eh_admin());
+drop policy if exists "nucleos: admin altera" on public.nucleos_grupos;
+create policy "nucleos: admin altera" on public.nucleos_grupos
+  for update using (public.eh_admin()) with check (public.eh_admin());
+revoke all on public.nucleos_grupos from anon;
+grant select, update on public.nucleos_grupos to authenticated;
+
+-- ---------- 5. fim da Comunidade ----------
 -- A página da Comunidade saiu do site. Esta função mostrava sexo, gênero e
 -- orientação de um membro a outros membros; agora ninguém além da própria
 -- pessoa e da administração vê esses dados.

@@ -3,7 +3,8 @@
    Depende de assets/supa.js. As regras do banco estão em supabase/17-area-do-militante.sql. */
 
 const $ = (id) => document.getElementById(id);
-let perfil = null, ficha = null, passo = 1, fichaObrigatoria = false;
+let perfil = null, ficha = null, passo = 1, fichaObrigatoria = false, links = {};
+const ULTIMO = 4;
 
 // ---------- listas ----------
 const UFS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
@@ -21,6 +22,36 @@ const OCUPACOES = ["Estudante", ...["Administrador(a)", "Advogado(a)", "Agricult
   "Nutricionista", "Operador(a) de caixa", "Operário(a) de fábrica", "Pedreiro(a) / construção civil", "Pesquisador(a)", "Professor(a)",
   "Psicólogo(a)", "Publicitário(a)", "Recepcionista", "Servidor(a) público(a)", "Técnico(a) de enfermagem", "Trabalhador(a) rural",
   "Vendedor(a)", "Vigilante / segurança"].sort((a, b) => a.localeCompare(b, "pt-BR")), "Outra"];
+const ESCOLARIDADES = ["Ensino fundamental incompleto", "Ensino fundamental completo", "Ensino médio incompleto", "Ensino médio completo",
+  "Ensino técnico", "Ensino superior incompleto", "Ensino superior completo", "Pós-graduação / especialização", "Mestrado", "Doutorado"];
+// só partidos de esquerda e centro-esquerda; "Não" em primeiro
+const PARTIDOS = ["Não sou filiado(a)", "PCB", "PCdoB", "PCO", "PDT", "PSB", "PSOL", "PSTU", "PT", "PV", "Rede Sustentabilidade", "Solidariedade", "UP (Unidade Popular)"];
+const NUCLEOS = [
+  { slug: "marxista", nome: "Núcleo Marxista", fixo: true },
+  { slug: "racial", nome: "Núcleo Racial" },
+  { slug: "feminista", nome: "Núcleo Feminista" },
+  { slug: "lgbtqia", nome: "Núcleo LGBTQIA+" },
+  { slug: "povos", nome: "Núcleo dos Povos Originários" },
+  { slug: "cultural", nome: "Núcleo Cultural" },
+];
+const MAX_NUCLEOS = 3, MIN_PAUTAS = 3;
+const PAUTAS = [
+  ["Trabalho e renda", ["Fim da escala 6x1 e redução da jornada", "Salário mínimo e valorização do trabalho", "Direitos dos trabalhadores de aplicativo",
+    "Combate ao desemprego e à informalidade", "Sindicalismo e organização dos trabalhadores", "Previdência e aposentadoria"]],
+  ["Economia e terra", ["Taxação dos super-ricos e justiça tributária", "Combate à fome e segurança alimentar", "Combate à desigualdade social",
+    "Reforma agrária", "Agricultura familiar e agroecologia", "Soberania nacional e defesa das estatais", "Dívida pública e juros altos"]],
+  ["Direitos sociais", ["Saúde pública e defesa do SUS", "Saúde mental", "Educação pública e de qualidade", "Acesso à universidade e cotas",
+    "Moradia e reforma urbana", "Transporte público e tarifa zero", "Saneamento básico e acesso à água", "Assistência social e Bolsa Família"]],
+  ["Igualdade e diversidade", ["Pauta racial e combate ao racismo", "Feminismo e direitos das mulheres", "Combate à violência contra a mulher",
+    "Direitos reprodutivos", "Pauta LGBTQIA+", "Povos indígenas e demarcação de terras", "Quilombolas e comunidades tradicionais",
+    "Direitos das pessoas com deficiência", "Infância e juventude", "Direitos das pessoas idosas", "Liberdade religiosa e combate à intolerância"]],
+  ["Meio ambiente", ["Meio ambiente e crise climática", "Defesa da Amazônia e combate ao desmatamento", "Transição energética", "Direitos dos animais"]],
+  ["Segurança e justiça", ["Segurança pública e violência policial", "Sistema prisional e desencarceramento", "Política de drogas", "Direitos humanos",
+    "Memória, verdade e justiça (ditadura militar)"]],
+  ["Democracia e comunicação", ["Defesa da democracia e combate ao fascismo", "Combate à desinformação e às fake news", "Regulação das redes e das big techs",
+    "Democratização da mídia", "Reforma política e participação popular"]],
+  ["Cultura e mundo", ["Cultura e acesso à arte", "Acesso à literatura e ao livro", "Política externa e diplomacia do Brasil", "Solidariedade internacional e causa palestina"]],
+];
 const RENDAS = ["Abaixo de 1 salário mínimo", "De 1 a 3 salários mínimos", "De 4 a 5 salários mínimos", "Acima de 6 salários mínimos", "Prefiro não dizer"];
 
 function opcoes(sel, lista, texto = "Escolha…") {
@@ -29,6 +60,21 @@ function opcoes(sel, lista, texto = "Escolha…") {
 opcoes("f-sexo", SEXOS); opcoes("f-genero", GENEROS); opcoes("f-orientacao", ORIENTACOES);
 opcoes("f-uf", UFS, "UF"); opcoes("f-nasc-uf", UFS, "UF");
 opcoes("f-religiao", RELIGIOES); opcoes("f-ocupacao", OCUPACOES); opcoes("f-renda", RENDAS);
+opcoes("f-escolaridade", ESCOLARIDADES); opcoes("f-partido", PARTIDOS);
+$("f-pautas").innerHTML = PAUTAS.map(([grupo, itens]) => `<div class="mil-chips__grupo"><span>${grupo}</span>${itens.map((p) =>
+  `<label class="mil-chip"><input type="checkbox" value="${esc(p)}"><i>${esc(p)}</i></label>`).join("")}</div>`).join("");
+$("f-nucleos").innerHTML = NUCLEOS.map((n) => `<label class="mil-nucleo-op${n.fixo ? " fixo" : ""}"><input type="checkbox" value="${n.slug}"${n.fixo ? " checked disabled" : ""}>
+  <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><b>${esc(n.nome)}</b>${n.fixo ? "<em>obrigatório</em>" : ""}</label>`).join("");
+const pautasMarcadas = () => [...document.querySelectorAll("#f-pautas input:checked")].map((i) => i.value);
+const nucleosMarcados = () => [...document.querySelectorAll("#f-nucleos input:checked")].map((i) => i.value);
+function contarPautas() { const n = pautasMarcadas().length; $("pautas-conta").textContent = n === 1 ? "1 escolhida" : `${n} escolhidas`; }
+$("f-pautas").addEventListener("change", contarPautas);
+// no máximo 3 núcleos (o Marxista já conta): ao chegar no limite, trava os que sobraram
+function travarNucleos() {
+  const cheio = nucleosMarcados().length >= MAX_NUCLEOS;
+  document.querySelectorAll("#f-nucleos input").forEach((i) => { if (i.value !== "marxista") { i.disabled = cheio && !i.checked; i.closest("label").classList.toggle("travado", i.disabled); } });
+}
+$("f-nucleos").addEventListener("change", travarNucleos);
 
 // ---------- utilidades ----------
 const soNumeros = (t) => String(t || "").replace(/\D/g, "");
@@ -96,7 +142,7 @@ function irPara(n) {
   document.querySelectorAll("#passos li").forEach((li, i) => { li.classList.toggle("feito", i + 1 < n); li.classList.toggle("atual", i + 1 === n); });
   $("ficha-voltar").hidden = n === 1;
   $("ficha-cancelar").hidden = fichaObrigatoria || n !== 1;
-  $("ficha-avancar").textContent = n === 3 ? "Salvar cadastro" : "Continuar";
+  $("ficha-avancar").textContent = n === ULTIMO ? "Concluir cadastro" : "Continuar";
   $("ficha-erro").hidden = true;
   $("janela-ficha").scrollTop = 0;
 }
@@ -120,10 +166,15 @@ function conferirPasso(n) {
     return vazio("f-rua", "rua") && vazio("f-numero", "número") && vazio("f-bairro", "bairro") && vazio("f-cidade", "cidade") &&
       vazio("f-uf", "estado") && vazio("f-nasc-cidade", "cidade de nascimento") && vazio("f-nasc-uf", "estado de nascimento");
   }
-  if (!cpfValido($("f-cpf").value)) return erroFicha("CPF inválido. Confira os números.", "f-cpf");
-  if (!vazio("f-mae", "nome da mãe") || !vazio("f-religiao", "religião") || !vazio("f-ocupacao", "ocupação")) return false;
-  if ($("f-ocupacao").value === "Outra" && !vazio("f-ocupacao-outra", "qual é a sua ocupação")) return false;
-  if (!vazio("f-renda", "renda mensal")) return false;
+  if (n === 3) {
+    if (!cpfValido($("f-cpf").value)) return erroFicha("CPF inválido. Confira os números.", "f-cpf");
+    if (!vazio("f-mae", "nome da mãe") || !vazio("f-religiao", "religião") || !vazio("f-ocupacao", "ocupação")) return false;
+    if ($("f-ocupacao").value === "Outra" && !vazio("f-ocupacao-outra", "qual é a sua ocupação")) return false;
+    return vazio("f-renda", "renda mensal") && vazio("f-escolaridade", "escolaridade");
+  }
+  if (pautasMarcadas().length < MIN_PAUTAS) { $("f-pautas").scrollIntoView({ behavior: "smooth", block: "center" }); return erroFicha(`Escolha pelo menos ${MIN_PAUTAS} pautas.`); }
+  if (!vazio("f-partido", "se você é filiado(a) a algum partido")) return false;
+  if (!String($("f-movimento").value).trim()) return erroFicha("Diga se participa de outro movimento popular. Caso não faça parte, escreva Não.", "f-movimento");
   if (!$("f-consentimento").checked) return erroFicha("Para salvar, marque a autorização de uso dos dados.", "f-consentimento");
   return true;
 }
@@ -148,6 +199,12 @@ function preencherFicha() {
   $("f-ocupacao-outra").value = f.ocupacao && !naLista ? f.ocupacao : "";
   $("campo-ocupacao-outra").hidden = $("f-ocupacao").value !== "Outra";
   $("f-renda").value = f.renda || "";
+  $("f-escolaridade").value = f.escolaridade || "";
+  const pt = f.pautas || [], nc = f.nucleos || [];
+  document.querySelectorAll("#f-pautas input").forEach((i) => (i.checked = pt.includes(i.value)));
+  document.querySelectorAll("#f-nucleos input").forEach((i) => (i.checked = i.value === "marxista" || nc.includes(i.value)));
+  contarPautas(); travarNucleos();
+  $("f-partido").value = f.partido || ""; $("f-movimento").value = f.movimento || "";
   $("f-consentimento").checked = !!f.consentimento_em;
   $("cep-status").textContent = "";
 }
@@ -169,7 +226,7 @@ $("editar-cadastro").addEventListener("click", () => abrirFicha(false));
 $("form-ficha").addEventListener("submit", async (ev) => {
   ev.preventDefault();
   if (!conferirPasso(passo)) return;
-  if (passo < 3) return irPara(passo + 1);
+  if (passo < ULTIMO) return irPara(passo + 1);
   const b = $("ficha-avancar"); b.disabled = true; b.textContent = "Salvando…";
   try {
     const nascimento = $("f-nascimento").value;
@@ -190,7 +247,9 @@ $("form-ficha").addEventListener("submit", async (ev) => {
       nasc_cidade: $("f-nasc-cidade").value.trim(), nasc_uf: $("f-nasc-uf").value,
       cpf: soNumeros($("f-cpf").value), nome_mae: $("f-mae").value.trim(), religiao: $("f-religiao").value,
       ocupacao: $("f-ocupacao").value === "Outra" ? $("f-ocupacao-outra").value.trim() : $("f-ocupacao").value,
-      renda: $("f-renda").value,
+      renda: $("f-renda").value, escolaridade: $("f-escolaridade").value,
+      pautas: pautasMarcadas(), nucleos: [...new Set(["marxista", ...nucleosMarcados()])].slice(0, MAX_NUCLEOS),
+      partido: $("f-partido").value, movimento: $("f-movimento").value.trim(),
       consentimento_em: (ficha && ficha.consentimento_em) || agora,
       completo_em: (ficha && ficha.completo_em) || agora,
     };
@@ -198,13 +257,14 @@ $("form-ficha").addEventListener("submit", async (ev) => {
     if (e2) throw e2;
     ficha = data; Object.assign(perfil, dadosPerfil);
     fichaObrigatoria = false; $("janela-ficha").close();
-    mostrarCabecalho(); mostrarResumo();
-    avisar("Cadastro salvo! Obrigado, camarada.", "ok");
+    mostrarCabecalho(); mostrarResumo(); mostrarNucleos();
+    avisar("Cadastro concluído! Obrigado, camarada. Agora entre nos grupos dos seus núcleos.", "ok");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (e) {
     const m = String((e && e.message) || "");
     erroFicha(/fichas_cpf_unico|duplicate key/i.test(m) ? "Este CPF já está cadastrado por outra pessoa. Fale com a secretaria." : mensagemErro(e));
   }
-  b.disabled = false; b.textContent = "Salvar cadastro";
+  b.disabled = false; b.textContent = "Concluir cadastro";
 });
 
 // ---------- tela ----------
@@ -221,7 +281,8 @@ function mostrarResumo() {
     ["Nome", perfil.nome], ["E-mail", perfil.email], ["Celular", formatarCelular(perfil.celular || "")],
     ["Nascimento", f.nascimento ? new Date(f.nascimento + "T12:00:00").toLocaleDateString("pt-BR") + (perfil.idade ? ` (${perfil.idade} anos)` : "") : ""],
     ["Endereço", endereco], ["Naturalidade", f.nasc_cidade ? `${f.nasc_cidade}/${f.nasc_uf}` : ""],
-    ["CPF", cpf], ["Ocupação", f.ocupacao], ["Renda", f.renda],
+    ["CPF", cpf], ["Ocupação", f.ocupacao], ["Renda", f.renda], ["Escolaridade", f.escolaridade],
+    ["Partido", f.partido], ["Outro movimento", f.movimento], ["Pautas", (f.pautas || []).join(" · ")],
   ];
   $("resumo").innerHTML = linhas.map(([k, v]) => `<div><dt>${k}</dt><dd>${v ? esc(v) : '<span class="mil-falta">não preenchido</span>'}</dd></div>`).join("") +
     `<p class="mil-privado">Esses dados só aparecem para você e para a administração do coletivo.</p>`;
@@ -241,6 +302,37 @@ function carregarCarteirinha() {
     img.src = url;
   };
   tentar(["carteirinha.jpg", "carteirinha.png"]);
+}
+
+// ---------- seus núcleos ----------
+function mostrarNucleos() {
+  const meus = (ficha && ficha.nucleos && ficha.nucleos.length) ? ficha.nucleos : ["marxista"];
+  const admin = perfil.papel === "admin";
+  const lista = admin ? NUCLEOS : NUCLEOS.filter((n) => meus.includes(n.slug));
+  $("meus-nucleos").innerHTML = lista.map((n) => {
+    const link = links[n.slug] || "", meu = meus.includes(n.slug);
+    return `<article class="mil-nucleo${meu ? "" : " mil-nucleo--fora"}">
+      <img src="assets/img/nucleos/${n.slug}.jpg" alt="Logo do ${esc(n.nome)}">
+      <h3>${esc(n.nome)}</h3>
+      ${link ? `<a class="botao botao--vermelho" href="${esc(link)}" target="_blank" rel="noopener">Participar agora</a>`
+             : `<span class="botao mil-nucleo__breve">Grupo em breve</span>`}
+      ${admin ? `<button type="button" class="mil-nucleo__link" data-link="${n.slug}">${link ? "Trocar link do grupo" : "Definir link do grupo"}</button>` : ""}
+      ${admin && !meu ? `<small>Você não está neste núcleo (aparece só para a administração).</small>` : ""}
+    </article>`; }).join("");
+  $("meus-nucleos").querySelectorAll("[data-link]").forEach((b) => b.addEventListener("click", async () => {
+    const slug = b.dataset.link;
+    const novo = prompt("Cole o link do grupo de WhatsApp deste núcleo (começa com https://). Deixe vazio para tirar o link:", links[slug] || "");
+    if (novo === null) return;
+    const link = novo.trim();
+    if (link && !/^https:\/\//i.test(link)) return avisar("O link precisa começar com https://", "erro");
+    const { error } = await supa.from("nucleos_grupos").update({ link }).eq("slug", slug);
+    if (error) return avisar(mensagemErro(error), "erro");
+    links[slug] = link; mostrarNucleos(); avisar("Link do grupo atualizado.", "ok");
+  }));
+}
+async function carregarLinks() {
+  const { data } = await supa.from("nucleos_grupos").select("*");
+  links = Object.fromEntries((data || []).map((n) => [n.slug, n.link]));
 }
 
 // ---------- central de avisos ----------
@@ -268,7 +360,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   const { error } = await supa.from("avisos_militantes").insert({ titulo: $("av-titulo").value.trim(), texto: $("av-texto").value.trim(), fixado: $("av-fixado").checked, autor_id: perfil.id });
   b.disabled = false;
   if (error) return avisar(mensagemErro(error), "erro");
-  $("av-titulo").value = ""; $("av-texto").value = ""; $("av-fixado").checked = false;
+  $("av-titulo").value = ""; $("av-texto").value = ""; $("av-fixado").checked = false; $("caixa-aviso").open = false;
   avisar("Aviso publicado para todos os militantes.", "ok");
   carregarAvisos();
 });
@@ -284,10 +376,13 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   }
   $("area").hidden = false;
   mostrarCabecalho(); carregarCarteirinha();
-  $("form-aviso").hidden = perfil.papel !== "admin";
+  $("caixa-aviso").hidden = perfil.papel !== "admin";
   carregarAvisos();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
-  if (error) { mostrarResumo(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }
-  ficha = data; mostrarResumo();
-  if (!ficha || !ficha.completo_em) abrirFicha(true);
+  await carregarLinks();
+  if (error) { mostrarResumo(); mostrarNucleos(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }
+  ficha = data; mostrarResumo(); mostrarNucleos();
+  // cadastro completo = passou pelos 4 passos (inclusive a parte de militância)
+  const completo = ficha && ficha.completo_em && ficha.escolaridade && (ficha.pautas || []).length >= MIN_PAUTAS && ficha.partido && ficha.movimento;
+  if (!completo) abrirFicha(true);
 })();

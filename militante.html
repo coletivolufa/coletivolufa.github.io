@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=26">
+  <link rel="stylesheet" href="assets/style.css?v=27">
 </head>
 <body data-pagina="militante">
 <main>
@@ -53,13 +53,21 @@
 
         <div class="painel mil-avisos">
           <h2>Central de avisos</h2>
-          <form id="form-aviso" class="mil-novo-aviso" hidden>
-            <div class="campo"><label for="av-titulo">Novo aviso · título</label><input id="av-titulo" maxlength="120" required></div>
-            <div class="campo"><label for="av-texto">Texto</label><textarea id="av-texto" maxlength="4000" style="min-height:120px"></textarea></div>
-            <label class="mil-check"><input type="checkbox" id="av-fixado"> Fixar no topo</label>
-            <button class="botao botao--vermelho" type="submit">Publicar aviso</button>
-          </form>
+          <details class="mil-novo-aviso" id="caixa-aviso" hidden>
+            <summary>+ Publicar um aviso (só administração)</summary>
+            <form id="form-aviso">
+              <div class="campo"><label for="av-titulo">Título</label><input id="av-titulo" maxlength="120" required></div>
+              <div class="campo"><label for="av-texto">Texto</label><textarea id="av-texto" maxlength="4000" style="min-height:90px"></textarea></div>
+              <label class="mil-check"><input type="checkbox" id="av-fixado"> Fixar no topo</label>
+              <button class="botao botao--vermelho" type="submit">Publicar aviso</button>
+            </form>
+          </details>
           <ul class="mil-lista-avisos" id="lista-avisos"><li class="mil-aviso-vazio">Carregando…</li></ul>
+        </div>
+
+        <div class="painel mil-nucleos">
+          <h2>Seus núcleos</h2>
+          <div class="mil-grade-nucleos" id="meus-nucleos"></div>
         </div>
 
         <div class="painel mil-cadastro">
@@ -81,7 +89,7 @@
       <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Militante</span>
       <h2 id="ficha-titulo">Atualize seu cadastro</h2>
       <p id="ficha-intro">Para usar a Área do Militante, complete o seu cadastro. Leva poucos minutos.</p>
-      <ol class="ficha-mil__passos" id="passos"><li>Dados básicos</li><li>Onde mora</li><li>Cadastro completo</li></ol>
+      <ol class="ficha-mil__passos" id="passos"><li>Dados básicos</li><li>Onde mora</li><li>Cadastro completo</li><li>Militância</li></ol>
     </div>
 
     <!-- passo 1 -->
@@ -131,6 +139,26 @@
       <div class="campo"><label for="f-ocupacao">Ocupação</label><select id="f-ocupacao" required></select></div>
       <div class="campo" id="campo-ocupacao-outra" hidden><label for="f-ocupacao-outra">Qual ocupação?</label><input id="f-ocupacao-outra" maxlength="80"></div>
       <div class="campo"><label for="f-renda">Renda mensal</label><select id="f-renda" required></select></div>
+      <div class="campo"><label for="f-escolaridade">Escolaridade</label><select id="f-escolaridade" required></select></div>
+    </fieldset>
+
+    <!-- passo 4 -->
+    <fieldset class="ficha-mil__passo" data-passo="4" hidden>
+      <legend>Militância</legend>
+      <div class="campo">
+        <label>Com quais pautas você se identifica?</label>
+        <small>Escolha pelo menos 3. <b id="pautas-conta">0 escolhidas</b></small>
+        <div class="mil-chips" id="f-pautas"></div>
+      </div>
+      <div class="campo">
+        <label>De quais núcleos você quer fazer parte?</label>
+        <small>Até 3 núcleos. O Núcleo Marxista é obrigatório para todos, então você pode escolher mais 2.</small>
+        <div class="mil-escolha-nucleos" id="f-nucleos"></div>
+      </div>
+      <div class="campo"><label for="f-partido">Você já é filiado(a) a algum partido? Se sim, qual?</label><select id="f-partido" required></select></div>
+      <div class="campo"><label for="f-movimento">Atualmente você participa de algum outro movimento popular? Se sim, qual?</label>
+        <input id="f-movimento" maxlength="200" required placeholder="Ex.: coletivo, grêmio estudantil, sindicato…">
+        <small>Por exemplo: coletivo, ação estudantil, grêmio estudantil, sindicato. Caso não faça parte, escreva <b>Não</b>.</small></div>
       <label class="mil-check mil-check--lgpd"><input type="checkbox" id="f-consentimento" required>
         Autorizo o Coletivo Lufã a guardar estes dados para a organização interna do coletivo. Eles não aparecem no site:
         só eu e a administração temos acesso.</label>
@@ -149,6 +177,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=1"></script>
+<script src="assets/militante.js?v=2"></script>
 </body>
 </html>
