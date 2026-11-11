@@ -932,3 +932,23 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-janela-gerador__topo .ficha__fechar { position: static; float: none; margin: 0; flex: none; }
 .mil-janela-gerador iframe { flex: 1; width: 100%; border: 0; background: var(--papel); }
 @media (max-width: 600px) { .mil-janela-gerador__topo .botao { display: none; } }
+
+/* Área do Militante · Conheça outros camaradas */
+.mil-camaradas { margin-top: 4px; }
+.mil-eng--botao { background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.mil-eng--botao:hover .mil-eng__foto img, .mil-eng--botao:focus-visible .mil-eng__foto img { border-color: var(--amarelo); transform: scale(1.06); }
+.mil-eng--botao:focus-visible { outline: 3px solid var(--amarelo); outline-offset: 2px; }
+.mil-eng__foto img { transition: transform .15s; }
+.mil-eng__legenda { display: block; margin-top: 6px; line-height: 1.15; }
+.mil-eng__legenda b { display: block; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mil-eng__legenda small { display: block; font-size: 11px; color: var(--amarelo); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mil-janela-camarada .pedir-conta__corpo { padding-top: 26px; }
+.mil-camarada__foto { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 6px solid var(--amarelo); background: var(--branco); display: block; margin: 0 auto 12px; }
+.mil-janela-camarada h2 { font-size: clamp(32px, 6vw, 44px); margin: 0 0 4px; line-height: 1; }
+.mil-camarada__funcao { font-size: 15px; margin: 0 0 16px !important; opacity: .95; }
+.mil-camarada__dados { margin: 0; text-align: left; background: rgba(0,0,0,.16); padding: 6px 16px; }
+.mil-camarada__dados div { padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.2); }
+.mil-camarada__dados div:last-child { border-bottom: 0; }
+.mil-camarada__dados dt { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--amarelo); font-weight: 700; }
+.mil-camarada__dados dd { margin: 2px 0 0; font-size: 16px; }
+.mil-camarada__dados a { color: var(--branco); }

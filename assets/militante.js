@@ -341,7 +341,7 @@ function mostrarEngajados(lista) {
   if (!top.length) return;
   const medalha = ["🥇", "🥈", "🥉"];
   const um = top.map((r, i) => `<figure class="mil-eng${i < 3 ? " mil-eng--top" : ""}">
-      <span class="mil-eng__foto"><img src="${esc(r.foto || "assets/img/avatar.svg")}" alt="" loading="lazy"><i>${medalha[i] || (i + 1) + "º"}</i></span>
+      <span class="mil-eng__foto"><img src="${esc(r.foto || "assets/img/avatar.svg")}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/img/avatar.svg'"><i>${medalha[i] || (i + 1) + "º"}</i></span>
       <figcaption><b>${esc(primeiroNome(r.nome))}</b><small>${r.xp} XP</small></figcaption>
     </figure>`).join("");
   // repete a fila até encher a largura e duplica, para o movimento não ter emenda
@@ -408,6 +408,46 @@ $("form-convite").addEventListener("submit", async (ev) => {
   carregarRanking(); carregarConvitesAdmin();
 });
 
+// ---------- conheça outros camaradas ----------
+const REDES = { instagram: "https://www.instagram.com/", tiktok: "https://www.tiktok.com/@", x: "https://x.com/", youtube: "https://www.youtube.com/@", threads: "https://www.threads.net/@", bluesky: "https://bsky.app/profile/" };
+let camaradas = [];
+async function carregarCamaradas() {
+  const { data, error } = await supa.rpc("camaradas_ativos");
+  camaradas = error ? [] : (data || []);
+  $("camaradas").hidden = !camaradas.length;
+  if (!camaradas.length) return;
+  const um = camaradas.map((c, i) => `<button type="button" class="mil-eng mil-eng--botao" data-camarada="${i}" aria-label="Conhecer ${esc(c.nome)}">
+      <span class="mil-eng__foto"><img src="${esc(c.foto || "assets/img/avatar.svg")}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/img/avatar.svg'"></span>
+      <span class="mil-eng__legenda"><b>${esc(primeiroNome(c.nome))}</b><small>${esc(ocupacoes(c)[0] || "Militante")}</small></span>
+    </button>`).join("");
+  const vezes = Math.max(1, Math.ceil(14 / camaradas.length));
+  const bloco = um.repeat(vezes);
+  const fila = $("camaradas-fila");
+  fila.innerHTML = bloco + bloco;
+  fila.style.animationDuration = Math.max(20, camaradas.length * vezes * 2.8) + "s";
+  fila.querySelectorAll("[data-camarada]").forEach((b) => b.addEventListener("click", () => abrirCamarada(camaradas[Number(b.dataset.camarada)])));
+}
+function abrirCamarada(c) {
+  const ocup = ocupacoes(c);
+  const nomesNucleos = (c.nucleos || []).map((s) => (NUCLEOS.find((n) => n.slug === s) || {}).nome).filter(Boolean);
+  const rede = c.arroba ? `<a href="${REDES[c.rede] || REDES.instagram}${encodeURIComponent(c.arroba)}" target="_blank" rel="noopener">@${esc(c.arroba)}</a>` : "";
+  $("camarada-corpo").innerHTML = `
+    <img class="mil-camarada__foto" src="${esc(c.foto || "assets/img/avatar.svg")}" alt="Foto de ${esc(c.nome)}" onerror="this.onerror=null;this.src='assets/img/avatar.svg'">
+    <h2 id="camarada-nome">${esc(c.nome)}</h2>
+    <p class="mil-camarada__funcao">${esc(textoOcupacao(c))}</p>
+    <dl class="mil-camarada__dados">
+      ${c.matricula ? `<div><dt>Matrícula</dt><dd>Nº ${esc(c.matricula)}</dd></div>` : ""}
+      <div><dt>No coletivo desde</dt><dd>${esc(dataPorExtenso(c.membro_desde))}</dd></div>
+      ${ocup.length ? `<div><dt>O que faz no coletivo</dt><dd>${ocup.map(esc).join(" · ")}</dd></div>` : ""}
+      ${nomesNucleos.length ? `<div><dt>Núcleos</dt><dd>${nomesNucleos.map(esc).join(" · ")}</dd></div>` : ""}
+      ${rede ? `<div><dt>Nas redes</dt><dd>${rede}</dd></div>` : ""}
+    </dl>`;
+  $("janela-camarada").showModal(); document.documentElement.classList.add("janela-aberta");
+}
+$("fechar-camarada").addEventListener("click", () => $("janela-camarada").close());
+$("janela-camarada").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
+$("janela-camarada").addEventListener("click", (ev) => { if (ev.target === $("janela-camarada")) $("janela-camarada").close(); });
+
 // ---------- criação de conteúdo (gerador de imagens) ----------
 $("abrir-gerador").addEventListener("click", () => {
   const q = $("gerador-quadro");
@@ -459,7 +499,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   $("area").hidden = false;
   mostrarCabecalho(); carregarCarteirinha();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
-  carregarAvisos(); carregarRanking(); carregarConvitesAdmin();
+  carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
   await carregarLinks();
   if (error) { mostrarResumo(); mostrarNucleos(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=34">
+  <link rel="stylesheet" href="assets/style.css?v=35">
 </head>
 <body data-pagina="militante">
 <main>
@@ -95,6 +95,11 @@
           </div>
         </div>
 
+        <section class="mil-engajados mil-camaradas" id="camaradas" hidden aria-label="Conheça outros camaradas">
+          <div class="mil-engajados__topo"><h2>★ Conheça outros camaradas</h2><p>Militantes que já estão na Área do Militante. Toque na foto para conhecer.</p></div>
+          <div class="mil-engajados__pista"><div class="mil-engajados__fila" id="camaradas-fila"></div></div>
+        </section>
+
         <div class="bloco-regimento">
           <a class="botao botao--amarelo" href="regimento.html">Leia o regimento interno</a>
         </div>
@@ -102,6 +107,11 @@
     </div>
   </section>
 </main>
+
+<dialog class="pedir-conta mil-janela-camarada" id="janela-camarada" aria-labelledby="camarada-nome">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-camarada">×</button>
+  <div class="pedir-conta__corpo" id="camarada-corpo"></div>
+</dialog>
 
 <dialog class="mil-janela-gerador" id="janela-gerador" aria-label="Criação de conteúdo">
   <div class="mil-janela-gerador__topo">
@@ -233,6 +243,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=8"></script>
+<script src="assets/militante.js?v=9"></script>
 </body>
 </html>
