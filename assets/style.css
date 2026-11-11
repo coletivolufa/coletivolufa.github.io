@@ -1025,3 +1025,23 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
   .art-barra .art-previa-bt { margin-left: 0; }
   #art-texto, .art-previa { min-height: 280px; }
 }
+
+/* revisão: celulares (iOS não dá zoom em campos com 16px; toque não "gruda" o efeito de passar o mouse) */
+@media (pointer: coarse) { input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; } }
+.mil-chip { position: relative; }
+@media (hover: none) {
+  .art-barra button:hover { background: var(--papel); }
+  .art-barra .art-previa-bt:hover { background: var(--amarelo); }
+  .mil-eng--botao:hover .mil-eng__foto img { transform: none; border-color: var(--branco); }
+}
+.art-barra button:active { background: var(--amarelo); }
+/* as faixas de fotos param enquanto o dedo está em cima, para dar tempo de tocar */
+.mil-engajados__pista:active .mil-engajados__fila, .mil-engajados__pista:focus-within .mil-engajados__fila { animation-play-state: paused; }
+/* caixinhas de link e legenda do editor */
+.art-mini { background: var(--amarelo); padding: 10px 12px; }
+.art-mini label { font-weight: 700; font-size: 14px; display: block; margin-bottom: 6px; }
+.art-mini__linha { display: flex; gap: 8px; align-items: stretch; }
+.art-mini__linha input { flex: 1; min-width: 0; border: 2px solid var(--preto); padding: 8px 10px; font: inherit; background: var(--branco); }
+.art-mini__linha .botao { flex: none; font-size: 16px; padding: 8px 12px 5px; box-shadow: none; }
+.art-mini__x { flex: none; width: 38px; border: 2px solid var(--preto); background: var(--branco); font-size: 22px; line-height: 1; cursor: pointer; }
+@media (pointer: coarse) { #art-fontes { font-size: 16px !important; } }

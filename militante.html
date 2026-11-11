@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=37">
+  <link rel="stylesheet" href="assets/style.css?v=38">
 </head>
 <body data-pagina="militante">
 <main>
@@ -163,6 +163,16 @@
             <button type="button" data-fmt="imagem" title="Colocar imagem">🖼 Imagem</button>
             <button type="button" class="art-previa-bt" id="art-ver-previa" aria-pressed="false">👁 Prévia</button>
           </div>
+          <div class="art-mini" id="art-mini-link" hidden>
+            <label for="art-link-url">Endereço do link</label>
+            <div class="art-mini__linha"><input id="art-link-url" type="url" inputmode="url" placeholder="https://…" autocomplete="off">
+              <button type="button" class="botao botao--vermelho" id="art-link-ok">Inserir</button><button type="button" class="art-mini__x" data-fechar-mini aria-label="Fechar">×</button></div>
+          </div>
+          <div class="art-mini" id="art-mini-legenda" hidden>
+            <label for="art-legenda">Legenda da imagem (opcional)</label>
+            <div class="art-mini__linha"><input id="art-legenda" maxlength="140" autocomplete="off" placeholder="Ex.: Plenária de outubro">
+              <button type="button" class="botao botao--vermelho" id="art-legenda-ok">Aplicar</button><button type="button" class="art-mini__x" data-fechar-mini aria-label="Fechar">×</button></div>
+          </div>
           <input type="file" id="art-arquivo" accept="image/*" hidden>
           <textarea id="art-texto" required placeholder="Escreva o seu artigo aqui. Deixe uma linha em branco entre os parágrafos. Selecione um trecho e use os botões acima para formatar."></textarea>
           <div class="previa texto-artigo art-previa" id="art-previa" hidden></div>
@@ -312,8 +322,8 @@
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="assets/comum.js?v=18"></script>
+<script src="assets/comum.js?v=19"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=12"></script>
+<script src="assets/militante.js?v=13"></script>
 </body>
 </html>

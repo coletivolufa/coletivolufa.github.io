@@ -63,7 +63,7 @@ function montarMenu() {
       <div class="conteudo">
         <div><strong>Coletivo Lufã</strong><br>Coletivo marxista de esquerda radical.</div>
         <div>Organização sem fins lucrativos · <a href="https://www.instagram.com/coletivolufa/" target="_blank" rel="noopener">@coletivolufa</a><br>
-        <a href="publicar.html">Área dos membros</a></div>
+        <a href="conta.html">Minha conta</a></div>
       </div>
     </footer>`);
 }

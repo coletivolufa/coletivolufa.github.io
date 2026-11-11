@@ -96,6 +96,7 @@
       #previa { max-height: 62vh; }
       .painel { max-height: none; overflow: visible; padding-right: max(16px, env(safe-area-inset-right, 0px)); }
     }
+    @media (pointer: coarse) { input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=range]), select, textarea { font-size: 16px !important; } }
     .embutido .topo { display: none; }
     .embutido .painel, .embutido .previa { max-height: 100vh; }
     /* no celular, dentro da Área do Militante: o painel cresce com o conteúdo (sem sobrar fundo escuro) */

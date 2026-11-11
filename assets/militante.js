@@ -103,6 +103,7 @@ function idadeDe(data) {
 const primeiroNome = (n) => String(n || "").trim().split(/\s+/)[0] || "";
 function avisar(texto, tipo = "") {
   $("mensagem").innerHTML = texto ? `<div class="aviso ${tipo ? "aviso--" + tipo : ""}">${texto}</div>` : "";
+  if (texto) requestAnimationFrame(() => $("mensagem").scrollIntoView({ behavior: "smooth", block: "center" }));
 }
 function bloquear(titulo, texto, link, rotulo) {
   $("area").hidden = true; $("bloqueio").hidden = false;
@@ -141,7 +142,7 @@ function irPara(n) {
   document.querySelectorAll(".ficha-mil__passo").forEach((f) => (f.hidden = Number(f.dataset.passo) !== n));
   document.querySelectorAll("#passos li").forEach((li, i) => { li.classList.toggle("feito", i + 1 < n); li.classList.toggle("atual", i + 1 === n); });
   $("ficha-voltar").hidden = n === 1;
-  $("ficha-cancelar").hidden = fichaObrigatoria || n !== 1;
+  $("ficha-cancelar").hidden = fichaObrigatoria;
   $("ficha-avancar").textContent = n === ULTIMO ? "Concluir cadastro" : "Continuar";
   $("ficha-erro").hidden = true;
   $("ficha-corpo").scrollTop = 0;
@@ -526,6 +527,27 @@ $("janela-novos").addEventListener("close", () => document.documentElement.class
 
 // ---------- publicar artigo (editor com formatação) ----------
 const AT = () => $("art-texto");
+let selecaoLink = [0, 0], imagemPendente = null;
+function mostrarMini(id) { ["art-mini-link", "art-mini-legenda"].forEach((m) => ($(m).hidden = m !== id)); }
+document.querySelectorAll("[data-fechar-mini]").forEach((b) => b.addEventListener("click", () => { mostrarMini(null); imagemPendente = null; }));
+$("art-link-ok").addEventListener("click", () => {
+  let url = $("art-link-url").value.trim();
+  if (url && !/^https?:\/\//i.test(url)) url = "https://" + url;
+  if (!/^https?:\/\/[^\s()]+\.[^\s()]+$/i.test(url)) { $("art-link-url").focus(); $("art-status").textContent = "Esse endereço não parece um link. Ex.: https://www.ibge.gov.br"; return; }
+  mostrarMini(null); $("art-status").textContent = "";
+  AT().setSelectionRange(selecaoLink[0], selecaoLink[1]);
+  envolver("[", `](${url})`, "texto do link");
+});
+$("art-link-url").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("art-link-ok").click(); } });
+$("art-legenda-ok").addEventListener("click", () => {
+  if (!imagemPendente) return mostrarMini(null);
+  const { inicio, marca, url } = imagemPendente, legenda = $("art-legenda").value.replace(/[\[\]\n]/g, " ").trim();
+  const t = AT(), k = t.value.indexOf(marca, Math.max(0, inicio - 4));
+  if (k >= 0) t.setRangeText(`![${legenda}](${url})`, k, k + marca.length, "preserve");
+  imagemPendente = null; mostrarMini(null); atualizarPrevia();
+  $("art-status").textContent = legenda ? "Legenda colocada." : "";
+});
+$("art-legenda").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("art-legenda-ok").click(); } });
 function envolver(antes, depois, exemplo) {
   const t = AT(), i = t.selectionStart, f = t.selectionEnd, sel = t.value.slice(i, f) || exemplo;
   t.setRangeText(antes + sel + depois, i, f, "end");
@@ -573,8 +595,8 @@ document.querySelector(".art-barra").addEventListener("click", (ev) => {
   if (f === "citacao") porLinha("> ", "Citação");
   if (f === "lista") porLinha("- ", "Item da lista");
   if (f === "link") {
-    const url = prompt("Cole o endereço do link (começa com https://):", "https://");
-    if (url && /^https?:\/\/\S+$/.test(url.trim())) envolver("[", `](${url.trim()})`, "texto do link");
+    const t = AT(); selecaoLink = [t.selectionStart, t.selectionEnd];
+    mostrarMini("art-mini-link"); $("art-link-url").value = ""; $("art-link-url").focus();
   }
   if (f === "imagem") $("art-arquivo").click();
 });
@@ -587,9 +609,11 @@ $("art-arquivo").addEventListener("change", async () => {
     const { error } = await supa.storage.from("fotos").upload(caminho, jpg, { contentType: "image/jpeg", upsert: false });
     if (error) throw error;
     const url = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
-    const legenda = (prompt("Legenda da imagem (opcional):", "") || "").replace(/[\[\]\n]/g, " ").trim();
-    inserirBloco(`![${legenda}](${url})`);
-    $("art-status").textContent = "Imagem colocada no texto.";
+    const marca = `![](${url})`, inicio = AT().selectionStart;
+    inserirBloco(marca);
+    imagemPendente = { inicio, marca, url };
+    $("art-status").textContent = "Imagem colocada no texto. Se quiser, escreva uma legenda.";
+    mostrarMini("art-mini-legenda"); $("art-legenda").value = "";
   } catch (e) { $("art-status").textContent = "Não deu para enviar a imagem: " + mensagemErro(e); }
 });
 $("art-ver-previa").addEventListener("click", () => {
@@ -602,6 +626,7 @@ $("art-ver-previa").addEventListener("click", () => {
 const slugDe = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "artigo";
 function abrirArtigo() {
   $("form-artigo").reset(); $("art-autor").value = perfil.nome || ""; $("art-erro").hidden = true; $("art-status").textContent = "";
+  mostrarMini(null); imagemPendente = null; $("art-enviar").textContent = "Publicar";
   if (!$("art-previa").hidden) $("art-ver-previa").click();
   $("janela-artigo").showModal(); document.documentElement.classList.add("janela-aberta");
 }
