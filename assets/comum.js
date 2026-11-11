@@ -139,6 +139,18 @@ function resumir(texto, limite = 220) {
   return limpo.length > limite ? limpo.slice(0, limite).replace(/\s\S*$/, "") + "…" : limpo;
 }
 
+// Janelas em tela cheia (cadastro, artigo, inscrição…): quando o teclado do celular abre, o navegador
+// às vezes empurra a janela inteira para cima e ela não volta. Aqui ela é mantida sempre no lugar.
+(function () {
+  const SEL = "dialog.ficha-mil, dialog.mil-janela-gerador";
+  const zerar = (d) => { if (d && (d.scrollTop || d.scrollLeft)) { d.scrollTop = 0; d.scrollLeft = 0; } };
+  document.addEventListener("scroll", (e) => { if (e.target && e.target.matches && e.target.matches(SEL)) zerar(e.target); }, true);
+  const todas = () => document.querySelectorAll(SEL + "[open]").forEach(zerar);
+  if (window.visualViewport) { visualViewport.addEventListener("resize", todas); visualViewport.addEventListener("scroll", todas); }
+  window.addEventListener("resize", todas);
+  document.addEventListener("focusout", () => setTimeout(todas, 50));
+})();
+
 document.addEventListener("DOMContentLoaded", montarMenu);
 
 // fontes de pesquisa no fim do artigo (uma por linha; links viram clicáveis)

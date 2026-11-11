@@ -1045,3 +1045,5 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .art-mini__linha .botao { flex: none; font-size: 16px; padding: 8px 12px 5px; box-shadow: none; }
 .art-mini__x { flex: none; width: 38px; border: 2px solid var(--preto); background: var(--branco); font-size: 22px; line-height: 1; cursor: pointer; }
 @media (pointer: coarse) { #art-fontes { font-size: 16px !important; } }
+/* janelas em tela cheia: nunca "andam" quando o teclado do celular abre e fecha (só o miolo rola) */
+.ficha-mil, .mil-janela-gerador { overflow: hidden; overflow: clip; }
