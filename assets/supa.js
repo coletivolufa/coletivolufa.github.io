@@ -68,9 +68,9 @@ async function todosOsMembros() {
 // artigos publicados pelo site (banco), no mesmo formato de data/artigos.json
 async function artigosDoBanco() {
   try {
-    const { data, error } = await supa.from("artigos").select("slug,titulo,autor_nome,texto,criado_em,publicado").eq("publicado", true).order("criado_em", { ascending: false });
+    const { data, error } = await supa.from("artigos").select("*").eq("publicado", true).order("criado_em", { ascending: false });
     if (error) throw error;
-    return (data || []).map((a) => ({ slug: a.slug, titulo: a.titulo, autor: a.autor_nome, data: a.criado_em, resumo: resumir(a.texto), texto: a.texto, banco: true }));
+    return (data || []).map((a) => ({ slug: a.slug, titulo: a.titulo, autor: a.autor_nome, data: a.criado_em, resumo: resumir(a.texto), texto: a.texto, fontes: a.fontes || "", banco: true }));
   } catch (_) { return []; }
 }
 

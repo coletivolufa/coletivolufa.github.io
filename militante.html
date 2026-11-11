@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=36">
+  <link rel="stylesheet" href="assets/style.css?v=37">
 </head>
 <body data-pagina="militante">
 <main>
@@ -85,6 +85,10 @@
             <h2>Meu cadastro</h2>
             <button class="botao botao--vermelho" type="button" id="editar-cadastro">Editar</button>
           </div>
+          <div class="mil-linha" id="linha-artigo" hidden>
+            <h2>Publicar artigo</h2>
+            <button class="botao botao--vermelho" type="button" id="abrir-artigo">Publicar</button>
+          </div>
           <div class="mil-linha">
             <h2>Convide um militante</h2>
             <button class="botao botao--vermelho" type="button" id="abrir-convite">Convidar</button>
@@ -133,6 +137,51 @@
     </div>
     <div class="ficha-mil__botoes"><button class="botao botao--claro" type="button" id="fechar-novos">Fechar</button></div>
   </div>
+</dialog>
+
+<dialog class="ficha-mil mil-janela-artigo" id="janela-artigo" aria-labelledby="art-titulo-janela">
+  <form id="form-artigo" novalidate>
+    <div class="ficha-mil__topo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Artigos</span>
+      <h2 id="art-titulo-janela">Publicar artigo</h2>
+    </div>
+    <div class="ficha-mil__corpo">
+      <fieldset class="ficha-mil__passo">
+        <div class="campo"><label for="art-titulo">Título</label><input id="art-titulo" maxlength="160" required></div>
+        <div class="campo"><label for="art-autor">Nome do autor</label><input id="art-autor" maxlength="80" required></div>
+        <div class="campo">
+          <label for="art-texto">Texto</label>
+          <div class="art-barra" role="toolbar" aria-label="Formatação do texto">
+            <button type="button" data-fmt="negrito" title="Negrito"><b>B</b></button>
+            <button type="button" data-fmt="italico" title="Itálico"><i>I</i></button>
+            <button type="button" data-fmt="grande" title="Aumentar o tamanho">A+</button>
+            <button type="button" data-fmt="pequeno" title="Diminuir o tamanho">A−</button>
+            <button type="button" data-fmt="subtitulo" title="Subtítulo">Subtítulo</button>
+            <button type="button" data-fmt="citacao" title="Citação">❝ Citação</button>
+            <button type="button" data-fmt="lista" title="Lista">• Lista</button>
+            <button type="button" data-fmt="link" title="Link">🔗 Link</button>
+            <button type="button" data-fmt="imagem" title="Colocar imagem">🖼 Imagem</button>
+            <button type="button" class="art-previa-bt" id="art-ver-previa" aria-pressed="false">👁 Prévia</button>
+          </div>
+          <input type="file" id="art-arquivo" accept="image/*" hidden>
+          <textarea id="art-texto" required placeholder="Escreva o seu artigo aqui. Deixe uma linha em branco entre os parágrafos. Selecione um trecho e use os botões acima para formatar."></textarea>
+          <div class="previa texto-artigo art-previa" id="art-previa" hidden></div>
+          <small id="art-status"></small>
+        </div>
+        <div class="campo">
+          <label for="art-fontes">Fontes de pesquisa</label>
+          <textarea id="art-fontes" class="art-fontes" maxlength="6000" placeholder="Cole aqui as fontes, uma por linha. Ex.:&#10;IBGE, Pesquisa Nacional por Amostra de Domicílios, 2024 – https://www.ibge.gov.br/…&#10;MARX, Karl. O Capital, livro I."></textarea>
+          <small>Uma fonte por linha. Os links ficam clicáveis no artigo.</small>
+        </div>
+        <label class="mil-check"><input type="checkbox" id="art-publicado" checked> Publicar no site agora (desmarque para salvar como rascunho)</label>
+      </fieldset>
+      <p class="aviso aviso--erro" id="art-erro" hidden></p>
+    </div>
+    <div class="ficha-mil__botoes">
+      <button class="botao botao--claro" type="button" id="art-cancelar">Cancelar</button>
+      <button class="botao botao--vermelho" type="submit" id="art-enviar">Publicar</button>
+    </div>
+  </form>
 </dialog>
 
 <dialog class="mil-janela-gerador" id="janela-gerador" aria-label="Criação de conteúdo">
@@ -263,8 +312,8 @@
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="assets/comum.js?v=17"></script>
-<script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=11"></script>
+<script src="assets/comum.js?v=18"></script>
+<script src="assets/supa.js?v=8"></script>
+<script src="assets/militante.js?v=12"></script>
 </body>
 </html>

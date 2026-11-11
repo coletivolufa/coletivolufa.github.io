@@ -993,3 +993,35 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
   .mil-novo dl { grid-template-columns: 1fr; }
   .mil-novo__acoes .botao { flex: 1; justify-content: center; text-align: center; }
 }
+
+/* artigos: tamanhos, imagens e fontes */
+.texto-artigo .tx-grande { font-size: 1.35em; line-height: 1.35; }
+.texto-artigo .tx-pequeno { font-size: .8em; }
+.artigo-imagem { margin: 1.8em 0; }
+.artigo-imagem img { width: 100%; height: auto; display: block; box-shadow: 8px 8px 0 var(--preto); }
+.artigo-imagem figcaption { font-family: var(--texto, sans-serif); font-size: 14px; color: var(--cinza); margin-top: 10px; }
+.artigo-fontes { margin-top: 3em; padding-top: 1.2em; border-top: 4px solid var(--vermelho); font-family: var(--texto, sans-serif); font-size: 15px; line-height: 1.5; }
+.artigo-fontes h2 { font-family: var(--titulo); color: var(--vermelho); font-size: 30px; margin: 0 0 .4em; }
+.artigo-fontes ol { padding-left: 1.4em; margin: 0; }
+.artigo-fontes li { margin: .35em 0; overflow-wrap: anywhere; }
+/* editor de artigo na Área do Militante */
+.mil-janela-artigo { height: min(900px, calc(100dvh - 24px)); width: min(900px, calc(100vw - 24px)); }
+.art-barra { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; background: var(--preto); position: sticky; top: 0; z-index: 2; }
+.art-barra button { font: 700 14px var(--texto, sans-serif); padding: 7px 10px; border: 0; background: var(--papel); color: var(--preto); cursor: pointer; min-width: 38px; }
+.art-barra button:hover { background: var(--amarelo); }
+.art-barra button:disabled { opacity: .35; cursor: default; }
+.art-barra .art-previa-bt { margin-left: auto; background: var(--amarelo); }
+.art-barra .art-previa-bt[aria-pressed="true"] { background: var(--vermelho); color: var(--branco); }
+#art-texto { min-height: 340px; border-top: 0; font-family: var(--leitura); font-size: 17px; line-height: 1.7; }
+.art-previa { background: var(--branco); border: 2px solid var(--preto); border-top: 0; padding: 18px 20px; min-height: 340px; font-size: 17px; }
+.art-previa .art-previa__titulo { font-family: var(--titulo); font-size: 40px; line-height: 1; margin: 0 0 6px; }
+.art-previa .meta { font-family: var(--texto, sans-serif); font-size: 14px; color: var(--cinza); margin-bottom: 14px; }
+.art-previa > p:first-of-type::first-letter { float: none; font: inherit; color: inherit; padding: 0; }
+.art-fontes { min-height: 110px !important; font-family: var(--texto, sans-serif) !important; font-size: 14px !important; line-height: 1.5 !important; }
+#art-status { min-height: 1em; }
+@media (max-width: 700px) {
+  .mil-janela-artigo { width: 100vw; height: 100dvh; }
+  .art-barra button { padding: 7px 8px; font-size: 13px; }
+  .art-barra .art-previa-bt { margin-left: 0; }
+  #art-texto, .art-previa { min-height: 280px; }
+}

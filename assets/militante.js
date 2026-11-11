@@ -524,6 +524,119 @@ $("abrir-novos").addEventListener("click", () => { mostrarInscricoes(); $("janel
 $("fechar-novos").addEventListener("click", () => $("janela-novos").close());
 $("janela-novos").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
 
+// ---------- publicar artigo (editor com formatação) ----------
+const AT = () => $("art-texto");
+function envolver(antes, depois, exemplo) {
+  const t = AT(), i = t.selectionStart, f = t.selectionEnd, sel = t.value.slice(i, f) || exemplo;
+  t.setRangeText(antes + sel + depois, i, f, "end");
+  t.focus(); t.setSelectionRange(i + antes.length, i + antes.length + sel.length); atualizarPrevia();
+}
+function porLinha(prefixo, exemplo) {
+  const t = AT(); let i = t.selectionStart, f = t.selectionEnd;
+  i = t.value.lastIndexOf("\n", i - 1) + 1;                     // começo da linha
+  const trecho = t.value.slice(i, f) || exemplo;
+  const novo = trecho.split("\n").map((l) => (l.startsWith(prefixo) ? l.slice(prefixo.length) : prefixo + l)).join("\n");
+  t.setRangeText(novo, i, f || i, "end"); t.focus(); atualizarPrevia();
+}
+function inserirBloco(texto) {
+  const t = AT(), i = t.selectionStart, antes = t.value.slice(0, i);
+  const pre = !antes || antes.endsWith("\n\n") ? "" : antes.endsWith("\n") ? "\n" : "\n\n";
+  t.setRangeText(pre + texto + "\n\n", i, t.selectionEnd, "end"); t.focus(); atualizarPrevia();
+}
+function atualizarPrevia() {
+  if ($("art-previa").hidden) return;
+  $("art-previa").innerHTML = `<h1 class="art-previa__titulo">${esc($("art-titulo").value || "Título do artigo")}</h1>
+    <div class="meta">Por <strong>${esc($("art-autor").value || perfil.nome)}</strong></div>
+    ${markdown(AT().value || "O texto aparece aqui.")}${fontesHTML($("art-fontes").value)}`;
+}
+function reduzirImagem(arquivo, lado = 1600) {
+  return new Promise((ok, falha) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, lado / Math.max(img.width, img.height)), c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(img.src);
+      c.toBlob(ok, "image/jpeg", 0.85);
+    };
+    img.onerror = () => falha(new Error("Não foi possível ler essa imagem."));
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
+document.querySelector(".art-barra").addEventListener("click", (ev) => {
+  const b = ev.target.closest("button[data-fmt]"); if (!b) return;
+  const f = b.dataset.fmt;
+  if (f === "negrito") envolver("**", "**", "texto em negrito");
+  if (f === "italico") envolver("*", "*", "texto em itálico");
+  if (f === "grande") envolver("[grande]", "[/grande]", "texto maior");
+  if (f === "pequeno") envolver("[pequeno]", "[/pequeno]", "texto menor");
+  if (f === "subtitulo") porLinha("## ", "Subtítulo");
+  if (f === "citacao") porLinha("> ", "Citação");
+  if (f === "lista") porLinha("- ", "Item da lista");
+  if (f === "link") {
+    const url = prompt("Cole o endereço do link (começa com https://):", "https://");
+    if (url && /^https?:\/\/\S+$/.test(url.trim())) envolver("[", `](${url.trim()})`, "texto do link");
+  }
+  if (f === "imagem") $("art-arquivo").click();
+});
+$("art-arquivo").addEventListener("change", async () => {
+  const arq = $("art-arquivo").files[0]; $("art-arquivo").value = ""; if (!arq) return;
+  $("art-status").textContent = "Enviando a imagem…";
+  try {
+    const jpg = await reduzirImagem(arq);
+    const caminho = `${perfil.id}/artigos/${Date.now()}.jpg`;
+    const { error } = await supa.storage.from("fotos").upload(caminho, jpg, { contentType: "image/jpeg", upsert: false });
+    if (error) throw error;
+    const url = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
+    const legenda = (prompt("Legenda da imagem (opcional):", "") || "").replace(/[\[\]\n]/g, " ").trim();
+    inserirBloco(`![${legenda}](${url})`);
+    $("art-status").textContent = "Imagem colocada no texto.";
+  } catch (e) { $("art-status").textContent = "Não deu para enviar a imagem: " + mensagemErro(e); }
+});
+$("art-ver-previa").addEventListener("click", () => {
+  const ver = $("art-previa").hidden;
+  $("art-previa").hidden = !ver; AT().hidden = ver; $("art-ver-previa").setAttribute("aria-pressed", String(ver));
+  $("art-ver-previa").textContent = ver ? "✎ Voltar a editar" : "👁 Prévia";
+  document.querySelectorAll(".art-barra button[data-fmt]").forEach((b) => (b.disabled = ver));
+  atualizarPrevia();
+});
+const slugDe = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "artigo";
+function abrirArtigo() {
+  $("form-artigo").reset(); $("art-autor").value = perfil.nome || ""; $("art-erro").hidden = true; $("art-status").textContent = "";
+  if (!$("art-previa").hidden) $("art-ver-previa").click();
+  $("janela-artigo").showModal(); document.documentElement.classList.add("janela-aberta");
+}
+$("abrir-artigo").addEventListener("click", abrirArtigo);
+$("art-cancelar").addEventListener("click", () => {
+  if (AT().value.trim() && !confirm("Sair sem publicar? O texto escrito será perdido.")) return;
+  $("janela-artigo").close();
+});
+$("janela-artigo").addEventListener("cancel", (ev) => { if (AT().value.trim()) { ev.preventDefault(); $("art-cancelar").click(); } });
+$("janela-artigo").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
+$("form-artigo").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const erro = (t, c) => { $("art-erro").textContent = t; $("art-erro").hidden = false; if (c) $(c).focus(); };
+  const titulo = $("art-titulo").value.trim(), autor_nome = $("art-autor").value.trim(), texto = AT().value.trim(), fontes = $("art-fontes").value.trim();
+  if (titulo.length < 3) return erro("Escreva o título do artigo.", "art-titulo");
+  if (!autor_nome) return erro("Escreva o nome do autor.", "art-autor");
+  if (texto.length < 20) { if (!$("art-previa").hidden) $("art-ver-previa").click(); return erro("Escreva o texto do artigo.", "art-texto"); }
+  const publicado = $("art-publicado").checked, b = $("art-enviar"); b.disabled = true; b.textContent = "Salvando…";
+  try {
+    let s = slugDe(titulo);
+    const { data: iguais } = await supa.from("artigos").select("slug").like("slug", s + "%");
+    if (iguais && iguais.some((x) => x.slug === s)) s += "-" + Date.now().toString(36).slice(-4);
+    const { error } = await supa.from("artigos").insert({ slug: s, titulo, texto, fontes, publicado, autor_id: perfil.id, autor_nome });
+    if (error) throw error;
+    $("janela-artigo").close();
+    avisar(publicado ? `Artigo publicado! <a href="artigos.html?a=${encodeURIComponent(s)}">Ver no site</a>` : "Rascunho salvo. Você pode publicar depois em Minha conta → Meus artigos.", "ok");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (e) {
+    const m = String((e && e.message) || "");
+    erro(/fontes/.test(m) ? "O campo de fontes ainda não está ativado no banco de dados. Avise a administração." : mensagemErro(e));
+  }
+  b.disabled = false; b.textContent = "Publicar";
+});
+$("art-publicado").addEventListener("change", () => { $("art-enviar").textContent = $("art-publicado").checked ? "Publicar" : "Salvar rascunho"; });
+
 // ---------- criação de conteúdo (gerador de imagens) ----------
 $("abrir-gerador").addEventListener("click", () => {
   const q = $("gerador-quadro");
@@ -575,6 +688,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   $("area").hidden = false;
   mostrarCabecalho(); carregarCarteirinha();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
+  $("linha-artigo").hidden = !PODE_ESCREVER.includes(perfil.papel);
   carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas(); carregarInscricoes();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
   await carregarLinks();

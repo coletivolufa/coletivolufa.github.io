@@ -105,6 +105,8 @@ function markdown(texto) {
   const html = [];
   let par = [], lista = null;
   const inline = (s) => s
+    .replace(/\[grande\]([\s\S]+?)\[\/grande\]/g, '<span class="tx-grande">$1</span>')
+    .replace(/\[pequeno\]([\s\S]+?)\[\/pequeno\]/g, '<span class="tx-pequeno">$1</span>')
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/(^|[^*])\*(?!\s)(.+?)\*/g, "$1<em>$2</em>")
     .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -114,6 +116,7 @@ function markdown(texto) {
     const l = bruta.trim();
     let m;
     if (!l) { fecharPar(); fecharLista(); continue; }
+    if ((m = l.match(/^!\[([^\]]*)\]\((https:\/\/[^\s)]+)\)$/))) { fecharPar(); fecharLista(); html.push(`<figure class="artigo-imagem"><img src="${m[2]}" alt="${m[1]}" loading="lazy">${m[1] ? `<figcaption>${m[1]}</figcaption>` : ""}</figure>`); continue; }
     if ((m = l.match(/^(#{2,3})\s+(.*)/))) { fecharPar(); fecharLista(); const n = m[1].length; html.push(`<h${n}>${inline(m[2])}</h${n}>`); continue; }
     if (/^(-{3,}|\*{3,})$/.test(l)) { fecharPar(); fecharLista(); html.push("<hr>"); continue; }
     if ((m = l.match(/^&gt;\s?(.*)/))) { fecharPar(); fecharLista(); html.push("<blockquote>" + inline(m[1]) + "</blockquote>"); continue; }
@@ -132,8 +135,16 @@ function markdown(texto) {
 }
 
 function resumir(texto, limite = 220) {
-  const limpo = String(texto || "").replace(/[#>*_\-\[\]()]/g, "").replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim();
+  const limpo = String(texto || "").replace(/!\[[^\]]*\]\([^)]*\)/g, " ").replace(/\[\/?(grande|pequeno)\]/g, "").replace(/[#>*_\-\[\]()]/g, "").replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim();
   return limpo.length > limite ? limpo.slice(0, limite).replace(/\s\S*$/, "") + "…" : limpo;
 }
 
 document.addEventListener("DOMContentLoaded", montarMenu);
+
+// fontes de pesquisa no fim do artigo (uma por linha; links viram clicáveis)
+function fontesHTML(fontes) {
+  const itens = String(fontes || "").split(/\r?\n/).map((t) => t.trim()).filter(Boolean);
+  if (!itens.length) return "";
+  const item = (t) => esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  return `<section class="artigo-fontes"><h2>Fontes</h2><ol>${itens.map((t) => `<li>${item(t)}</li>`).join("")}</ol></section>`;
+}
