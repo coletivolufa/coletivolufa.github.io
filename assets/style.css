@@ -1047,3 +1047,16 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 @media (pointer: coarse) { #art-fontes { font-size: 16px !important; } }
 /* janelas em tela cheia: nunca "andam" quando o teclado do celular abre e fecha (só o miolo rola) */
 .ficha-mil, .mil-janela-gerador { overflow: hidden; overflow: clip; }
+
+/* ficha do militante: foto obrigatória */
+.ficha-foto { display: flex; gap: 16px; align-items: center; background: var(--branco); border: 2px solid var(--linha); padding: 14px; margin-bottom: 18px; }
+.ficha-foto img { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 4px solid var(--amarelo); flex: none; background: var(--papel); }
+.ficha-foto__texto { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ficha-foto__texto b { font-family: var(--titulo); font-size: 24px; line-height: 1; color: var(--vermelho); letter-spacing: .02em; }
+.ficha-foto__texto small { color: var(--cinza); font-size: 14px; }
+.ficha-foto__botao { align-self: flex-start; font-size: 17px; padding: 9px 16px 6px; cursor: pointer; box-shadow: 4px 4px 0 var(--preto); }
+.ficha-foto__arquivo { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.ficha-foto--falta { border-color: var(--vermelho); background: #fdecea; }
+@media (max-width: 420px) { .ficha-foto { flex-direction: column; text-align: center; } .ficha-foto__texto { align-items: center; } .ficha-foto__botao { align-self: center; } }
+.ficha-foto--pisca { animation: foto-pisca .5s ease-in-out 2; }
+@keyframes foto-pisca { 50% { box-shadow: 0 0 0 5px var(--vermelho); } }

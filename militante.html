@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=39">
+  <link rel="stylesheet" href="assets/style.css?v=40">
 </head>
 <body data-pagina="militante">
 <main>
@@ -241,6 +241,15 @@
     <!-- passo 1 -->
     <fieldset class="ficha-mil__passo" data-passo="1">
       <legend>Dados básicos</legend>
+      <div class="ficha-foto" id="ficha-foto">
+        <img id="f-foto-previa" src="assets/img/avatar.svg" alt="Sua foto">
+        <div class="ficha-foto__texto">
+          <b id="f-foto-titulo">Sua foto</b>
+          <small id="f-foto-dica">A foto é obrigatória para os militantes. Ela aparece na carteirinha e para os outros camaradas.</small>
+          <label class="botao botao--vermelho ficha-foto__botao" for="f-foto"><span id="f-foto-rotulo">Escolher foto</span></label>
+          <input id="f-foto" type="file" accept="image/*" class="ficha-foto__arquivo">
+        </div>
+      </div>
       <div class="linha-campos">
         <div class="campo"><label for="f-nome">Nome completo</label><input id="f-nome" maxlength="60" required autocomplete="name"></div>
         <div class="campo"><label for="f-nascimento">Data de nascimento</label><input id="f-nascimento" type="date" required></div>
@@ -324,6 +333,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=20"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=13"></script>
+<script src="assets/militante.js?v=14"></script>
 </body>
 </html>

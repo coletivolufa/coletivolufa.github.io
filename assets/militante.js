@@ -4,6 +4,7 @@
 
 const $ = (id) => document.getElementById(id);
 let perfil = null, ficha = null, passo = 1, fichaObrigatoria = false, links = {};
+let fotoNova = null, fotoAntiga = ""; // foto escolhida agora / foto da lista antiga de membros
 const ULTIMO = 4;
 
 // ---------- listas ----------
@@ -115,6 +116,45 @@ $("f-cpf").addEventListener("input", () => { const c = soNumeros($("f-cpf").valu
 $("f-cep").addEventListener("input", () => { const c = soNumeros($("f-cep").value).slice(0, 8); $("f-cep").value = c.length > 5 ? c.slice(0, 5) + "-" + c.slice(5) : c; if (c.length === 8) buscarCEP(); });
 $("f-ocupacao").addEventListener("change", () => { $("campo-ocupacao-outra").hidden = $("f-ocupacao").value !== "Outra"; });
 
+// ---------- foto (obrigatória para o militante) ----------
+function recortarFoto(arquivo, lado = 600) {
+  return new Promise((ok, falha) => {
+    const img = new Image();
+    img.onload = () => {
+      const m = Math.min(img.width, img.height), c = document.createElement("canvas"); c.width = c.height = lado;
+      c.getContext("2d").drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, lado, lado);
+      URL.revokeObjectURL(img.src); c.toBlob(ok, "image/jpeg", 0.86);
+    };
+    img.onerror = () => falha(new Error("Não foi possível ler essa imagem. Tente outra foto."));
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
+const fotoAtual = () => perfil.foto || fotoAntiga;
+function mostrarFoto() {
+  const tem = !!(fotoNova || fotoAtual());
+  $("f-foto-previa").src = fotoNova ? URL.createObjectURL(fotoNova) : (fotoAtual() || "assets/img/avatar.svg");
+  $("ficha-foto").classList.toggle("ficha-foto--falta", !tem);
+  $("f-foto-titulo").textContent = fotoNova ? "Foto nova escolhida" : tem ? "Esta é a sua foto" : "Coloque a sua foto";
+  $("f-foto-dica").textContent = tem
+    ? "Se quiser, troque por uma mais atual. Ela aparece na carteirinha e para os outros camaradas."
+    : "A foto é obrigatória para os militantes. Use uma foto do rosto, de frente e com boa luz.";
+  $("f-foto-rotulo").textContent = tem ? "Trocar foto" : "Escolher foto";
+}
+// quem tinha foto só na lista antiga de membros (antes das contas) aproveita a mesma foto
+async function buscarFotoAntiga() {
+  if (perfil.foto || !perfil.matricula) return;
+  try {
+    const lista = await lerJSON("data/membros.json");
+    const m = (lista || []).find((x) => x.matricula === perfil.matricula && x.foto);
+    if (m) fotoAntiga = new URL(m.foto, location.href).href;
+  } catch (_) { /* sem lista antiga */ }
+}
+$("f-foto").addEventListener("change", async () => {
+  const arq = $("f-foto").files[0]; $("f-foto").value = ""; if (!arq) return;
+  try { fotoNova = await recortarFoto(arq); mostrarFoto(); $("ficha-erro").hidden = true; }
+  catch (e) { erroFicha(e.message); }
+});
+
 // ---------- CEP (ViaCEP, serviço público e gratuito) ----------
 let ultimoCEP = "";
 async function buscarCEP() {
@@ -156,6 +196,12 @@ function erroFicha(texto, campo) {
 function conferirPasso(n) {
   const vazio = (id, nome) => (!String($(id).value || "").trim() ? erroFicha(`Preencha: ${nome}.`, id) : true);
   if (n === 1) {
+    if (!fotoNova && !fotoAtual()) {
+      erroFicha("Coloque a sua foto: ela é obrigatória para os militantes.");
+      $("ficha-corpo").scrollTo({ top: 0, behavior: "smooth" });
+      $("ficha-foto").classList.remove("ficha-foto--pisca"); void $("ficha-foto").offsetWidth; $("ficha-foto").classList.add("ficha-foto--pisca");
+      return false;
+    }
     if (!vazio("f-nome", "nome completo")) return false;
     if (!$("f-nascimento").value) return erroFicha("Preencha a data de nascimento.", "f-nascimento");
     const idade = idadeDe($("f-nascimento").value);
@@ -182,6 +228,7 @@ function conferirPasso(n) {
 }
 function preencherFicha() {
   const f = ficha || {};
+  fotoNova = null; mostrarFoto();
   $("f-nome").value = perfil.nome || "";
   $("f-nascimento").value = f.nascimento || "";
   $("f-email").value = perfil.email || "";
@@ -240,6 +287,12 @@ $("form-ficha").addEventListener("submit", async (ev) => {
       celular: celularLimpo($("f-celular").value),
       idade: idadeDe(nascimento),
     };
+    if (fotoNova) {
+      const caminho = `${perfil.id}/foto-${Date.now()}.jpg`;
+      const { error: ef } = await supa.storage.from("fotos").upload(caminho, fotoNova, { contentType: "image/jpeg", upsert: true });
+      if (ef) throw ef;
+      dadosPerfil.foto = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
+    } else if (!perfil.foto && fotoAntiga) dadosPerfil.foto = fotoAntiga;
     const { error: e1 } = await supa.from("perfis").update(dadosPerfil).eq("id", perfil.id);
     if (e1) throw e1;
     const agora = new Date().toISOString();
@@ -259,7 +312,7 @@ $("form-ficha").addEventListener("submit", async (ev) => {
     };
     const { data, error: e2 } = await supa.from("fichas").upsert(dadosFicha).select().single();
     if (e2) throw e2;
-    ficha = data; Object.assign(perfil, dadosPerfil);
+    ficha = data; Object.assign(perfil, dadosPerfil); fotoNova = null;
     fichaObrigatoria = false; $("janela-ficha").close();
     mostrarCabecalho(); mostrarResumo(); mostrarNucleos();
     avisar("Cadastro concluído! Obrigado, camarada. Agora entre nos grupos dos seus núcleos.", "ok");
@@ -720,6 +773,8 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   if (error) { mostrarResumo(); mostrarNucleos(); return avisar("A ficha do militante ainda não está ativada no banco de dados. Avise a administração.", "erro"); }
   ficha = data; mostrarResumo(); mostrarNucleos();
   // cadastro completo = passou pelos 4 passos (inclusive a parte de militância)
-  const completo = ficha && ficha.completo_em && ficha.escolaridade && (ficha.pautas || []).length >= MIN_PAUTAS && ficha.partido && ficha.movimento;
+  await buscarFotoAntiga();
+  // cadastro completo = passou pelos 4 passos e tem foto (quem não tem foto precisa colocar agora)
+  const completo = ficha && ficha.completo_em && ficha.escolaridade && (ficha.pautas || []).length >= MIN_PAUTAS && ficha.partido && ficha.movimento && perfil.foto;
   if (!completo) abrirFicha(true);
 })();
