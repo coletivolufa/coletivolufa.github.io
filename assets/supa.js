@@ -84,3 +84,12 @@ function mensagemErro(e) {
   if (/Failed to fetch|NetworkError/i.test(m)) return "Sem conexão. Verifique a internet e tente de novo.";
   return m || "Algo deu errado. Tente de novo.";
 }
+
+// guarda se a pessoa é membro ativo, para mostrar o link "Área do militante" no menu
+(async () => {
+  let ativo = false;
+  try { const p = await meuPerfil(); ativo = !!(p && APROVADO.includes(p.papel) && !ehComum(p)); } catch (_) { return; }
+  try { localStorage.setItem("lufa_militante", ativo ? "1" : "0"); } catch (_) {}
+  const mostrar = () => document.querySelectorAll("[data-so-militante]").forEach((a) => (a.hidden = !ativo));
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mostrar); else mostrar();
+})();

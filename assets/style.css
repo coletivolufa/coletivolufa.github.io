@@ -675,7 +675,7 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 
 /* regimento interno (página da conta, só membro ativo) */
 .botao--amarelo { background: var(--amarelo, #EBB52A); color: var(--preto); }
-.bloco-regimento { display: flex; justify-content: center; margin: 8px 0 32px; }
+.bloco-regimento { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin: 8px 0 32px; }
 .bloco-regimento .botao { font-size: 24px; padding: 14px 28px 10px; text-align: center; }
 /* regimento interno na página inicial (seção Membros) */
 .membros__regimento { display: flex; align-items: center; justify-content: space-between; gap: 18px 28px; flex-wrap: wrap; background: var(--branco); border-left: 8px solid var(--amarelo); padding: 22px 26px; margin: 0 0 32px; box-shadow: 6px 6px 0 var(--vermelho); }
@@ -702,4 +702,58 @@ main.catalogo { background: var(--preto); color: var(--papel); }
   .canal__caixa { grid-template-columns: 1fr; text-align: center; justify-items: center; gap: 16px; }
   .canal__icone { width: 64px; height: 64px; }
   .canal__botao { white-space: normal; }
+}
+
+/* ---------- Área do Militante ---------- */
+.mil-carteira { margin-bottom: 34px; }
+.mil-avisos h2, .mil-cadastro h2 { margin: 0 0 18px; }
+.mil-lista-avisos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.mil-aviso { border-left: 6px solid var(--amarelo); background: #fff9e6; padding: 14px 18px; position: relative; }
+.mil-aviso--fixado { border-left-color: var(--vermelho); background: #fdecea; }
+.mil-aviso__topo { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.mil-aviso__topo strong { font-family: var(--titulo); font-size: 26px; letter-spacing: .02em; line-height: 1.05; }
+.mil-aviso__topo time { color: var(--cinza); font-size: 14px; }
+.mil-aviso__texto { margin-top: 8px; font-size: 16px; line-height: 1.55; }
+.mil-aviso__apagar { margin-top: 10px; background: none; border: 0; color: var(--vermelho); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; font-size: 14px; }
+.mil-aviso-vazio { color: var(--cinza); padding: 8px 0; }
+.mil-novo-aviso { border: 2px dashed var(--linha); padding: 18px; margin-bottom: 20px; }
+.mil-check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; margin: 0 0 16px; cursor: pointer; }
+.mil-check input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--vermelho); }
+.mil-check--lgpd { background: #fff7dc; padding: 12px 14px; border-left: 6px solid var(--amarelo); }
+.mil-cadastro__topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.mil-cadastro__topo h2 { margin: 0; }
+.mil-resumo { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+.mil-resumo div { padding: 10px 0; border-bottom: 1px solid var(--linha); }
+.mil-resumo dt { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--cinza); font-weight: 700; }
+.mil-resumo dd { margin: 2px 0 0; font-size: 16px; }
+.mil-falta { color: var(--vermelho); font-style: italic; }
+.mil-privado { grid-column: 1 / -1; color: var(--cinza); font-size: 14px; margin: 14px 0 0; }
+@media (max-width: 700px) { .mil-resumo { grid-template-columns: 1fr; } }
+
+.ficha-mil { border: 0; padding: 0; width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; background: var(--papel); box-shadow: 12px 12px 0 var(--amarelo); }
+.ficha-mil::backdrop { background: rgba(10,8,7,.86); }
+.ficha-mil form { padding: 0 0 26px; }
+.ficha-mil__topo { background: var(--vermelho); color: var(--branco); padding: 26px 30px 22px; }
+.ficha-mil__topo h2 { font-size: clamp(36px, 6vw, 54px); margin: 8px 0 6px; color: var(--branco); }
+.ficha-mil__topo p { margin: 0 0 16px; }
+.ficha-mil__passos { list-style: none; display: flex; gap: 8px; margin: 0; padding: 0; counter-reset: p; flex-wrap: wrap; }
+.ficha-mil__passos li { counter-increment: p; flex: 1; min-width: 150px; background: rgba(0,0,0,.18); padding: 8px 12px; font-family: var(--titulo); font-size: 19px; letter-spacing: .04em; }
+.ficha-mil__passos li::before { content: counter(p) ". "; }
+.ficha-mil__passos li.atual { background: var(--amarelo); color: var(--preto); }
+.ficha-mil__passos li.feito { background: rgba(255,255,255,.28); }
+.ficha-mil__passo { border: 0; margin: 0; padding: 24px 30px 4px; }
+.ficha-mil__passo legend { font-family: var(--titulo); font-size: 30px; color: var(--vermelho); padding: 0; margin-bottom: 14px; }
+.ficha-mil__sub { font-family: var(--titulo); font-size: 24px; color: var(--vermelho); margin: 10px 0 12px; }
+.ficha-mil__cep { display: flex; gap: 12px; align-items: flex-end; }
+.ficha-mil__cep .campo { flex: 1; max-width: 260px; }
+.ficha-mil__cep .botao { margin-bottom: 18px; }
+.ficha-mil__dica { margin: -8px 0 14px; color: var(--cinza); font-size: 14px; min-height: 1em; }
+.ficha-mil .aviso { margin: 0 30px 14px; }
+.ficha-mil__botoes { display: flex; justify-content: flex-end; gap: 12px; padding: 0 30px; flex-wrap: wrap; }
+.campo-erro { outline: 3px solid var(--vermelho) !important; }
+@media (max-width: 700px) {
+  .ficha-mil__topo, .ficha-mil__passo { padding-left: 18px; padding-right: 18px; }
+  .ficha-mil__botoes { padding: 0 18px; }
+  .ficha-mil .aviso { margin: 0 18px 14px; }
+  .ficha-mil__passos li { min-width: 0; font-size: 15px; padding: 6px 8px; }
 }

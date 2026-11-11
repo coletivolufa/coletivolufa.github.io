@@ -10,7 +10,7 @@ const LUFA = {
 };
 
 const ICONES = {
-  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4h16v12H9l-5 4z"/></svg>',
+  militante: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 2.8l2.6 6.1 6.6.5-5 4.3 1.6 6.4L12 16.6l-5.8 3.5 1.6-6.4-5-4.3 6.6-.5z"/></svg>',
   inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg>',
   artigos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg>',
   formacao: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>',
@@ -18,6 +18,9 @@ const ICONES = {
   biblioteca: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="m16 5 3.8-1 3 15.5-3.8 1z"/></svg>',
   menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
 };
+
+// o link da Área do Militante só aparece para membro ativo (a página e o banco também conferem)
+function souMilitante() { try { return localStorage.getItem("lufa_militante") === "1"; } catch (_) { return false; } }
 
 function montarMenu() {
   const pagina = document.body.dataset.pagina;
@@ -37,7 +40,7 @@ function montarMenu() {
         <a href="artigos.html"${atual("artigos")}>${ICONES.artigos}Artigos</a>
         <a href="formacao.html"${atual("formacao")}>${ICONES.formacao}Formação</a>
         <a href="biblioteca.html"${atual("biblioteca")}>${ICONES.biblioteca}Biblioteca</a>
-        <a href="comunidade.html"${atual("comunidade")}>${ICONES.chat}Comunidade</a>
+        <a href="militante.html"${atual("militante")} data-so-militante${souMilitante() ? "" : " hidden"}>${ICONES.militante}Área do militante</a>
         <a href="conta.html"${atual("conta")}>${ICONES.conta}Minha conta</a>
       </nav>
       <div class="menu__rodape">

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Área do Militante · Coletivo Lufã</title>
+  <meta name="description" content="Área exclusiva dos membros ativos do Coletivo Lufã.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=26">
+</head>
+<body data-pagina="militante">
+<main>
+  <header class="cabecalho-pagina">
+    <div class="conteudo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Área do militante</span>
+      <h1 id="ola">Área do militante</h1>
+      <p id="ola-sub">Exclusiva para os membros ativos do Coletivo Lufã.</p>
+    </div>
+  </header>
+
+  <section class="secao">
+    <div class="conteudo">
+      <div id="mensagem" aria-live="polite"></div>
+
+      <!-- sem acesso -->
+      <div class="vazio" id="bloqueio" hidden>
+        <h2 id="bloqueio-titulo" style="font-size:44px;color:var(--vermelho)"></h2>
+        <p id="bloqueio-texto" style="max-width:560px;margin:10px auto 22px"></p>
+        <a class="botao botao--vermelho" id="bloqueio-link" href="conta.html"></a>
+      </div>
+
+      <!-- área -->
+      <div id="area" hidden>
+        <div class="mil-carteira">
+          <div class="minha-carteira">
+            <img id="carteira-img" alt="Sua carteirinha do Coletivo Lufã" hidden>
+            <div id="carteira-vazia" class="vazio" hidden>
+              <p>Você ainda não fez a sua carteirinha.</p>
+              <a class="botao botao--vermelho" href="carteirinha.html">Fazer minha carteirinha</a>
+            </div>
+            <div class="carteira__acoes" id="carteira-acoes" hidden>
+              <a class="botao botao--vermelho" id="carteira-baixar" download="carteirinha-coletivo-lufa.jpg">Baixar</a>
+              <a class="botao botao--claro" href="carteirinha.html">Refazer</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="painel mil-avisos">
+          <h2>Central de avisos</h2>
+          <form id="form-aviso" class="mil-novo-aviso" hidden>
+            <div class="campo"><label for="av-titulo">Novo aviso · título</label><input id="av-titulo" maxlength="120" required></div>
+            <div class="campo"><label for="av-texto">Texto</label><textarea id="av-texto" maxlength="4000" style="min-height:120px"></textarea></div>
+            <label class="mil-check"><input type="checkbox" id="av-fixado"> Fixar no topo</label>
+            <button class="botao botao--vermelho" type="submit">Publicar aviso</button>
+          </form>
+          <ul class="mil-lista-avisos" id="lista-avisos"><li class="mil-aviso-vazio">Carregando…</li></ul>
+        </div>
+
+        <div class="painel mil-cadastro">
+          <div class="mil-cadastro__topo">
+            <h2>Meu cadastro</h2>
+            <button class="botao botao--vermelho" type="button" id="editar-cadastro">Editar cadastro</button>
+          </div>
+          <dl class="mil-resumo" id="resumo"></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ficha do militante (passo a passo) -->
+<dialog class="ficha-mil" id="janela-ficha" aria-labelledby="ficha-titulo">
+  <form id="form-ficha" novalidate>
+    <div class="ficha-mil__topo">
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Militante</span>
+      <h2 id="ficha-titulo">Atualize seu cadastro</h2>
+      <p id="ficha-intro">Para usar a Área do Militante, complete o seu cadastro. Leva poucos minutos.</p>
+      <ol class="ficha-mil__passos" id="passos"><li>Dados básicos</li><li>Onde mora</li><li>Cadastro completo</li></ol>
+    </div>
+
+    <!-- passo 1 -->
+    <fieldset class="ficha-mil__passo" data-passo="1">
+      <legend>Dados básicos</legend>
+      <div class="linha-campos">
+        <div class="campo"><label for="f-nome">Nome completo</label><input id="f-nome" maxlength="60" required autocomplete="name"></div>
+        <div class="campo"><label for="f-nascimento">Data de nascimento</label><input id="f-nascimento" type="date" required></div>
+        <div class="campo"><label for="f-email">E-mail</label><input id="f-email" type="email" readonly><small>Para trocar o e-mail, fale com a secretaria.</small></div>
+        <div class="campo"><label for="f-celular">Celular com DDD (WhatsApp)</label><input id="f-celular" type="tel" inputmode="tel" required placeholder="(11) 91234-5678" maxlength="20"></div>
+        <div class="campo"><label for="f-arroba">@ no Instagram</label><input id="f-arroba" maxlength="40" placeholder="@perfil"></div>
+        <div class="campo"><label for="f-sexo">Sexo</label><select id="f-sexo" required></select></div>
+        <div class="campo"><label for="f-genero">Identidade de gênero</label><select id="f-genero" required></select></div>
+        <div class="campo"><label for="f-orientacao">Orientação sexual</label><select id="f-orientacao" required></select></div>
+      </div>
+    </fieldset>
+
+    <!-- passo 2 -->
+    <fieldset class="ficha-mil__passo" data-passo="2" hidden>
+      <legend>Onde mora</legend>
+      <div class="ficha-mil__cep">
+        <div class="campo"><label for="f-cep">CEP</label><input id="f-cep" inputmode="numeric" required placeholder="00000-000" maxlength="9"></div>
+        <button class="botao botao--claro" type="button" id="buscar-cep">Buscar CEP</button>
+      </div>
+      <p class="ficha-mil__dica" id="cep-status"></p>
+      <div class="linha-campos">
+        <div class="campo" style="grid-column:1/-1"><label for="f-rua">Rua</label><input id="f-rua" maxlength="120" required></div>
+        <div class="campo"><label for="f-numero">Número</label><input id="f-numero" maxlength="20" required></div>
+        <div class="campo"><label for="f-complemento">Complemento (opcional)</label><input id="f-complemento" maxlength="80"></div>
+        <div class="campo"><label for="f-bairro">Bairro</label><input id="f-bairro" maxlength="80" required></div>
+        <div class="campo"><label for="f-cidade">Cidade</label><input id="f-cidade" maxlength="80" required></div>
+        <div class="campo"><label for="f-uf">Estado</label><select id="f-uf" required></select></div>
+      </div>
+      <h3 class="ficha-mil__sub">Onde você nasceu</h3>
+      <div class="linha-campos">
+        <div class="campo"><label for="f-nasc-cidade">Cidade de nascimento</label><input id="f-nasc-cidade" maxlength="80" required></div>
+        <div class="campo"><label for="f-nasc-uf">Estado de nascimento</label><select id="f-nasc-uf" required></select></div>
+      </div>
+    </fieldset>
+
+    <!-- passo 3 -->
+    <fieldset class="ficha-mil__passo" data-passo="3" hidden>
+      <legend>Cadastro completo</legend>
+      <div class="campo"><label for="f-cpf">CPF</label><input id="f-cpf" inputmode="numeric" required placeholder="000.000.000-00" maxlength="14"></div>
+      <div class="campo"><label for="f-mae">Nome da mãe</label><input id="f-mae" maxlength="120" required></div>
+      <div class="campo"><label for="f-religiao">Religião</label><select id="f-religiao" required></select></div>
+      <div class="campo"><label for="f-ocupacao">Ocupação</label><select id="f-ocupacao" required></select></div>
+      <div class="campo" id="campo-ocupacao-outra" hidden><label for="f-ocupacao-outra">Qual ocupação?</label><input id="f-ocupacao-outra" maxlength="80"></div>
+      <div class="campo"><label for="f-renda">Renda mensal</label><select id="f-renda" required></select></div>
+      <label class="mil-check mil-check--lgpd"><input type="checkbox" id="f-consentimento" required>
+        Autorizo o Coletivo Lufã a guardar estes dados para a organização interna do coletivo. Eles não aparecem no site:
+        só eu e a administração temos acesso.</label>
+    </fieldset>
+
+    <p class="aviso aviso--erro" id="ficha-erro" hidden></p>
+
+    <div class="ficha-mil__botoes">
+      <button class="botao botao--claro" type="button" id="ficha-voltar" hidden>Voltar</button>
+      <button class="botao botao--claro" type="button" id="ficha-cancelar" hidden>Cancelar</button>
+      <button class="botao botao--vermelho" type="submit" id="ficha-avancar">Continuar</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=17"></script>
+<script src="assets/supa.js?v=7"></script>
+<script src="assets/militante.js?v=1"></script>
+</body>
+</html>

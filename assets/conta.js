@@ -150,6 +150,7 @@ async function mostrar() {
   document.querySelector('[data-aba="admin"]').hidden = perfil.papel !== "admin";
   // regimento interno: aberto a todos
   $("bloco-regimento").hidden = false;
+  $("link-militante").hidden = !(APROVADO.includes(perfil.papel) && !ehComum(perfil));
   $("titulo-lista-artigos").textContent = ["editor", "admin"].includes(perfil.papel) ? "Artigos do site" : "Meus artigos";
 }
 

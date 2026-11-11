@@ -12,13 +12,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=25">
+  <link rel="stylesheet" href="assets/style.css?v=26">
 </head>
 <body data-pagina="conta">
 <main>
   <header class="cabecalho-pagina">
     <div class="conteudo">
-      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Área do militante</span>
+      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Minha conta</span>
       <h1 id="titulo">Minha conta</h1>
       <p id="subtitulo">Entre ou crie a sua conta para fazer parte do Coletivo Lufã.</p>
     </div>
@@ -69,6 +69,7 @@
 
         <div class="bloco-regimento" id="bloco-regimento" hidden>
           <a class="botao botao--amarelo" href="regimento.html">Leia o regimento interno</a>
+          <a class="botao botao--vermelho" href="militante.html" id="link-militante" hidden>Área do militante</a>
         </div>
 
         <div class="abas" role="tablist" id="abas-dentro">
@@ -192,8 +193,8 @@
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="assets/comum.js?v=16"></script>
-<script src="assets/supa.js?v=6"></script>
+<script src="assets/comum.js?v=17"></script>
+<script src="assets/supa.js?v=7"></script>
 <dialog class="pedir-conta" id="janela-canal" aria-labelledby="canal-titulo">
   <div class="pedir-conta__corpo">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6H22l-6.2 4.6 2.4 7.6-6.2-4.7-6.2 4.7 2.4-7.6L2 9.6h7.6z"/></svg>
@@ -216,6 +217,6 @@
   </form>
 </dialog>
 
-<script src="assets/conta.js?v=13"></script>
+<script src="assets/conta.js?v=14"></script>
 </body>
 </html>
