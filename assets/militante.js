@@ -144,10 +144,11 @@ function irPara(n) {
   $("ficha-cancelar").hidden = fichaObrigatoria || n !== 1;
   $("ficha-avancar").textContent = n === ULTIMO ? "Concluir cadastro" : "Continuar";
   $("ficha-erro").hidden = true;
-  $("janela-ficha").scrollTop = 0;
+  $("ficha-corpo").scrollTop = 0;
 }
 function erroFicha(texto, campo) {
   $("ficha-erro").textContent = texto; $("ficha-erro").hidden = false;
+  if (!campo) $("ficha-erro").scrollIntoView({ block: "nearest" });
   if (campo) { $(campo).focus(); $(campo).classList.add("campo-erro"); setTimeout(() => $(campo).classList.remove("campo-erro"), 2500); }
   return false;
 }
@@ -216,10 +217,12 @@ function abrirFicha(obrigatoria) {
     : "Altere o que precisar e salve no último passo.";
   preencherFicha(); irPara(1);
   if (!$("janela-ficha").open) $("janela-ficha").showModal();
+  document.documentElement.classList.add("janela-aberta"); // trava a página de trás
 }
 // enquanto o cadastro não estiver completo, a janela não fecha (nem com Esc)
 $("janela-ficha").addEventListener("cancel", (ev) => { if (fichaObrigatoria) ev.preventDefault(); });
 $("ficha-cancelar").addEventListener("click", () => $("janela-ficha").close());
+$("janela-ficha").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
 $("ficha-voltar").addEventListener("click", () => irPara(Math.max(1, passo - 1)));
 $("editar-cadastro").addEventListener("click", () => abrirFicha(false));
 
@@ -273,20 +276,7 @@ function mostrarCabecalho() {
   $("ola").textContent = nome ? `Olá, camarada ${nome}!` : "Olá, camarada!";
   $("ola-sub").textContent = [textoOcupacao(perfil), perfil.matricula ? "Matrícula Nº " + perfil.matricula : ""].filter(Boolean).join(" · ");
 }
-function mostrarResumo() {
-  const f = ficha || {};
-  const cpf = f.cpf ? `***.***.${f.cpf.slice(6, 9)}-${f.cpf.slice(9)}` : "";
-  const endereco = [f.rua && `${f.rua}, ${f.numero}${f.complemento ? " · " + f.complemento : ""}`, f.bairro, f.cidade && `${f.cidade}/${f.uf}`, f.cep && "CEP " + formatarCEP(f.cep)].filter(Boolean).join(" · ");
-  const linhas = [
-    ["Nome", perfil.nome], ["E-mail", perfil.email], ["Celular", formatarCelular(perfil.celular || "")],
-    ["Nascimento", f.nascimento ? new Date(f.nascimento + "T12:00:00").toLocaleDateString("pt-BR") + (perfil.idade ? ` (${perfil.idade} anos)` : "") : ""],
-    ["Endereço", endereco], ["Naturalidade", f.nasc_cidade ? `${f.nasc_cidade}/${f.nasc_uf}` : ""],
-    ["CPF", cpf], ["Ocupação", f.ocupacao], ["Renda", f.renda], ["Escolaridade", f.escolaridade],
-    ["Partido", f.partido], ["Outro movimento", f.movimento], ["Pautas", (f.pautas || []).join(" · ")],
-  ];
-  $("resumo").innerHTML = linhas.map(([k, v]) => `<div><dt>${k}</dt><dd>${v ? esc(v) : '<span class="mil-falta">não preenchido</span>'}</dd></div>`).join("") +
-    `<p class="mil-privado">Esses dados só aparecem para você e para a administração do coletivo.</p>`;
-}
+function mostrarResumo() {} // os dados não aparecem mais na página: só dentro de "Editar cadastro"
 function carregarCarteirinha() {
   const base = (nome) => supa.storage.from("fotos").getPublicUrl(`${perfil.id}/${nome}`).data.publicUrl + "?t=" + Date.now();
   const img = $("carteira-img");

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=29">
+  <link rel="stylesheet" href="assets/style.css?v=30">
 </head>
 <body data-pagina="militante">
 <main>
@@ -80,7 +80,7 @@
             <h2>Meu cadastro</h2>
             <button class="botao botao--vermelho" type="button" id="editar-cadastro">Editar cadastro</button>
           </div>
-          <dl class="mil-resumo" id="resumo"></dl>
+          <p class="mil-privado" style="margin:6px 0 0">Seus dados ficam guardados e só aparecem para você e para a administração do coletivo. Para ver ou alterar, clique em “Editar cadastro”.</p>
         </div>
       </div>
     </div>
@@ -97,6 +97,7 @@
       <ol class="ficha-mil__passos" id="passos"><li>Dados básicos</li><li>Onde mora</li><li>Cadastro completo</li><li>Militância</li></ol>
     </div>
 
+    <div class="ficha-mil__corpo" id="ficha-corpo">
     <!-- passo 1 -->
     <fieldset class="ficha-mil__passo" data-passo="1">
       <legend>Dados básicos</legend>
@@ -170,6 +171,7 @@
     </fieldset>
 
     <p class="aviso aviso--erro" id="ficha-erro" hidden></p>
+    </div>
 
     <div class="ficha-mil__botoes">
       <button class="botao botao--claro" type="button" id="ficha-voltar" hidden>Voltar</button>
@@ -182,6 +184,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=17"></script>
 <script src="assets/supa.js?v=7"></script>
-<script src="assets/militante.js?v=3"></script>
+<script src="assets/militante.js?v=4"></script>
 </body>
 </html>
