@@ -317,8 +317,9 @@ function mostrarNucleos() {
       ${link ? `<a class="botao botao--vermelho" href="${esc(link)}" target="_blank" rel="noopener">Participar agora</a>`
              : `<span class="botao mil-nucleo__breve">Grupo em breve</span>`}
       ${admin ? `<button type="button" class="mil-nucleo__link" data-link="${n.slug}">${link ? "Trocar link do grupo" : "Definir link do grupo"}</button>` : ""}
-      ${admin && !meu ? `<small>Você não está neste núcleo (aparece só para a administração).</small>` : ""}
+      ${admin && !meu ? `<small>Você não está neste núcleo.</small>` : ""}
     </article>`; }).join("");
+  $("dica-nucleos").hidden = lista.length <= 3;
   $("meus-nucleos").querySelectorAll("[data-link]").forEach((b) => b.addEventListener("click", async () => {
     const slug = b.dataset.link;
     const novo = prompt("Cole o link do grupo de WhatsApp deste núcleo (começa com https://). Deixe vazio para tirar o link:", links[slug] || "");

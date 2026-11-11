@@ -804,3 +804,20 @@ main.catalogo { background: var(--preto); color: var(--papel); }
 .cabecalho-pagina--faixa { padding-bottom: 150px; }
 .cabecalho-pagina--faixa::after { display: none; }
 .cabecalho-pagina--faixa .faixa { z-index: 2; }
+
+/* Seus núcleos: fileira que desliza para o lado, 3 por vez */
+.mil-grade-nucleos { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 6px 12px 2px; grid-template-columns: none; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+.mil-nucleo { flex: 0 0 calc((100% - 24px) / 3); min-width: 0; scroll-snap-align: start; gap: 7px; }
+.mil-nucleo img { box-shadow: 4px 4px 0 var(--preto); }
+.mil-nucleo h3 { font-size: clamp(14px, 2.1vw, 21px); margin: 2px 0 0; min-height: 2em; display: flex; align-items: center; justify-content: center; }
+.mil-nucleo .botao { font-size: clamp(12px, 1.7vw, 18px); padding: 8px 4px 6px; letter-spacing: .03em; line-height: 1.1; box-shadow: 3px 3px 0 var(--preto); }
+.mil-nucleo .mil-nucleo__breve { box-shadow: none; }
+.mil-nucleo__link { font-size: 11px; line-height: 1.2; }
+.mil-nucleo small { font-size: 10px; line-height: 1.25; }
+.mil-nucleos { padding-bottom: 20px; }
+.mil-dica-nucleos { margin: -8px 0 12px; color: var(--cinza); font-size: 13px; }
+@media (max-width: 700px) {
+  .mil-grade-nucleos { grid-template-columns: none; gap: 8px; }
+  .mil-nucleo { flex-basis: calc((100% - 16px) / 3); }
+  .mil-nucleos { padding-left: 16px; padding-right: 16px; }
+}
