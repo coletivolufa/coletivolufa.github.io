@@ -492,7 +492,7 @@ function fraseComFoices(ctx, texto, cx, yBase, tam, tinta, corIcone) {
   desenharIcone(ctx, cx + lw / 2 + 26, yBase - ih * 0.8, ih, corIcone);
   ctx.fillStyle = tinta; ctx.textAlign = "center"; ctx.fillText(frase, cx, yBase);
 }
-// capa: cabeçalho com número e data, logo, nome do jornal, frase, bloco vermelho com a chamada e rodapé preto
+// capa do jornal semanal: manchete grande, foto grande e um texto pequeno embaixo (chamada de capa)
 function capaJornal(ctx, v, W, H) {
   const M = 70, CW = W - 2 * M, FYP = 1280;   // FYP: início do rodapé preto
   ctx.fillStyle = COR.papel; ctx.fillRect(0, 0, W, H);
@@ -500,41 +500,52 @@ function capaJornal(ctx, v, W, H) {
   ctx.textAlign = "left"; ctx.fillText(v.edicao.toUpperCase(), M, 86);
   ctx.textAlign = "right"; ctx.fillText(v.data.toUpperCase(), W - M, 86);
   if (pronta(LOGO_LINHA)) { const lh = 86, lw = lh * (LOGO_LINHA.naturalWidth / LOGO_LINHA.naturalHeight); ctx.drawImage(LOGO_LINHA, (W - lw) / 2, 112, lw, lh); }
-  const yN = nomeJornal(ctx, v.titulo, W / 2, 232, 170, CW, COR.preto);
+  const yN = nomeJornal(ctx, v.titulo, W / 2, 232, 130, CW, COR.preto);
   fraseComFoices(ctx, v.lema, W / 2, yN + 58, 30, COR.preto, COR.vermelho);
   const yRule = yN + 84;
   ctx.fillStyle = COR.preto; ctx.fillRect(M, yRule, CW, 8); ctx.fillRect(M, yRule + 14, CW, 2);
-  // bloco vermelho com a chamada
-  const yP = yRule + 40, altP = FYP - yP;
-  ctx.fillStyle = COR.vermelho; ctx.fillRect(0, yP, W, altP);
-  ctx.save(); ctx.beginPath(); ctx.rect(0, yP, W, altP); ctx.clip(); raios(ctx, W / 2, yP + altP / 2, 26, "rgba(255,255,255,.07)", 0); ctx.restore();
-  const ch = caber(ctx, v.chamada, CW - 60, altP - 120, 170, 56, 0.95, "Big Shoulders Display", "700");
-  ctx.textAlign = "center";
-  ch.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, yP + 60 + ch.tam * 0.85 + yl(ch, i, 0.95), COR.papel, COR.amarelo, "center"));
+  // manchete grande
+  const yM = yRule + 34, altM = 300;
+  const m = caber(ctx, v.manchete, CW, altM, 150, 60, 0.92, "Big Shoulders Display", "700");
+  ctx.textAlign = "left";
+  m.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, yM + m.tam * 0.85 + yl(m, i, 0.92), COR.preto, COR.vermelho));
+  // foto grande e crédito
+  const yF = yM + altM + 40, hF = 300;
+  if (v.imagem) imagemCobrindo(ctx, v.imagem, M, yF, CW, hF);
+  else { ctx.fillStyle = COR.vermelho; ctx.fillRect(M, yF, CW, hF); raios(ctx, W / 2, yF + hF, 26, "rgba(255,255,255,.08)", 0); }
+  fonte(ctx, 18, "Special Elite"); ctx.fillStyle = COR.preto; ctx.textAlign = "left"; ctx.fillText(v.credito, M, yF + hF + 24);
+  // texto pequeno embaixo
+  const yT = yF + hF + 50, ct = caber(ctx, v.chamada, CW, FYP - yT - 16, 30, 20, 1.3, FONTE.texto, "400");
+  ctx.fillStyle = COR.preto; ctx.textAlign = "left";
+  ct.linhas.forEach((l, i) => ctx.fillText(l, M, yT + ct.tam + yl(ct, i, 1.3)));
   // rodapé preto: edição semanal à esquerda, @ à direita
   ctx.fillStyle = COR.preto; ctx.fillRect(0, FYP, W, H - FYP);
   fonte(ctx, 34, "Oswald", "700"); ctx.fillStyle = COR.papel; ctx.textAlign = "left"; ctx.fillText(v.rodape.toUpperCase(), M, FYP + 46);
   fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, FYP + 46);
   grao(ctx, W, H, 0.05);
 }
-// página de abertura: manchete bem grande no bloco vermelho, foto embaixo e chamada em itálico
-function aberturaJornal(ctx, v, W, H) {
-  const M = 70, CW = W - 2 * M, FYV = 780, FYP = 1280;
+// última página do jornal semanal: pedido de apoio, com os passos numerados
+function fimJornal(ctx, v, W, H) {
+  const M = 70, CW = W - 2 * M, FYP = 1280;
   ctx.fillStyle = COR.papel; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, FYV);
-  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, FYV); ctx.clip(); raios(ctx, W / 2, FYV, 30, "rgba(255,255,255,.07)", 0); ctx.restore();
-  etiqueta(ctx, "DESTAQUE DA SEMANA", M, 120, 40, COR.amarelo, COR.preto);
-  const m = caber(ctx, v.manchete, CW, 580, 250, 80, 0.88, "Big Shoulders Display", "700");
+  if (pronta(LOGO_LINHA)) { const lh = 92, lw = lh * (LOGO_LINHA.naturalWidth / LOGO_LINHA.naturalHeight); ctx.drawImage(LOGO_LINHA, (W - lw) / 2, 100, lw, lh); }
+  const hd = caber(ctx, v.titulo, CW, 200, 150, 60, 0.92, "Big Shoulders Display", "700");
   ctx.textAlign = "left";
-  m.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, 190 + m.tam * 0.85 + yl(m, i, 0.88), COR.papel, COR.amarelo));
-  // foto (ou bloco preto) e crédito
-  if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, FYV, W, 340);
-  else { ctx.fillStyle = COR.preto; ctx.fillRect(0, FYV, W, 340); raios(ctx, W / 2, FYV + 340, 30, "rgba(204,34,32,.25)", 0); }
-  fonte(ctx, 18, "Special Elite"); ctx.fillStyle = COR.preto; ctx.textAlign = "left"; ctx.fillText(v.credito, M, FYV + 362);
-  // chamada e rodapé
-  const ch = caber(ctx, v.chamada, CW, 1262 - (FYV + 390), 40, 24, 1.2, FONTE.citacao, "400", "italic");
+  hd.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, 236 + hd.tam * 0.85 + yl(hd, i, 0.92), COR.preto, COR.vermelho));
+  const yT = 236 + hd.tam * 0.85 + yl(hd, hd.linhas.length - 1, 0.92) + 40;
+  const tx = caber(ctx, v.texto, CW, 300, 40, 24, 1.35, FONTE.texto, "400");
   ctx.fillStyle = COR.preto; ctx.textAlign = "left";
-  ch.linhas.forEach((l, i) => ctx.fillText(l, M, FYV + 390 + ch.tam + yl(ch, i, 1.2)));
+  tx.linhas.forEach((l, i) => ctx.fillText(l, M, yT + tx.tam + yl(tx, i, 1.35)));
+  // passos numerados (um por linha do campo)
+  const passos = String(v.passos).split("\n").map((p) => p.trim()).filter(Boolean).slice(0, 4);
+  let y = Math.max(yT + 300, 820);
+  passos.forEach((p, i) => {
+    ctx.fillStyle = COR.vermelho; ctx.fillRect(M, y, 64, 64);
+    fonte(ctx, 44, "Oswald", "700"); ctx.fillStyle = COR.papel; ctx.textAlign = "center"; ctx.fillText(String(i + 1), M + 32, y + 49);
+    let t = 38; fonte(ctx, t, "Oswald", "700"); while (ctx.measureText(p.toUpperCase()).width > CW - 100 && t > 20) { t -= 2; fonte(ctx, t, "Oswald", "700"); }
+    ctx.fillStyle = COR.preto; ctx.textAlign = "left"; ctx.fillText(p.toUpperCase(), M + 88, y + 48);
+    y += 96;
+  });
   ctx.fillStyle = COR.preto; ctx.fillRect(0, FYP, W, H - FYP);
   fonte(ctx, 34, "Oswald", "700"); ctx.fillStyle = COR.papel; ctx.textAlign = "left"; ctx.fillText(v.rodape.toUpperCase(), M, FYP + 46);
   fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, FYP + 46);
@@ -1020,21 +1031,23 @@ const MODELOS = {
       { id: "edicao", rotulo: "Número da edição (editável)", padrao: "Nº 1" },
       { id: "data", rotulo: "Data", padrao: "12 DE NOVEMBRO DE 2026" },
       { id: "lema", rotulo: "Frase (entre as foices)", padrao: "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!" },
-      { id: "chamada", rotulo: "Chamada da capa (use *asteriscos*)", tipo: "area", padrao: "As notícias da *semana*, do ponto de vista de quem trabalha" },
+      { id: "manchete", rotulo: "Manchete de capa, grande (use *asteriscos*)", tipo: "area", padrao: "O que o patrão *não* quer que você saiba sobre a escala 6x1" },
+      { id: "imagem", rotulo: "Foto grande da capa", tipo: "imagem" },
+      { id: "credito", rotulo: "Crédito da foto (fica abaixo dela)", padrao: "Foto: Agência Brasil" },
+      { id: "chamada", rotulo: "Texto pequeno embaixo da foto", tipo: "area", padrao: "Leia a análise completa nas próximas páginas." },
       { id: "rodape", rotulo: "Texto do rodapé preto", padrao: "EDIÇÃO SEMANAL" },
     ],
     desenhar(ctx, v) { capaJornal(ctx, v, 1080, 1350); },
   },
-  jornalAbertura: {
-    nome: "Jornal semanal · página de abertura", w: 1080, h: 1350,
+  jornalFim: {
+    nome: "Jornal semanal · apoio (última página)", w: 1080, h: 1350,
     campos: [
-      { id: "manchete", rotulo: "Manchete (grande; use *asteriscos*)", tipo: "area", padrao: "Trabalhadores *organizados* não pedem favor: exigem seus direitos" },
-      { id: "chamada", rotulo: "Chamada embaixo da foto", tipo: "area", padrao: "Os destaques da semana, com a análise de quem vive do próprio trabalho." },
-      { id: "imagem", rotulo: "Foto (ocupa a faixa do meio)", tipo: "imagem" },
-      { id: "credito", rotulo: "Crédito da foto", padrao: "Foto: Agência Brasil" },
-      { id: "rodape", rotulo: "Texto do rodapé preto", padrao: "LEIA NAS PRÓXIMAS PÁGINAS" },
+      { id: "titulo", rotulo: "Título (use *asteriscos*)", padrao: "APOIE O *COLETIVO LUFÃ*" },
+      { id: "texto", rotulo: "Texto de apoio", tipo: "area", padrao: "O Coletivo Lufã é feito por trabalhadores e estudantes que se organizam sem patrão. Sua ajuda mantém o estudo, as rodas de formação e este jornal circulando." },
+      { id: "passos", rotulo: "Passos (um por linha, até 4)", tipo: "area", padrao: "Siga @coletivolufa\nCompartilhe esta edição com um colega\nVenha para a próxima roda de formação\nContribua: indique aqui como apoiar" },
+      { id: "rodape", rotulo: "Texto do rodapé preto", padrao: "EDIÇÃO SEMANAL" },
     ],
-    desenhar(ctx, v) { aberturaJornal(ctx, v, 1080, 1350); },
+    desenhar(ctx, v) { fimJornal(ctx, v, 1080, 1350); },
   },
   noticiaSlide: {
     nome: "Jornal semanal · notícia", w: 1080, h: 1350,

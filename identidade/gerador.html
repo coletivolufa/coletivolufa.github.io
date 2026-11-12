@@ -239,7 +239,7 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="posts.js?v=15"></script>
+  <script src="posts.js?v=16"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     let modo = "citacao";
@@ -254,22 +254,22 @@
       ] },
       jornal: { atual: 0, slides: [
         { modelo: "jornalCapa", valores: {} },
-        { modelo: "jornalAbertura", valores: {} },
         { modelo: "noticiaSlide", valores: {} },
         { modelo: "noticiaSlide", valores: { manchete: "Segunda notícia da *semana*", texto: "Escreva aqui o texto da notícia.\n\nUse linhas em branco para separar os parágrafos.", fonte: "Fonte: indique a origem" } },
+        { modelo: "jornalFim", valores: {} },
       ] },
     };
     // tipos de carrossel: modelo da capa, dos slides de notícia e do fechamento (se houver)
     const TIPOS = {
       carrossel: { capa: "carrosselCapa", miolo: "carrosselSlide", fim: "carrosselFim", nomeArquivo: "carrossel-coletivo-lufa.zip" },
-      jornal: { capa: "jornalCapa", miolo: "noticiaSlide", fim: null, nomeArquivo: "jornal-semanal.zip" },
+      jornal: { capa: "jornalCapa", miolo: "noticiaSlide", fim: "jornalFim", nomeArquivo: "jornal-semanal.zip" },
     };
     const ehCarrossel = (m = modo) => m === "carrossel" || m === "jornal";
     const cs = () => carrosseis[modo];
     const tipo = () => TIPOS[modo];
 
     const atual = () => (ehCarrossel() ? cs().slides[cs().atual] : estado[modo]);
-    const nomeSlide = (s, i) => s.modelo === "carrosselCapa" || s.modelo === "jornalCapa" ? "Capa" : s.modelo === "carrosselFim" ? "Fim" : s.modelo === "jornalAbertura" ? "Abertura" : s.modelo === "noticiaSlide" ? `Notícia ${i - 1}` : `Slide ${i}`;
+    const nomeSlide = (s, i) => s.modelo === "carrosselCapa" || s.modelo === "jornalCapa" ? "Capa" : s.modelo === "carrosselFim" || s.modelo === "jornalFim" ? "Fim" : s.modelo === "noticiaSlide" ? `Notícia ${i}` : `Slide ${i}`;
 
     function paginar() {
       const total = cs().slides.length;
@@ -553,7 +553,7 @@
     });
     $("remover-slide").addEventListener("click", () => {
       const s = cs().slides[cs().atual];
-      if (s.modelo !== tipo().miolo) { alert("A capa, a abertura e o fechamento não podem ser removidos."); return; }
+      if (s.modelo !== tipo().miolo) { alert("A capa e o fechamento não podem ser removidos."); return; }
       cs().slides.splice(cs().atual, 1); cs().atual = Math.max(1, cs().atual - 1);
       montarSlides(); montarCampos(); redesenhar();
     });
