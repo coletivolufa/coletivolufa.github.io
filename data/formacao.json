@@ -27,6 +27,16 @@
           "capa": "formacao/capas/desmistificando-ep02.jpg",
           "video": "formacao/videos/desmistificando-ep02.mp4",
           "publicado_em": "2026-11-05"
+        },
+        {
+          "id": "ep03",
+          "numero": 3,
+          "titulo": "O que é mais-valia?",
+          "descricao": "Das 8 horas que você trabalha, quantas são pra você? Com o exemplo de uma rede de hambúrguer e as contas do Brasil de hoje, o terceiro episódio explica a mais-valia: o trabalho que você faz e não recebe, e de onde vem o lucro do patrão.",
+          "duracao": "2 min 30 s",
+          "capa": "formacao/capas/desmistificando-ep03.jpg",
+          "video": "formacao/videos/desmistificando-ep03.mp4",
+          "publicado_em": "2026-11-12"
         }
       ],
       "poster": "formacao/capas/desmistificando-ep01.jpg"
