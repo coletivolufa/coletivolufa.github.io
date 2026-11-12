@@ -6,6 +6,7 @@ create table if not exists public.noticias (
   id           bigint generated always as identity primary key,
   titulo       text not null check (char_length(titulo) between 3 and 200),
   secao        text not null default 'Brasil' check (char_length(secao) <= 40),
+  linha_fina   text not null default '' check (char_length(linha_fina) <= 400),
   texto        text not null default '' check (char_length(texto) <= 20000),
   foto         text not null default '' check (foto = '' or foto ~ '^https://'),
   foto_credito text not null default '' check (char_length(foto_credito) <= 200),
@@ -15,6 +16,8 @@ create table if not exists public.noticias (
   autor_id     uuid default auth.uid() references auth.users (id) on delete set null,
   criado_em    timestamptz not null default now()
 );
+-- se a tabela já tinha sido criada antes da linha fina:
+alter table public.noticias add column if not exists linha_fina text not null default '' check (char_length(linha_fina) <= 400);
 create index if not exists noticias_data on public.noticias (criado_em desc);
 
 alter table public.noticias enable row level security;

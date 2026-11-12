@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jornal da Classe Trabalhadora · Coletivo Lufã</title>
-  <meta name="description" content="Jornal da Classe Trabalhadora, do Coletivo Lufã. Inspirado no jornal A Classe Operária, uma homenagem à redatora e poetisa comunista Laura Brandão.">
+  <meta name="description" content="Jornal da Classe Trabalhadora, do Coletivo Lufã: notícias pela ótica de quem vive do próprio trabalho. Uma homenagem a Laura Brandão.">
   <meta property="og:title" content="Jornal da Classe Trabalhadora · Coletivo Lufã">
   <meta property="og:image" content="assets/img/compartilhar.jpg">
   <meta name="theme-color" content="#cc2220">
@@ -12,125 +12,129 @@
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=54">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Oswald:wght@500;600&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=57">
 </head>
 <body data-pagina="artigos">
-<main class="jornal">
-  <div class="jornal__folha">
-    <header class="jornal__cabeca">
-      <div class="jornal__linha-topo">
-        <span id="jornal-edicao">Edição digital</span>
-        <span>Proletários de todos os países, uni-vos!</span>
-        <span>Distribuição gratuita</span>
-      </div>
-      <h1 class="jornal__titulo"><span>Jornal da</span> Classe Trabalhadora</h1>
-      <div class="jornal__linha-baixo">
-        <span>Órgão de comunicação do Coletivo Lufã</span>
-        <span id="jornal-data"></span>
-      </div>
+
+<!-- abertura: três frases passam enquanto a edição carrega -->
+<div class="jn-abertura" id="abertura" role="status" aria-live="polite">
+  <img class="jn-abertura__logo" src="assets/img/logo-lufa-linha-amarela.png" alt="Coletivo Lufã">
+  <div class="jn-abertura__frases">
+    <p class="jn-abertura__frase">Este jornal é uma homenagem a todos os comunistas brasileiros, em especial à <b>Laura Brandão</b>, poetisa e redatora do jornal <b>A Classe Operária</b>, que fora exilada posteriormente no governo de Getúlio Vargas.</p>
+    <p class="jn-abertura__frase">Como diria Cazuza: <b>“a burguesia fede”</b> e, por isto, devemos lutar contra ela a todo momento. <b>Viver é um ato revolucionário.</b></p>
+    <p class="jn-abertura__frase">Como disse Thomas Sankara: <b>“Nosso país produz o suficiente para alimentar a todos nós. Infelizmente, por falta de organização, somos obrigados a implorar por ajuda alimentar. É essa ajuda que instila em nossos espíritos a atitude de mendigos.”</b></p>
+  </div>
+  <div class="jn-abertura__pontos" aria-hidden="true"><i></i><i></i><i></i></div>
+  <button class="jn-abertura__pular" type="button" id="pular">Pular ›</button>
+</div>
+
+<main class="jn">
+  <div class="jn-folha">
+    <header class="jn-cabeca">
+      <p class="jn-data" id="jn-data"></p>
+      <img class="jn-logo" src="assets/img/logo-lufa-linha-amarela.png" alt="Coletivo Lufã" width="1000" height="196">
+      <h1 class="jn-nome"><small>Jornal</small>da Classe Trabalhadora</h1>
+      <p class="jn-lema"><img src="assets/img/martelo-foice.png" alt=""> Proletários de todos os países, uni-vos! <img src="assets/img/martelo-foice.png" alt=""></p>
     </header>
 
-    <section class="jornal__homenagem" id="homenagem" aria-labelledby="homenagem-titulo">
-      <img src="assets/img/laura-silhueta.png" alt="Ilustração em preto e branco de Laura Brandão" width="760" height="893" loading="lazy">
-      <div>
-        <span class="jornal__chapeu">Homenagem</span>
-        <h2 id="homenagem-titulo">Para Laura Brandão</h2>
-        <p>Este jornal é inspirado em <b><i>A Classe Operária</i></b>, o jornal dos trabalhadores comunistas brasileiros, e é uma homenagem a <b>Laura Brandão</b>, redatora e poetisa comunista que pôs a sua palavra a serviço da classe trabalhadora.</p>
-        <p>Como ela, acreditamos que escrever também é lutar: <b>informar, formar e organizar</b> quem vive do próprio trabalho.</p>
-      </div>
-    </section>
-
-    <details class="jornal__publicar" id="caixa-publicar" hidden>
+    <details class="jn-publicar" id="caixa-publicar" hidden>
       <summary>+ Publicar uma notícia (administração e editores)</summary>
       <form id="form-noticia">
-        <div class="campo"><label for="n-titulo">Título (manchete)</label><input id="n-titulo" maxlength="200" required></div>
+        <div class="campo"><label for="n-titulo">Manchete <small>(palavras entre *asteriscos* saem em vermelho)</small></label><input id="n-titulo" maxlength="200" required placeholder="Corte na *saúde* e *educação* deve ser votado hoje!"></div>
+        <div class="campo"><label for="n-linha">Linha fina (subtítulo em itálico)</label><input id="n-linha" maxlength="400"></div>
         <div class="campo"><label for="n-secao">Seção</label>
           <select id="n-secao"><option>Brasil</option><option>Mundo</option><option>Trabalho</option><option>Política</option><option>Movimentos</option><option>Educação</option><option>Cultura</option><option>Coletivo Lufã</option></select></div>
         <div class="campo"><label for="n-texto">Texto da notícia</label><textarea id="n-texto" maxlength="20000" required style="min-height:160px"></textarea><small>Deixe uma linha em branco entre os parágrafos.</small></div>
         <div class="campo"><label for="n-foto">Foto (opcional)</label><input id="n-foto" type="file" accept="image/*"></div>
-        <div class="campo"><label for="n-credito">Crédito da foto</label><input id="n-credito" maxlength="200" placeholder="Ex.: Foto: Agência Brasil"></div>
-        <div class="campo"><label for="n-fonte">Fonte da notícia</label><input id="n-fonte" maxlength="200" placeholder="Ex.: Agência Brasil"></div>
+        <div class="campo"><label for="n-credito">Crédito da foto</label><input id="n-credito" maxlength="200" placeholder="Foto: Paula Froes/ AI Jaques Wagner"></div>
+        <div class="campo"><label for="n-fonte">Fonte da notícia</label><input id="n-fonte" maxlength="200" placeholder="Agência Brasil"></div>
         <div class="campo"><label for="n-link">Link da fonte</label><input id="n-link" type="url" placeholder="https://"></div>
         <p class="aviso aviso--erro" id="n-erro" hidden></p>
         <button class="botao botao--vermelho" type="submit" id="n-enviar">Publicar no jornal</button>
       </form>
     </details>
 
-    <div class="jornal__edicao" id="edicao" aria-live="polite">
-      <p class="jornal__carregando">Rodando a edição…</p>
-    </div>
+    <div class="jn-edicao" id="edicao" aria-live="polite"><p class="jn-vazio">Rodando a edição…</p></div>
 
-    <footer class="jornal__pe">
-      <p><b>Notícias de quem vive do próprio trabalho.</b> O jornal reúne as notícias da semana pela ótica da classe trabalhadora. Para textos de opinião e formação, visite o Diretório de Publicações.</p>
-      <a class="botao botao--vermelho" href="artigos.html">Diretório de Publicações</a>
+    <footer class="jn-pe">
+      <span>Em homenagem a Laura Brandão · Coletivo Lufã</span>
+      <a href="https://instagram.com/coletivolufa" target="_blank" rel="noopener">@coletivolufa</a>
     </footer>
   </div>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=20"></script>
 <script src="assets/supa.js?v=8"></script>
 <script>
-  // notícias do jornal (tabela "noticias"), separadas dos artigos
   const $ = (id) => document.getElementById(id);
-  $("jornal-data").textContent = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const idNoticia = new URLSearchParams(location.search).get("n");
-  if (idNoticia) $("homenagem").hidden = true;   // na matéria, só a notícia
   let podeEditar = false;
-  const paragrafos = (t) => String(t || "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean).map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
-  const resumo = (t, n = 220) => { const s = String(t || "").replace(/\s+/g, " ").trim(); return s.length > n ? s.slice(0, n).replace(/\s+\S*$/, "") + "…" : s; };
+
+  // ---------- abertura: cada frase fica ~3,8 s; some quando as três passaram e a edição carregou ----------
+  const abertura = (() => {
+    const caixa = $("abertura"), frases = [...caixa.querySelectorAll(".jn-abertura__frase")], pontos = [...caixa.querySelectorAll(".jn-abertura__pontos i")];
+    let fim; const terminou = new Promise((ok) => (fim = ok)); let timer = null;
+    const mostrar = (i) => { frases.forEach((f, k) => f.classList.toggle("ativa", k === i)); pontos.forEach((p, k) => p.classList.toggle("ativa", k === i)); };
+    const fechar = () => { clearTimeout(timer); if (!caixa.isConnected) return; caixa.classList.add("saindo"); document.documentElement.classList.remove("janela-aberta"); setTimeout(() => caixa.remove(), 450); fim(); };
+    if (idNoticia) { caixa.remove(); fim(); return { pronto: terminou, fechar }; }   // dentro de uma notícia, abre direto
+    document.documentElement.classList.add("janela-aberta");
+    let i = 0; mostrar(0);
+    const passo = () => { i++; if (i < frases.length) { mostrar(i); timer = setTimeout(passo, 3800); } else fim(); };
+    timer = setTimeout(passo, 3800);
+    $("pular").addEventListener("click", fechar);
+    return { pronto: terminou, fechar };
+  })();
+
+  // ---------- edição ----------
+  $("jn-data").textContent = new Date().toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" }).toUpperCase();
+  const manchete = (t) => esc(t).replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  const pars = (t) => String(t || "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const html = (lista) => lista.map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
   const link = (n) => `jornal.html?n=${n.id}`;
-  const fonte = (n) => n.fonte_nome || n.fonte_link ? `<p class="jornal__fonte">Fonte: ${n.fonte_link ? `<a href="${esc(n.fonte_link)}" target="_blank" rel="noopener">${esc(n.fonte_nome || n.fonte_link)}</a>` : esc(n.fonte_nome)}</p>` : "";
-  const foto = (n, cls) => n.foto ? `<figure class="${cls}"><img src="${esc(n.foto)}" alt="" loading="lazy">${n.foto_credito ? `<figcaption>${esc(n.foto_credito)}</figcaption>` : ""}</figure>` : "";
-  const apagar = (n) => podeEditar ? `<button type="button" class="jornal__apagar" data-apagar="${n.id}">Apagar notícia</button>` : "";
+  const apagar = (n) => podeEditar ? `<button type="button" class="jn-apagar" data-apagar="${n.id}">Apagar notícia</button>` : "";
+  const fonteHTML = (n) => n.fonte_nome || n.fonte_link ? `Fonte: ${n.fonte_link ? `<a href="${esc(n.fonte_link)}" target="_blank" rel="noopener">${esc(n.fonte_nome || n.fonte_link)}</a>` : esc(n.fonte_nome)}` : "";
+
+  // uma notícia no desenho do jornal: manchete, linha fina, fio, duas colunas (texto | foto + resto do texto)
+  function bloco(n, completa) {
+    let p = pars(n.texto);
+    const curta = !completa && p.length > 4;
+    if (!completa) p = p.slice(0, 4);
+    const meio = Math.max(1, Math.ceil(p.length / 2));
+    const esq = p.slice(0, meio), dir = p.slice(meio);
+    return `
+      <article class="jn-noticia${completa ? " jn-noticia--completa" : ""}">
+        <span class="jn-secao">${esc(n.secao)} · ${esc(dataPorExtenso(n.criado_em))}</span>
+        <h2>${completa ? manchete(n.titulo) : `<a href="${link(n)}">${manchete(n.titulo)}</a>`}</h2>
+        ${n.linha_fina ? `<p class="jn-linha">${esc(n.linha_fina)}</p>` : ""}
+        <div class="jn-colunas${!n.foto && !dir.length ? " jn-colunas--uma" : ""}">
+          <div class="jn-col">${html(esq)}</div>
+          ${!n.foto && !dir.length ? (curta ? `<a class="jn-leia" href="${link(n)}">Continue lendo →</a>` : "") : `<div class="jn-col">
+            ${n.foto ? `<figure class="jn-foto"><img src="${esc(n.foto)}" alt="" loading="lazy">${n.foto_credito ? `<figcaption>${esc(n.foto_credito)}</figcaption>` : ""}</figure>` : ""}
+            <div class="jn-dir">${html(dir)}</div>
+            ${curta ? `<a class="jn-leia" href="${link(n)}">Continue lendo →</a>` : ""}
+          </div>`}
+        </div>
+        <div class="jn-rodape"><span>${fonteHTML(n)}</span>${apagar(n)}</div>
+      </article>`;
+  }
 
   async function edicao() {
     const area = $("edicao");
-    const { data, error } = await supa.from("noticias").select("*").order("criado_em", { ascending: false }).limit(40);
-    if (error) { area.innerHTML = '<p class="jornal__carregando">A primeira edição está sendo preparada. Volte em breve.</p>'; return; }
-    const lista = data || [];
-    $("jornal-edicao").textContent = "Edição digital";
-    if (idNoticia) return materia(lista.find((n) => String(n.id) === idNoticia), area);
-    if (!lista.length) { area.innerHTML = '<p class="jornal__carregando">A primeira edição está sendo preparada. Volte em breve.</p>'; return; }
-    const [m, ...resto] = lista;
-    area.innerHTML = `
-      <article class="jornal__manchete${m.foto ? " jornal__manchete--foto" : ""}">
-        ${foto(m, "jornal__foto")}
-        <div>
-          <span class="jornal__chapeu">${esc(m.secao)}</span>
-          <h2><a href="${link(m)}">${esc(m.titulo)}</a></h2>
-          <p class="jornal__autor">${esc(dataPorExtenso(m.criado_em))}</p>
-          <p class="jornal__resumo">${esc(resumo(m.texto, 320))}</p>
-          <a class="jornal__leia" href="${link(m)}">Leia a notícia completa →</a> ${apagar(m)}
-        </div>
-      </article>
-      ${resto.length ? `<div class="jornal__colunas">${resto.map((n) => `
-        <article class="jornal__nota">
-          ${n.foto ? `<a href="${link(n)}">${foto(n, "jornal__foto jornal__foto--peq")}</a>` : ""}
-          <span class="jornal__secao">${esc(n.secao)}</span>
-          <h3><a href="${link(n)}">${esc(n.titulo)}</a></h3>
-          <p class="jornal__autor">${esc(dataPorExtenso(n.criado_em))}</p>
-          <p>${esc(resumo(n.texto))}</p>
-          <a class="jornal__leia" href="${link(n)}">Leia →</a> ${apagar(n)}
-        </article>`).join("")}</div>` : ""}`;
-  }
-  function materia(n, area) {
-    if (!n) { area.innerHTML = '<p class="jornal__carregando">Notícia não encontrada. <a href="jornal.html">Voltar à edição</a></p>'; return; }
-    document.title = n.titulo + " · Jornal da Classe Trabalhadora";
-    area.innerHTML = `
-      <article class="jornal__materia">
-        <a class="jornal__voltar" href="jornal.html">← Voltar à edição</a>
-        <span class="jornal__chapeu">${esc(n.secao)}</span>
-        <h2>${esc(n.titulo)}</h2>
-        <p class="jornal__autor">${esc(dataPorExtenso(n.criado_em))}</p>
-        ${foto(n, "jornal__foto")}
-        <div class="jornal__corpo">${paragrafos(n.texto)}</div>
-        ${fonte(n)} ${apagar(n)}
-      </article>`;
-    window.scrollTo(0, 0);
+    const { data, error } = await supa.from("noticias").select("*").order("criado_em", { ascending: false }).limit(30);
+    const lista = error ? [] : (data || []);
+    if (idNoticia) {
+      const n = lista.find((x) => String(x.id) === idNoticia);
+      if (!n) { area.innerHTML = '<p class="jn-vazio">Notícia não encontrada. <a href="jornal.html">Voltar à edição</a></p>'; return; }
+      document.title = n.titulo.replace(/\*/g, "") + " · Jornal da Classe Trabalhadora";
+      area.innerHTML = `<a class="jn-voltar" href="jornal.html">← Voltar à edição</a>${bloco(n, true)}`;
+      return;
+    }
+    area.innerHTML = lista.length ? lista.map((n) => bloco(n, false)).join("") : '<p class="jn-vazio">A primeira edição está sendo preparada. Volte em breve.</p>';
   }
 
-  // publicação (só administração e editores; o banco também confere)
+  // ---------- publicação (administração e editores; o banco também confere) ----------
   function reduzir(arquivo, max = 1400) {
     return new Promise((ok, falha) => {
       const img = new Image();
@@ -159,7 +163,7 @@
         urlFoto = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
       }
       const { error } = await supa.from("noticias").insert({
-        titulo: $("n-titulo").value.trim(), secao: $("n-secao").value, texto: $("n-texto").value.trim(),
+        titulo: $("n-titulo").value.trim(), linha_fina: $("n-linha").value.trim(), secao: $("n-secao").value, texto: $("n-texto").value.trim(),
         foto: urlFoto, foto_credito: $("n-credito").value.trim(), fonte_nome: $("n-fonte").value.trim(), fonte_link: linkFonte, autor_id: u.id });
       if (error) throw error;
       $("form-noticia").reset(); $("caixa-publicar").open = false;
@@ -178,7 +182,9 @@
   (async () => {
     try { const u = await usuarioAtual(); if (u) { const p = await meuPerfil(); podeEditar = !!p && ["editor", "admin"].includes(p.papel); } } catch (_) {}
     $("caixa-publicar").hidden = !podeEditar;
-    edicao();
+    await edicao().catch(() => {});
+    await abertura.pronto;
+    abertura.fechar();
   })();
 </script>
 </body>
