@@ -1106,3 +1106,15 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
   .cat-marighella__texto { order: 1; padding: 28px 0 8px; text-align: center; }
   .cat-marighella p { margin-left: auto; margin-right: auto; font-size: 16px; }
 }
+/* capa da Formação: Marighella sobre amarelo com raios de sol */
+.cat-capa__mari { position: absolute; inset: 0; background:
+  repeating-conic-gradient(from 0deg at 30% 105%, rgba(204,34,32,.13) 0deg 6deg, transparent 6deg 12deg), var(--amarelo); }
+.cat-capa .cat-capa__retrato { position: absolute; left: clamp(10px, 12%, 180px); bottom: 0; height: 94%; width: auto !important; max-width: none; object-fit: contain; filter: drop-shadow(10px 0 0 rgba(204,34,32,.55)); }
+.cat-marighella__dentro { grid-template-columns: 1fr; }
+.cat-marighella__texto { max-width: 760px; margin: 0 auto; text-align: center; }
+.cat-marighella p { margin-left: auto; margin-right: auto; }
+@media (max-width: 760px) {
+  .cat-capa .cat-capa__retrato { left: 2%; height: 90%; }
+  .cat-capa { height: 280px; }
+  .cat-capa__texto { max-width: 58%; }
+}
