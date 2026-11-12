@@ -1,4 +1,4 @@
-/* Formação para Novos Militantes: catálogo de séries no estilo de streaming */
+/* Formação (Centro de Formação Carlos Marighella): catálogo de séries no estilo de streaming */
 
 let F = null;
 const player = document.getElementById("player");
