@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Artigos · Coletivo Lufã</title>
+  <title>Diretório de Publicações Laura Brandão · Coletivo Lufã</title>
   <meta name="description" content="Artigos do Coletivo Lufã: formação marxista, análise de conjuntura e crítica ao capitalismo.">
-  <meta property="og:title" content="Artigos · Coletivo Lufã">
+  <meta property="og:title" content="Diretório de Publicações Laura Brandão · Coletivo Lufã">
   <meta property="og:image" content="assets/img/compartilhar.jpg">
   <meta name="theme-color" content="#cc2220">
   <link rel="icon" href="assets/img/favicon.png">
@@ -13,17 +13,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=51">
+  <link rel="stylesheet" href="assets/style.css?v=52">
 </head>
 <body data-pagina="artigos">
 <main>
-  <header class="cabecalho-pagina" id="cabecalho">
-    <div class="conteudo">
-      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Escritos do coletivo</span>
-      <h1>Artigos</h1>
-      <p>Formação, análise de conjuntura e crítica ao capitalismo, escritos pelos membros do Coletivo Lufã.</p>
+  <header class="cat-capa cat-capa--laura" id="cabecalho">
+    <div class="cat-capa__mari" aria-hidden="true"></div>
+    <img class="cat-capa__retrato" src="assets/img/laura-silhueta.png" alt="Ilustração em preto e branco de Laura Brandão" width="760" height="893">
+    <div class="cat-capa__texto">
+      <h1 class="cat-capa__nome"><span class="cat-capa__centro">Diretório de Publicações</span> <span class="cat-capa__carlos">Laura Brandão</span></h1>
     </div>
   </header>
+  <section class="art-jornal" id="faixa-jornal">
+    <a class="art-jornal__botao" href="jornal.html">
+      <span class="art-jornal__chamada">★ Conheça o Jornal da Classe Trabalhadora</span>
+      <span class="art-jornal__sub">Inspirado no jornal <i>A Classe Operária</i>, uma homenagem à redatora e poetisa comunista Laura Brandão</span>
+      <span class="art-jornal__seta" aria-hidden="true">→</span>
+    </a>
+  </section>
 
   <section class="secao">
     <div class="conteudo" id="area" aria-live="polite">
@@ -60,6 +67,7 @@
 
   async function mostrarArtigo() {
     document.getElementById("cabecalho").hidden = true;
+    document.getElementById("faixa-jornal").hidden = true;
     try {
       let a = await lerJSON("artigos/" + encodeURIComponent(slug) + ".json").catch(() => null);
       if (!a) a = (await artigosDoBanco()).find((x) => x.slug === slug);

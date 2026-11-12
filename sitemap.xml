@@ -4,4 +4,5 @@
   <url><loc>https://coletivolufa.github.io/artigos.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://coletivolufa.github.io/formacao.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://coletivolufa.github.io/biblioteca.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://coletivolufa.github.io/jornal.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

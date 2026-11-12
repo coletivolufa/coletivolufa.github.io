@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jornal da Classe Trabalhadora · Coletivo Lufã</title>
+  <meta name="description" content="Jornal da Classe Trabalhadora, do Coletivo Lufã. Inspirado no jornal A Classe Operária, uma homenagem à redatora e poetisa comunista Laura Brandão.">
+  <meta property="og:title" content="Jornal da Classe Trabalhadora · Coletivo Lufã">
+  <meta property="og:image" content="assets/img/compartilhar.jpg">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=52">
+</head>
+<body data-pagina="artigos">
+<main class="jornal">
+  <div class="jornal__folha">
+    <header class="jornal__cabeca">
+      <div class="jornal__linha-topo">
+        <span id="jornal-edicao">Edição digital</span>
+        <span>Proletários de todos os países, uni-vos!</span>
+        <span>Distribuição gratuita</span>
+      </div>
+      <h1 class="jornal__titulo"><span>Jornal da</span> Classe Trabalhadora</h1>
+      <div class="jornal__linha-baixo">
+        <span>Órgão de comunicação do Coletivo Lufã</span>
+        <span id="jornal-data"></span>
+      </div>
+    </header>
+
+    <section class="jornal__homenagem" aria-labelledby="homenagem-titulo">
+      <img src="assets/img/laura-silhueta.png" alt="Ilustração em preto e branco de Laura Brandão" width="760" height="893" loading="lazy">
+      <div>
+        <span class="jornal__chapeu">Homenagem</span>
+        <h2 id="homenagem-titulo">Para Laura Brandão</h2>
+        <p>Este jornal é inspirado em <b><i>A Classe Operária</i></b>, o jornal dos trabalhadores comunistas brasileiros, e é uma homenagem a <b>Laura Brandão</b>, redatora e poetisa comunista que pôs a sua palavra a serviço da classe trabalhadora.</p>
+        <p>Como ela, acreditamos que escrever também é lutar: <b>informar, formar e organizar</b> quem vive do próprio trabalho.</p>
+      </div>
+    </section>
+
+    <div class="jornal__edicao" id="edicao" aria-live="polite">
+      <p class="jornal__carregando">Rodando a edição…</p>
+    </div>
+
+    <footer class="jornal__pe">
+      <p><b>Escreva para o jornal.</b> Militantes do coletivo publicam pela Área do Militante, em "Publicar artigo". Os textos publicados entram na edição.</p>
+      <a class="botao botao--vermelho" href="artigos.html">Ver todas as publicações</a>
+    </footer>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=20"></script>
+<script src="assets/supa.js?v=8"></script>
+<script>
+  // a edição é montada com os artigos publicados no site (arquivo + banco), do mais novo para o mais antigo
+  const hoje = new Date();
+  document.getElementById("jornal-data").textContent = hoje.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const link = (a) => `artigos.html?a=${encodeURIComponent(a.slug)}`;
+  (async () => {
+    const area = document.getElementById("edicao");
+    try {
+      const [doArquivo, doBanco] = await Promise.all([lerJSON("data/artigos.json").catch(() => []), artigosDoBanco()]);
+      const artigos = [...doBanco, ...doArquivo.filter((a) => !doBanco.some((b) => b.slug === a.slug))].sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+      document.getElementById("jornal-edicao").textContent = `Edição nº ${artigos.length || 1}`;
+      if (!artigos.length) { area.innerHTML = '<p class="jornal__carregando">A primeira edição está sendo preparada. Volte em breve.</p>'; return; }
+      const [manchete, ...resto] = artigos;
+      area.innerHTML = `
+        <article class="jornal__manchete">
+          <span class="jornal__chapeu">Manchete</span>
+          <h2><a href="${link(manchete)}">${esc(manchete.titulo)}</a></h2>
+          <p class="jornal__autor">Por ${esc(manchete.autor)} · ${esc(dataPorExtenso(manchete.data))}</p>
+          <p class="jornal__resumo">${esc(manchete.resumo || "")}</p>
+          <a class="jornal__leia" href="${link(manchete)}">Leia a matéria completa →</a>
+        </article>
+        ${resto.length ? `<div class="jornal__colunas">${resto.slice(0, 12).map((a) => `
+          <article class="jornal__nota">
+            <h3><a href="${link(a)}">${esc(a.titulo)}</a></h3>
+            <p class="jornal__autor">Por ${esc(a.autor)} · ${esc(dataPorExtenso(a.data))}</p>
+            <p>${esc(a.resumo || "")}</p>
+            <a class="jornal__leia" href="${link(a)}">Leia →</a>
+          </article>`).join("")}</div>` : ""}`;
+    } catch (e) {
+      area.innerHTML = '<p class="jornal__carregando">Não foi possível carregar a edição agora.</p>';
+    }
+  })();
+</script>
+</body>
+</html>
