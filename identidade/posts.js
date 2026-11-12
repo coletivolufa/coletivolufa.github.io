@@ -325,42 +325,116 @@ function imagemCobrindo(ctx, img, x, y, w, h, ancora = "centro") {
 }
 
 // ---------- MODELOS ----------
-// notícia em 1080×1920. Com "transparente", a área do vídeo fica vazia (PNG com transparência)
-// para colocar o vídeo por baixo no editor. Textos ficam dentro do corte do grid (y 240–1680)
-// e acima da área que a interface do Reels/Stories cobre embaixo.
-function noticiaVertical(ctx, v, transparente) {
-  const W = 1080, H = 1920, FY = transparente ? 980 : 900;
+// ---------- capa de jornal: notícia no feed, story e Reels ----------
+// Inspirada na capa de "A Classe Operária" (1928), com a identidade do Lufã.
+// modo: "feed" (1080×1350); "story" (1080×1920, respeita o topo e a base do Instagram);
+// "reels" (1080×1920; o topo fica transparente para o vídeo entrar por baixo).
+const MARTELO_FOICE = carregarImg("martelo-foice.png");
+// desenha o ícone de martelo e foice tingido na cor pedida (com a mesma altura de h)
+function desenharIcone(ctx, x, y, h, cor) {
+  if (!pronta(MARTELO_FOICE)) return;
+  const w = h * (MARTELO_FOICE.naturalWidth / MARTELO_FOICE.naturalHeight);
+  const c = document.createElement("canvas"); c.width = Math.ceil(w * 2); c.height = Math.ceil(h * 2);
+  const g = c.getContext("2d");
+  g.drawImage(MARTELO_FOICE, 0, 0, c.width, c.height);
+  g.globalCompositeOperation = "source-in"; g.fillStyle = cor; g.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(c, x, y, w, h);
+}
+function jornalPeca(ctx, v, W, H, modo) {
+  const M = 70, CW = W - 2 * M;
+  const story = modo === "story", reels = modo === "reels";
+  const claro = v.fundo !== "vermelho";
+  const tinta = claro ? COR.preto : COR.papel;          // texto principal
+  const acento = claro ? COR.vermelho : COR.amarelo;    // destaque (*palavra*) e detalhes
+  const YF = story || reels ? 1600 : H - 70;            // topo da faixa de rodapé
+  const FY = reels ? 460 : 0;                           // Reels: área transparente para o vídeo
+  const Y0 = story ? 250 : reels ? FY + 50 : 60;        // início do conteúdo (fora das áreas do Instagram)
   ctx.clearRect(0, 0, W, H);
-  // parte de baixo (papel) e rodapé
-  ctx.fillStyle = COR.papel; ctx.fillRect(0, FY, W, H - FY);
-  // área da foto/vídeo
-  if (!transparente) {
-    if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, FY);
-    else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, FY); raios(ctx, W / 2, FY, 24, "rgba(255,255,255,.06)", 0); }
+  ctx.fillStyle = claro ? COR.papel : COR.vermelho; ctx.fillRect(0, FY, W, H - FY);
+  ctx.save(); ctx.beginPath(); ctx.rect(0, FY, W, H - FY); ctx.clip();
+  if (!claro) raios(ctx, W / 2, FY + 330, 26, "rgba(255,255,255,.06)", 0);
+
+  // linha de cima: número da edição à esquerda, data à direita
+  fonte(ctx, 24, FONTE.texto, "700"); ctx.fillStyle = tinta;
+  ctx.textAlign = "left"; ctx.fillText(v.edicao.toUpperCase(), M, Y0 + 26);
+  ctx.textAlign = "right"; ctx.fillText(v.data.toUpperCase(), W - M, Y0 + 26);
+
+  // logo do Coletivo Lufã, centralizada
+  const logoImg = claro ? LOGO_LINHA : LOGO_LINHA_AM, lh = 96;
+  if (pronta(logoImg)) { const lw = lh * (logoImg.naturalWidth / logoImg.naturalHeight); ctx.drawImage(logoImg, (W - lw) / 2, Y0 + 44, lw, lh); }
+
+  // nome do jornal em Metadannye; a palavra JORNAL fica pequena em cima de "DA"
+  const nome = v.titulo.toUpperCase();
+  const pequeno = nome.startsWith("JORNAL ") ? "JORNAL" : "";
+  const resto = pequeno ? nome.slice(7) : nome;
+  let t = 118; fonte(ctx, t, "Metadannye");
+  while (ctx.measureText(resto).width > CW && t > 40) { t -= 2; fonte(ctx, t, "Metadannye"); }
+  const yNome = Y0 + 200 + t * 0.8;
+  const largNome = ctx.measureText(resto).width;
+  ctx.fillStyle = tinta; ctx.textAlign = "center"; ctx.fillText(resto, W / 2, yNome);
+  if (pequeno) {
+    const ps = Math.round(t * 0.34); fonte(ctx, ps, "Metadannye");
+    ctx.textAlign = "left"; ctx.fillText(pequeno, W / 2 - largNome / 2, yNome - t * 0.78);
   }
-  assinatura(ctx, 70, 210, COR.branco, 42);
-  // faixa vermelha que separa o vídeo do texto
-  ctx.fillStyle = COR.vermelho; ctx.fillRect(0, FY, W, 16);
-  const ws = etiqueta(ctx, v.selo.toUpperCase(), 80, FY + 96, 52, COR.vermelho, COR.branco);
-  fonte(ctx, 38); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.data, 80 + ws + 24, FY + 98);
-  const RODAPE = 1580;
-  const espaco = RODAPE - (FY + 150) - (v.resumo.trim() ? 170 : 40);
-  const r = caber(ctx, v.manchete.toUpperCase(), 920, espaco, 118, 62, 0.95, FONTE.titulo);
-  let y = FY + 150;
-  r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 80, y + r.tam * 0.85 + yl(r, i, 0.95), COR.preto, COR.vermelho));
-  y += r.tam * 0.85 + yl(r, r.linhas.length - 1, 0.95) + 54;
-  if (v.resumo.trim()) {
-    const rb = caber(ctx, v.resumo, 920, RODAPE - 40 - y, 40, 28, 1.35, FONTE.texto);
-    rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.textAlign = "left"; ctx.fillText(l, 80, y + rb.tam + yl(rb, i, 1.35)); });
+
+  // frase do coletivo entre duas foices com martelo, em vermelho
+  const yLema = yNome + 52;
+  let tl = 28; fonte(ctx, tl, "Oswald", "700"); const lema = v.lema.toUpperCase();
+  while (ctx.measureText(lema).width > CW - 150 && tl > 16) { tl -= 2; fonte(ctx, tl, "Oswald", "700"); }
+  const lw = ctx.measureText(lema).width, ih = Math.round(tl * 2);
+  const corIcone = claro ? COR.vermelho : COR.amarelo;
+  desenharIcone(ctx, W / 2 - lw / 2 - 26 - ih, yLema - ih * 0.8, ih, corIcone);
+  desenharIcone(ctx, W / 2 + lw / 2 + 26, yLema - ih * 0.8, ih, corIcone);
+  ctx.fillStyle = tinta; ctx.textAlign = "center"; ctx.fillText(lema, W / 2, yLema);
+
+  // linha dupla
+  const yRule = yLema + 22;
+  ctx.fillStyle = tinta; ctx.fillRect(M, yRule, CW, 8); ctx.fillRect(M, yRule + 14, CW, 2);
+
+  // manchete e subtítulo
+  const yMan = yRule + 44, altM = story ? 210 : 160, maxM = story ? 110 : 84;
+  const man = caber(ctx, v.manchete, CW, altM, maxM, 50, 0.95, "Big Shoulders Display", "700");
+  ctx.textAlign = "left";
+  man.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, yMan + man.tam * 0.85 + yl(man, i, 0.95), tinta, acento));
+  const ySub = yMan + man.tam * 0.85 + yl(man, man.linhas.length - 1, 0.95) + 50;
+  const sub = caber(ctx, v.subtitulo, CW, 64, 40, 24, 1.2, FONTE.citacao, "400", "italic");
+  ctx.fillStyle = tinta; ctx.textAlign = "left";
+  sub.linhas.forEach((l, i) => ctx.fillText(l, M, ySub + yl(sub, i, 1.2)));
+
+  // colunas (Reels: uma coluna só, já que o vídeo ocupa o topo)
+  const yCol = ySub + 84, colFim = YF - 40, colH = colFim - yCol;
+  ctx.fillStyle = tinta; ctx.fillRect(M, yCol - 26, CW, 2);
+  if (reels) {
+    const a = caber(ctx, v.texto, CW, colH * 0.5, 36, 20, 1.35, FONTE.texto, "400");
+    ctx.fillStyle = tinta; ctx.textAlign = "left";
+    a.linhas.forEach((l, i) => ctx.fillText(l, M, yCol + a.tam + yl(a, i, 1.35)));
+    const yB = yCol + colH * 0.5 + 16;
+    const b2 = caber(ctx, v.texto2, CW, colFim - yB, 32, 20, 1.35, FONTE.texto, "400");
+    b2.linhas.forEach((l, i) => ctx.fillText(l, M, yB + b2.tam + yl(b2, i, 1.35)));
+  } else {
+    const XR = 570, WR = 440, XL = M, WL = 440;
+    ctx.fillStyle = tinta; ctx.fillRect(540, yCol, 2, colH);
+    const corpo = caber(ctx, v.texto, WL, colH, story ? 36 : 30, 20, 1.35, FONTE.texto, "400");
+    ctx.fillStyle = tinta; ctx.textAlign = "left";
+    corpo.linhas.forEach((l, i) => ctx.fillText(l, XL, yCol + corpo.tam + yl(corpo, i, 1.35)));
+    // coluna da direita: foto (ou bloco de cor) com crédito, e depois mais texto
+    const ph = Math.round(Math.min(300, colH * 0.42));
+    if (v.imagem) imagemCobrindo(ctx, v.imagem, XR, yCol, WR, ph);
+    else { ctx.fillStyle = claro ? COR.vermelho : COR.preto; ctx.fillRect(XR, yCol, WR, ph); raios(ctx, XR + WR / 2, yCol + ph, 18, "rgba(255,255,255,.08)", 0); }
+    fonte(ctx, 18, "Special Elite"); ctx.fillStyle = tinta; ctx.textAlign = "left";
+    ctx.fillText(v.credito, XR, yCol + ph + 24);
+    const yB = yCol + ph + 50;
+    const b2 = caber(ctx, v.texto2, WR, colFim - yB, story ? 30 : 26, 18, 1.35, FONTE.texto, "400");
+    ctx.fillStyle = tinta; ctx.textAlign = "left";
+    b2.linhas.forEach((l, i) => ctx.fillText(l, XR, yB + b2.tam + yl(b2, i, 1.35)));
   }
-  // rodapé com fonte e @ (dentro do corte do grid)
-  ctx.fillStyle = COR.preto; ctx.fillRect(0, RODAPE, W, 100);
-  fonte(ctx, 26, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, 80, RODAPE + 60);
-  fonte(ctx, 44); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - 80, RODAPE + 64);
-  ctx.fillStyle = COR.vermelho; ctx.fillRect(0, RODAPE + 100, W, H - RODAPE - 100);
-  // grão só na parte impressa (não suja a área transparente do vídeo)
+  ctx.restore();
+
+  // rodapé: fonte e @
+  ctx.fillStyle = COR.preto; ctx.fillRect(0, YF, W, 70);
+  fonte(ctx, 22, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, M, YF + 44);
+  fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, YF + 46);
   ctx.save(); ctx.beginPath(); ctx.rect(0, FY, W, H - FY); ctx.clip(); grao(ctx, W, H, 0.05); ctx.restore();
-  if (!transparente) { ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, FY); ctx.clip(); grao(ctx, W, H, 0.04); ctx.restore(); }
 }
 
 // autor do artigo: foto redonda com aro amarelo (iniciais sem foto), "POR", nome e linha opcional
@@ -381,6 +455,22 @@ function autorRedondo(ctx, v, CX, CYa, R, W) {
       ctx.fillStyle = COR.branco; ctx.fillText(v.autor.toUpperCase(), NX, CYa + (temFuncao ? 14 : 22));
       if (temFuncao) { fonte(ctx, 26, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.fillText(v.funcao, NX, CYa + 50); }
 }
+
+// campos da capa de jornal (notícia no feed, story e Reels)
+const CAMPOS_NOTICIA = [
+      { id: "titulo", rotulo: "Nome do jornal (a palavra JORNAL, se começar com ela, sai pequena)", padrao: "JORNAL DA CLASSE TRABALHADORA" },
+      { id: "edicao", rotulo: "Número da edição", padrao: "Nº 1" },
+      { id: "data", rotulo: "Data", padrao: "12 DE NOVEMBRO DE 2026" },
+      { id: "lema", rotulo: "Frase (entre as foices)", padrao: "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!" },
+      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
+      { id: "subtitulo", rotulo: "Subtítulo (itálico)", padrao: "Assembleia reuniu mais de 2 mil pessoas" },
+      { id: "texto", rotulo: "Coluna da esquerda (linha em branco separa parágrafos)", tipo: "area", padrao: "A categoria decidiu parar porque a escala 6x1 tira o descanso de quem trabalha.\n\nNa assembleia, os trabalhadores discutiram propostas e votaram em conjunto.\n\nAcompanhe, comente e compartilhe." },
+      { id: "imagem", rotulo: "Foto (coluna da direita)", tipo: "imagem" },
+      { id: "credito", rotulo: "Crédito da foto (fica abaixo dela)", padrao: "Foto: Agência Brasil" },
+      { id: "texto2", rotulo: "Coluna da direita, embaixo da foto", tipo: "area", padrao: "Trabalhar seis dias para descansar um só é uma jornada que adoece e afasta a família e o estudo." },
+      { id: "fonte", rotulo: "Fonte (rodapé)", padrao: "Fonte: Agência Brasil" },
+      { id: "fundo", rotulo: "Fundo", tipo: "opcoes", opcoes: { papel: "Papel", vermelho: "Vermelho" }, padrao: "papel" },
+    ];
 
 const MODELOS = {
   // 1) Frase / citação — feed 1080×1350
@@ -694,127 +784,11 @@ const MODELOS = {
     },
   },
 
-  // 8) Notícia — feed 1080×1350
+  // 8) Notícia — capa de jornal, feed 1080×1350 (mesmo desenho do story e do Reels)
   noticia: {
-    nome: "Notícia", w: 1080, h: 1350,
-    campos: [
-      { id: "selo", rotulo: "Selo", padrao: "URGENTE" },
-      { id: "data", rotulo: "Data", padrao: "03/11/2026" },
-      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
-      { id: "resumo", rotulo: "Resumo (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas. Paralisação começa na próxima segunda." },
-      { id: "fonte", rotulo: "Fonte", padrao: "Fonte: Agência Brasil" },
-      { id: "imagem", rotulo: "Foto (com crédito na fonte)", tipo: "imagem" },
-    ],
-    desenhar(ctx, v) {
-      const W = 1080, H = 1350, FY = 640;
-      ctx.fillStyle = COR.papel; ctx.fillRect(0, 0, W, H);
-      if (v.imagem) imagemCobrindo(ctx, v.imagem, 0, 0, W, FY);
-      else { ctx.fillStyle = COR.vermelho; ctx.fillRect(0, 0, W, FY); raios(ctx, W / 2, FY, 22, "rgba(255,255,255,.06)", 0); }
-      const g = ctx.createLinearGradient(0, 0, 0, 220); g.addColorStop(0, "rgba(30,25,22,.7)"); g.addColorStop(1, "rgba(30,25,22,0)");
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 220);
-      assinatura(ctx, 60, 100, COR.branco, 38);
-      ctx.fillStyle = COR.vermelho; ctx.fillRect(0, FY, W, 14);
-      const ws = etiqueta(ctx, v.selo.toUpperCase(), 90, FY + 82, 46, COR.vermelho, COR.branco);
-      fonte(ctx, 34); ctx.fillStyle = COR.cinza; ctx.textAlign = "left"; ctx.fillText(v.data, 90 + ws + 22, FY + 84);
-      const r = caber(ctx, v.manchete.toUpperCase(), 900, 300, 112, 60, 0.95, FONTE.titulo);
-      let y = FY + 120;
-      r.linhas.forEach((l, i) => linhaDestacada(ctx, l, 90, y + r.tam * 0.85 + yl(r, i, 0.95), COR.preto, COR.vermelho));
-      y += r.tam * 0.85 + yl(r, r.linhas.length - 1, 0.95) + 50;
-      if (v.resumo.trim()) { const rb = caber(ctx, v.resumo, 900, H - 140 - y, 38, 28, 1.35, FONTE.texto); rb.linhas.forEach((l, i) => { ctx.fillStyle = "#3b3430"; ctx.fillText(l, 90, y + yl(rb, i, 1.35)); }); }
-      ctx.fillStyle = COR.preto; ctx.fillRect(0, H - 90, W, 90);
-      fonte(ctx, 24, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, 90, H - 36);
-      fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - 90, H - 32);
-      grao(ctx, W, H, 0.05);
-    },
-  },
-
-  // 8b) Jornal · capa — feed 1080×1350. Inspirado na capa de "A Classe Operária" (1928): cabeçalho com
-  // nome do jornal, lema numa caixa, linha dupla, manchete, subtítulo, duas colunas e caixa lateral.
-  jornal: {
-    nome: "Jornal · capa", w: 1080, h: 1350,
-    campos: [
-      { id: "titulo", rotulo: "Nome do jornal", padrao: "A CLASSE OPERÁRIA" },
-      { id: "edicao", rotulo: "Número da edição", padrao: "Nº 1" },
-      { id: "data", rotulo: "Data", padrao: "12 de novembro de 2026" },
-      { id: "lema", rotulo: "Lema (caixa no topo)", padrao: "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!" },
-      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Quem produz a riqueza *precisa* saber como ela é dividida" },
-      { id: "subtitulo", rotulo: "Subtítulo (itálico)", padrao: "Estudo, discussão e organização para a classe trabalhadora" },
-      { id: "texto", rotulo: "Texto da coluna (linha em branco separa parágrafos)", tipo: "area", padrao: "Todo trabalhador produz riqueza, mas quase nunca decide para quem ela vai.\n\nPor isso o Coletivo Lufã estuda, discute e se organiza. Entender como o sistema funciona é o primeiro passo para mudá-lo.\n\nLeia, comente, compartilhe e venha para a próxima roda de formação." },
-      { id: "caixaTitulo", rotulo: "Caixa lateral: título", padrao: "Batalha de classe" },
-      { id: "caixaTexto", rotulo: "Caixa lateral: texto", tipo: "area", padrao: "Cada direito dos trabalhadores foi conquistado com organização, nunca por favor." },
-      { id: "imagem", rotulo: "Foto (opcional)", tipo: "imagem" },
-      { id: "credito", rotulo: "Crédito da foto (fica abaixo dela)", padrao: "Foto: acervo do Coletivo Lufã" },
-      { id: "fonte", rotulo: "Fonte (rodapé)", padrao: "Fonte: indique aqui a origem dos dados" },
-      { id: "fundo", rotulo: "Fundo", tipo: "opcoes", opcoes: { papel: "Papel", vermelho: "Vermelho" }, padrao: "papel" },
-    ],
-    desenhar(ctx, v) {
-      const W = 1080, H = 1350, M = 70, CW = W - 2 * M;
-      const claro = v.fundo !== "vermelho";
-      const tinta = claro ? COR.preto : COR.papel;          // texto principal
-      const acento = claro ? COR.vermelho : COR.amarelo;    // destaque (*palavra*) e etiquetas
-      ctx.fillStyle = claro ? COR.papel : COR.vermelho; ctx.fillRect(0, 0, W, H);
-      if (!claro) raios(ctx, W / 2, 330, 26, "rgba(255,255,255,.06)", 0);
-
-      // topo: assinatura do coletivo à esquerda, número e data à direita
-      assinatura(ctx, M, 96, claro ? COR.vermelho : COR.branco, 30);
-      fonte(ctx, 24, FONTE.texto, "700"); ctx.fillStyle = tinta; ctx.textAlign = "right";
-      ctx.fillText(`${v.edicao}  ·  ${v.data}`.toUpperCase(), W - M, 104);
-
-      // lema numa caixa de filete
-      let tl = 28; fonte(ctx, tl, "Oswald", "700"); const lema = v.lema.toUpperCase();
-      while (ctx.measureText(lema).width > CW - 60 && tl > 16) { tl -= 2; fonte(ctx, tl, "Oswald", "700"); }
-      const lw = ctx.measureText(lema).width + 56, lx = (W - lw) / 2;
-      ctx.strokeStyle = tinta; ctx.lineWidth = 4; ctx.strokeRect(lx, 146, lw, 52);
-      ctx.fillStyle = tinta; ctx.textAlign = "center"; ctx.fillText(lema, W / 2, 146 + 36);
-
-      // cabeçalho: nome do jornal, uma linha só, centralizado
-      const mast = caber(ctx, v.titulo.toUpperCase(), CW, 130, 230, 70, 0.9, "Big Shoulders Display", "700");
-      mast.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, 222 + mast.tam * 0.85 + yl(mast, i, 0.9), tinta, acento, "center"));
-      const yMast = 222 + mast.tam;
-      fonte(ctx, 22, FONTE.texto, "700"); ctx.fillStyle = tinta; ctx.textAlign = "center";
-      ctx.fillText("JORNAL DE TRABALHADORES, FEITO POR TRABALHADORES, PARA TRABALHADORES", W / 2, yMast + 38);
-      ctx.fillStyle = tinta; ctx.fillRect(M, yMast + 56, CW, 8); ctx.fillRect(M, yMast + 70, CW, 2);
-
-      // manchete e subtítulo
-      const yMan = yMast + 110;
-      const man = caber(ctx, v.manchete, CW, 160, 84, 50, 0.95, "Big Shoulders Display", "700");
-      ctx.textAlign = "left";
-      man.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, yMan + man.tam * 0.85 + yl(man, i, 0.95), tinta, acento));
-      const ySub = yMan + man.tam * 0.85 + yl(man, man.linhas.length - 1, 0.95) + 50;
-      const sub = caber(ctx, v.subtitulo, CW, 64, 40, 24, 1.2, FONTE.citacao, "400", "italic");
-      ctx.fillStyle = tinta; ctx.textAlign = "left";
-      sub.linhas.forEach((l, i) => ctx.fillText(l, M, ySub + yl(sub, i, 1.2)));
-
-      // filete e duas colunas
-      const yCol = 736, altCol = 1240 - yCol;
-      ctx.fillStyle = tinta; ctx.fillRect(M, yCol - 26, CW, 2);
-      ctx.fillRect(540, yCol, 2, altCol);
-
-      // coluna da esquerda: texto corrido
-      const corpo = caber(ctx, v.texto, 440, altCol, 30, 20, 1.35, FONTE.texto, "400");
-      ctx.fillStyle = tinta; ctx.textAlign = "left";
-      corpo.linhas.forEach((l, i) => ctx.fillText(l, M, yCol + corpo.tam + yl(corpo, i, 1.35)));
-
-      // coluna da direita: foto (ou bloco vermelho) com crédito abaixo, e caixa lateral
-      const XR = 570, WR = 440;
-      if (v.imagem) imagemCobrindo(ctx, v.imagem, XR, yCol, WR, 280);
-      else { ctx.fillStyle = claro ? COR.vermelho : COR.preto; ctx.fillRect(XR, yCol, WR, 280); raios(ctx, XR + WR / 2, yCol + 280, 18, "rgba(255,255,255,.08)", 0); }
-      fonte(ctx, 18, "Special Elite"); ctx.fillStyle = tinta; ctx.textAlign = "left";
-      ctx.fillText(v.credito, XR, yCol + 302);
-
-      const yCaixa = 1080;
-      ctx.fillStyle = claro ? COR.preto : COR.papel; ctx.fillRect(XR, yCaixa, WR, 1240 - yCaixa);
-      etiqueta(ctx, v.caixaTitulo.toUpperCase(), XR + 24, yCaixa + 40, 30, acento, claro ? COR.branco : COR.preto);
-      const cx = caber(ctx, v.caixaTexto, WR - 48, 100, 22, 16, 1.3, FONTE.citacao, "400", "italic");
-      ctx.fillStyle = claro ? COR.papel : COR.preto; ctx.textAlign = "left";
-      cx.linhas.forEach((l, i) => ctx.fillText(l, XR + 24, yCaixa + 66 + cx.tam + yl(cx, i, 1.3)));
-
-      // rodapé: fonte e @
-      ctx.fillStyle = COR.preto; ctx.fillRect(0, 1280, W, H - 1280);
-      fonte(ctx, 22, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, M, 1322);
-      fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, 1324);
-      grao(ctx, W, H, 0.05);
-    },
+    nome: "Notícia · capa de jornal", w: 1080, h: 1350,
+    campos: CAMPOS_NOTICIA,
+    desenhar(ctx, v) { jornalPeca(ctx, v, 1080, 1350, "feed"); },
   },
 
   // 9) Anúncio de artigo novo — feed 1080×1350: imagem de fundo, título, resumo e autor com foto redonda
@@ -971,26 +945,13 @@ const MODELOS = {
   // Notícia vertical (story e Reels) — 1080×1920
   noticiaStory: {
     nome: "Notícia · story", w: 1080, h: 1920,
-    campos: [
-      { id: "selo", rotulo: "Selo", padrao: "URGENTE" },
-      { id: "data", rotulo: "Data", padrao: "03/11/2026" },
-      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
-      { id: "resumo", rotulo: "Resumo (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas. Paralisação começa na próxima segunda." },
-      { id: "fonte", rotulo: "Fonte", padrao: "Fonte: Agência Brasil" },
-      { id: "imagem", rotulo: "Foto (com crédito na fonte)", tipo: "imagem" },
-    ],
-    desenhar(ctx, v) { noticiaVertical(ctx, v, false); },
+    campos: CAMPOS_NOTICIA,
+    desenhar(ctx, v) { jornalPeca(ctx, v, 1080, 1920, "story"); },
   },
   noticiaReels: {
     nome: "Notícia · Reels (moldura para vídeo)", w: 1080, h: 1920,
-    campos: [
-      { id: "selo", rotulo: "Selo", padrao: "URGENTE" },
-      { id: "data", rotulo: "Data", padrao: "03/11/2026" },
-      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
-      { id: "resumo", rotulo: "Resumo (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas. Paralisação começa na próxima segunda." },
-      { id: "fonte", rotulo: "Fonte", padrao: "Fonte: Agência Brasil" },
-    ],
-    desenhar(ctx, v) { noticiaVertical(ctx, v, true); },
+    campos: CAMPOS_NOTICIA.filter((f) => f.id !== "imagem" && f.id !== "credito"),
+    desenhar(ctx, v) { jornalPeca(ctx, v, 1080, 1920, "reels"); },
   },
 
   // 9) Meme — feed 1080×1350, imagem com texto em cima e embaixo
