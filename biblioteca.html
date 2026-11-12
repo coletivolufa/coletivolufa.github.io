@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Biblioteca dos Camaradas · Coletivo Lufã</title>
+  <title>Biblioteca Comunitária Machado de Assis · Coletivo Lufã</title>
   <meta name="description" content="Biblioteca gratuita de livros em domínio público: marxismo, história, filosofia, feminismo, literatura brasileira e portuguesa, poesia, mitologia e religião.">
-  <meta property="og:title" content="Biblioteca dos Camaradas · Coletivo Lufã">
+  <meta property="og:title" content="Biblioteca Comunitária Machado de Assis · Coletivo Lufã">
   <meta property="og:description" content="Livros em domínio público para ler de graça: de Marx a Machado de Assis, de Homero à Bíblia.">
   <meta property="og:image" content="assets/img/compartilhar.jpg">
   <meta name="theme-color" content="#cc2220">
@@ -14,18 +14,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=50">
+  <link rel="stylesheet" href="assets/style.css?v=51">
 </head>
 <body data-pagina="biblioteca">
 <main>
-  <header class="cabecalho-pagina">
-    <div class="conteudo">
-      <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Leitura livre e gratuita</span>
-      <h1>Biblioteca dos Camaradas</h1>
-      <p>Livros em domínio público para ler de graça, no celular ou no computador. Escolha uma estante, toque num livro e conheça a história dele.</p>
-      <div class="biblio-numeros" id="numeros"></div>
+  <header class="cat-capa cat-capa--biblio">
+    <div class="cat-capa__mari" aria-hidden="true"></div>
+    <img class="cat-capa__retrato" src="assets/img/machado-silhueta.png" alt="Ilustração em preto e branco de Machado de Assis" width="760" height="549">
+    <div class="cat-capa__texto">
+      <h1 class="cat-capa__nome"><span class="cat-capa__centro">Biblioteca Comunitária</span> <span class="cat-capa__carlos">Machado de Assis</span></h1>
     </div>
   </header>
+  <section class="biblio-intro">
+    <div class="conteudo">
+      <p><b>Leitura livre e gratuita.</b> Livros em domínio público para ler de graça, no celular ou no computador. Escolha uma estante, toque num livro e conheça a história dele.</p>
+      <div class="biblio-numeros" id="numeros"></div>
+    </div>
+  </section>
 
   <section class="secao">
     <div class="conteudo">
@@ -47,6 +52,7 @@
       </p>
     </div>
   </section>
+  <p class="cat-credito">Ilustração de Machado de Assis no topo: feita a partir de fotografia de cerca de 1904, em domínio público (Wikimedia Commons).</p>
 </main>
 
 <dialog class="ficha" id="ficha" aria-labelledby="ficha-titulo">

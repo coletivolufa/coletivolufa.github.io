@@ -1132,3 +1132,9 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .cat-capa .cat-capa__retrato { left: clamp(0px, 6%, 120px); height: 90%; }
 .cat-capa__texto p { display: none; }
 @media (max-width: 760px) { .cat-capa .cat-capa__retrato { left: -9%; height: 80%; } }
+/* Biblioteca Comunitária Machado de Assis */
+.biblio-intro { background: var(--preto); color: var(--papel); padding: 22px clamp(20px, 6vw, 88px) 24px; }
+.biblio-intro p { margin: 0; max-width: 720px; font-size: 17px; line-height: 1.5; }
+.biblio-intro p b { color: var(--amarelo); }
+.biblio-intro .biblio-numeros { margin-top: 14px; }
+.cat-capa--biblio .cat-capa__retrato { left: clamp(0px, 4%, 90px); }
