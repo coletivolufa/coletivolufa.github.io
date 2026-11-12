@@ -1042,7 +1042,7 @@ const MODELOS = {
   jornalFim: {
     nome: "Jornal semanal · apoio (última página)", w: 1080, h: 1350,
     campos: [
-      { id: "titulo", rotulo: "Título (use *asteriscos*)", padrao: "APOIE O *COLETIVO LUFÃ*" },
+      { id: "titulo", rotulo: "Título (use *asteriscos*)", padrao: "APOIE O *JORNAL*" },
       { id: "texto", rotulo: "Texto de apoio", tipo: "area", padrao: "O Coletivo Lufã é feito por trabalhadores e estudantes que se organizam sem patrão. Sua ajuda mantém o estudo, as rodas de formação e este jornal circulando." },
       { id: "passos", rotulo: "Passos (um por linha, até 4)", tipo: "area", padrao: "Siga @coletivolufa\nCompartilhe esta edição com um colega\nVenha para a próxima roda de formação\nContribua: indique aqui como apoiar" },
       { id: "rodape", rotulo: "Texto do rodapé preto", padrao: "EDIÇÃO SEMANAL" },
