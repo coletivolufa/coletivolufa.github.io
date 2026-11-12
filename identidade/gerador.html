@@ -122,6 +122,7 @@
           <span class="grupo">Feed · 1080 × 1350</span>
           <button class="opcao" type="button" data-modo="citacao">Frase e citação<small>aspas grandes e autor</small></button>
           <button class="opcao" type="button" data-modo="carrossel">Carrossel<small>capa, slides e fechamento</small></button>
+          <button class="opcao" type="button" data-modo="jornal">Jornal semanal<small>capa, abertura e notícias</small></button>
           <button class="opcao" type="button" data-modo="dado">Dado ou número<small>um número gigante</small></button>
           <button class="opcao" type="button" data-modo="noticia">Notícia<small>capa de jornal, duas colunas</small></button>
           <button class="opcao" type="button" data-modo="artigo">Novo artigo<small>fundo, título, autor e foto</small></button>
@@ -238,31 +239,47 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="posts.js?v=14"></script>
+  <script src="posts.js?v=15"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     let modo = "citacao";
     const estado = {};
     Object.keys(MODELOS).forEach((k) => { if (!MODELOS[k].grupo) estado[k] = { modelo: k, valores: {} }; });
-    const carrossel = { atual: 0, slides: [
-      { modelo: "carrosselCapa", valores: {} },
-      { modelo: "carrosselSlide", valores: {} },
-      { modelo: "carrosselSlide", valores: { numero: "02", titulo: "O patrão fica com a diferença", texto: "O que o trabalhador produz a mais não volta para ele em salário. Vira lucro, que é reinvestido para gerar ainda mais lucro.\n\nPor isso a riqueza se concentra nas mãos de poucos." } },
-      { modelo: "carrosselFim", valores: {} },
-    ] };
+    const carrosseis = {
+      carrossel: { atual: 0, slides: [
+        { modelo: "carrosselCapa", valores: {} },
+        { modelo: "carrosselSlide", valores: {} },
+        { modelo: "carrosselSlide", valores: { numero: "02", titulo: "O patrão fica com a diferença", texto: "O que o trabalhador produz a mais não volta para ele em salário. Vira lucro, que é reinvestido para gerar ainda mais lucro.\n\nPor isso a riqueza se concentra nas mãos de poucos." } },
+        { modelo: "carrosselFim", valores: {} },
+      ] },
+      jornal: { atual: 0, slides: [
+        { modelo: "jornalCapa", valores: {} },
+        { modelo: "jornalAbertura", valores: {} },
+        { modelo: "noticiaSlide", valores: {} },
+        { modelo: "noticiaSlide", valores: { manchete: "Segunda notícia da *semana*", texto: "Escreva aqui o texto da notícia.\n\nUse linhas em branco para separar os parágrafos.", fonte: "Fonte: indique a origem" } },
+      ] },
+    };
+    // tipos de carrossel: modelo da capa, dos slides de notícia e do fechamento (se houver)
+    const TIPOS = {
+      carrossel: { capa: "carrosselCapa", miolo: "carrosselSlide", fim: "carrosselFim", nomeArquivo: "carrossel-coletivo-lufa.zip" },
+      jornal: { capa: "jornalCapa", miolo: "noticiaSlide", fim: null, nomeArquivo: "jornal-semanal.zip" },
+    };
+    const ehCarrossel = (m = modo) => m === "carrossel" || m === "jornal";
+    const cs = () => carrosseis[modo];
+    const tipo = () => TIPOS[modo];
 
-    const atual = () => (modo === "carrossel" ? carrossel.slides[carrossel.atual] : estado[modo]);
-    const nomeSlide = (s, i) => s.modelo === "carrosselCapa" ? "Capa" : s.modelo === "carrosselFim" ? "Fim" : `Slide ${i}`;
+    const atual = () => (ehCarrossel() ? cs().slides[cs().atual] : estado[modo]);
+    const nomeSlide = (s, i) => s.modelo === "carrosselCapa" || s.modelo === "jornalCapa" ? "Capa" : s.modelo === "carrosselFim" ? "Fim" : s.modelo === "jornalAbertura" ? "Abertura" : s.modelo === "noticiaSlide" ? `Notícia ${i - 1}` : `Slide ${i}`;
 
     function paginar() {
-      const total = carrossel.slides.length;
-      carrossel.slides.forEach((s, i) => { if (s.modelo === "carrosselSlide") s.valores.pagina = `${i + 1}/${total}`; });
+      const total = cs().slides.length;
+      cs().slides.forEach((s, i) => { if (s.modelo === "carrosselSlide") s.valores.pagina = `${i + 1}/${total}`; });
     }
 
     function montarSlides() {
       paginar();
-      $("slides").innerHTML = carrossel.slides.map((s, i) =>
-        `<button type="button" data-i="${i}" aria-pressed="${i === carrossel.atual}">${nomeSlide(s, i)}</button>`).join("");
+      $("slides").innerHTML = cs().slides.map((s, i) =>
+        `<button type="button" data-i="${i}" aria-pressed="${i === cs().atual}">${nomeSlide(s, i)}</button>`).join("");
     }
 
     function montarCampos() {
@@ -334,11 +351,11 @@
     function trocarModo(m) {
       modo = m;
       document.querySelectorAll("#modelos [data-modo]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.modo === m)));
-      $("carrossel-controles").hidden = m !== "carrossel";
-      $("baixar-tudo").hidden = m !== "carrossel";
+      $("carrossel-controles").hidden = !ehCarrossel(m);
+      $("baixar-tudo").hidden = !ehCarrossel(m);
       $("baixar-video").hidden = !(m === "meme" && videoAtivo && atual().valores.imagem === videoAtivo);
       if (m !== "meme") pararLoop(); else if (videoAtivo && atual().valores.imagem === videoAtivo) iniciarLoop();
-      if (m === "carrossel") montarSlides();
+      if (ehCarrossel(m)) montarSlides();
       montarCampos(); mostrarCamadas(); redesenhar();
     }
 
@@ -526,40 +543,40 @@
     });
     $("slides").addEventListener("click", (e) => {
       const b = e.target.closest("[data-i]"); if (!b) return;
-      carrossel.atual = Number(b.dataset.i); montarSlides(); montarCampos(); redesenhar();
+      cs().atual = Number(b.dataset.i); montarSlides(); montarCampos(); redesenhar();
     });
     $("add-slide").addEventListener("click", () => {
-      const pos = carrossel.slides.length - 1;
-      const n = carrossel.slides.filter((s) => s.modelo === "carrosselSlide").length + 1;
-      carrossel.slides.splice(pos, 0, { modelo: "carrosselSlide", valores: { numero: String(n).padStart(2, "0"), titulo: "Novo slide", texto: "Escreva aqui o conteúdo deste slide." } });
-      carrossel.atual = pos; montarSlides(); montarCampos(); redesenhar();
+      const pos = cs().slides.length - (tipo().fim ? 1 : 0);
+      const n = cs().slides.filter((s) => s.modelo === tipo().miolo).length + 1;
+      cs().slides.splice(pos, 0, modo === "jornal" ? { modelo: "noticiaSlide", valores: { manchete: "Nova notícia", texto: "Escreva aqui o texto da notícia.", fonte: "Fonte: indique a origem" } } : { modelo: "carrosselSlide", valores: { numero: String(n).padStart(2, "0"), titulo: "Novo slide", texto: "Escreva aqui o conteúdo deste slide." } });
+      cs().atual = pos; montarSlides(); montarCampos(); redesenhar();
     });
     $("remover-slide").addEventListener("click", () => {
-      const s = carrossel.slides[carrossel.atual];
-      if (s.modelo !== "carrosselSlide") { alert("A capa e o fechamento não podem ser removidos."); return; }
-      carrossel.slides.splice(carrossel.atual, 1); carrossel.atual = Math.max(1, carrossel.atual - 1);
+      const s = cs().slides[cs().atual];
+      if (s.modelo !== tipo().miolo) { alert("A capa, a abertura e o fechamento não podem ser removidos."); return; }
+      cs().slides.splice(cs().atual, 1); cs().atual = Math.max(1, cs().atual - 1);
       montarSlides(); montarCampos(); redesenhar();
     });
     function mover(d) {
-      const i = carrossel.atual, j = i + d, s = carrossel.slides;
-      if (s[i].modelo !== "carrosselSlide" || !s[j] || s[j].modelo !== "carrosselSlide") return;
-      [s[i], s[j]] = [s[j], s[i]]; carrossel.atual = j; montarSlides(); montarCampos(); redesenhar();
+      const i = cs().atual, j = i + d, s = cs().slides;
+      if (s[i].modelo !== tipo().miolo || !s[j] || s[j].modelo !== tipo().miolo) return;
+      [s[i], s[j]] = [s[j], s[i]]; cs().atual = j; montarSlides(); montarCampos(); redesenhar();
     }
     $("mover-esq").addEventListener("click", () => mover(-1));
     $("mover-dir").addEventListener("click", () => mover(1));
 
     $("baixar").addEventListener("click", async () => {
       const item = atual(), c = await renderItem(item);
-      c.toBlob((b) => baixarBlob(b, nomeArquivo(item, modo === "carrossel" ? carrossel.atual : undefined)), "image/png");
+      c.toBlob((b) => baixarBlob(b, nomeArquivo(item, ehCarrossel() ? cs().atual : undefined)), "image/png");
     });
     $("baixar-tudo").addEventListener("click", async () => {
       const botao = $("baixar-tudo"); botao.disabled = true; botao.textContent = "Gerando…";
       const zip = new JSZip(); paginar();
-      for (let i = 0; i < carrossel.slides.length; i++) {
-        const s = carrossel.slides[i], c = await renderItem(s);
+      for (let i = 0; i < cs().slides.length; i++) {
+        const s = cs().slides[i], c = await renderItem(s);
         zip.file(nomeArquivo(s, i), await new Promise((ok) => c.toBlob(ok, "image/png")));
       }
-      baixarBlob(await zip.generateAsync({ type: "blob" }), "carrossel-coletivo-lufa.zip");
+      baixarBlob(await zip.generateAsync({ type: "blob" }), tipo().nomeArquivo);
       botao.disabled = false; botao.textContent = "Baixar carrossel (.zip)";
     });
 
