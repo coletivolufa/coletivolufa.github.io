@@ -728,6 +728,95 @@ const MODELOS = {
     },
   },
 
+  // 8b) Jornal · capa — feed 1080×1350. Inspirado na capa de "A Classe Operária" (1928): cabeçalho com
+  // nome do jornal, lema numa caixa, linha dupla, manchete, subtítulo, duas colunas e caixa lateral.
+  jornal: {
+    nome: "Jornal · capa", w: 1080, h: 1350,
+    campos: [
+      { id: "titulo", rotulo: "Nome do jornal", padrao: "A CLASSE OPERÁRIA" },
+      { id: "edicao", rotulo: "Número da edição", padrao: "Nº 1" },
+      { id: "data", rotulo: "Data", padrao: "12 de novembro de 2026" },
+      { id: "lema", rotulo: "Lema (caixa no topo)", padrao: "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!" },
+      { id: "manchete", rotulo: "Manchete (use *asteriscos*)", tipo: "area", padrao: "Quem produz a riqueza *precisa* saber como ela é dividida" },
+      { id: "subtitulo", rotulo: "Subtítulo (itálico)", padrao: "Estudo, discussão e organização para a classe trabalhadora" },
+      { id: "texto", rotulo: "Texto da coluna (linha em branco separa parágrafos)", tipo: "area", padrao: "Todo trabalhador produz riqueza, mas quase nunca decide para quem ela vai.\n\nPor isso o Coletivo Lufã estuda, discute e se organiza. Entender como o sistema funciona é o primeiro passo para mudá-lo.\n\nLeia, comente, compartilhe e venha para a próxima roda de formação." },
+      { id: "caixaTitulo", rotulo: "Caixa lateral: título", padrao: "Batalha de classe" },
+      { id: "caixaTexto", rotulo: "Caixa lateral: texto", tipo: "area", padrao: "Cada direito dos trabalhadores foi conquistado com organização, nunca por favor." },
+      { id: "imagem", rotulo: "Foto (opcional)", tipo: "imagem" },
+      { id: "credito", rotulo: "Crédito da foto (fica abaixo dela)", padrao: "Foto: acervo do Coletivo Lufã" },
+      { id: "fonte", rotulo: "Fonte (rodapé)", padrao: "Fonte: indique aqui a origem dos dados" },
+      { id: "fundo", rotulo: "Fundo", tipo: "opcoes", opcoes: { papel: "Papel", vermelho: "Vermelho" }, padrao: "papel" },
+    ],
+    desenhar(ctx, v) {
+      const W = 1080, H = 1350, M = 70, CW = W - 2 * M;
+      const claro = v.fundo !== "vermelho";
+      const tinta = claro ? COR.preto : COR.papel;          // texto principal
+      const acento = claro ? COR.vermelho : COR.amarelo;    // destaque (*palavra*) e etiquetas
+      ctx.fillStyle = claro ? COR.papel : COR.vermelho; ctx.fillRect(0, 0, W, H);
+      if (!claro) raios(ctx, W / 2, 330, 26, "rgba(255,255,255,.06)", 0);
+
+      // topo: assinatura do coletivo à esquerda, número e data à direita
+      assinatura(ctx, M, 96, claro ? COR.vermelho : COR.branco, 30);
+      fonte(ctx, 24, FONTE.texto, "700"); ctx.fillStyle = tinta; ctx.textAlign = "right";
+      ctx.fillText(`${v.edicao}  ·  ${v.data}`.toUpperCase(), W - M, 104);
+
+      // lema numa caixa de filete
+      let tl = 28; fonte(ctx, tl, "Oswald", "700"); const lema = v.lema.toUpperCase();
+      while (ctx.measureText(lema).width > CW - 60 && tl > 16) { tl -= 2; fonte(ctx, tl, "Oswald", "700"); }
+      const lw = ctx.measureText(lema).width + 56, lx = (W - lw) / 2;
+      ctx.strokeStyle = tinta; ctx.lineWidth = 4; ctx.strokeRect(lx, 146, lw, 52);
+      ctx.fillStyle = tinta; ctx.textAlign = "center"; ctx.fillText(lema, W / 2, 146 + 36);
+
+      // cabeçalho: nome do jornal, uma linha só, centralizado
+      const mast = caber(ctx, v.titulo.toUpperCase(), CW, 130, 230, 70, 0.9, "Big Shoulders Display", "700");
+      mast.linhas.forEach((l, i) => linhaDestacada(ctx, l, W / 2, 222 + mast.tam * 0.85 + yl(mast, i, 0.9), tinta, acento, "center"));
+      const yMast = 222 + mast.tam;
+      fonte(ctx, 22, FONTE.texto, "700"); ctx.fillStyle = tinta; ctx.textAlign = "center";
+      ctx.fillText("JORNAL DE TRABALHADORES, FEITO POR TRABALHADORES, PARA TRABALHADORES", W / 2, yMast + 38);
+      ctx.fillStyle = tinta; ctx.fillRect(M, yMast + 56, CW, 8); ctx.fillRect(M, yMast + 70, CW, 2);
+
+      // manchete e subtítulo
+      const yMan = yMast + 110;
+      const man = caber(ctx, v.manchete, CW, 160, 84, 50, 0.95, "Big Shoulders Display", "700");
+      ctx.textAlign = "left";
+      man.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, yMan + man.tam * 0.85 + yl(man, i, 0.95), tinta, acento));
+      const ySub = yMan + man.tam * 0.85 + yl(man, man.linhas.length - 1, 0.95) + 50;
+      const sub = caber(ctx, v.subtitulo, CW, 64, 40, 24, 1.2, FONTE.citacao, "400", "italic");
+      ctx.fillStyle = tinta; ctx.textAlign = "left";
+      sub.linhas.forEach((l, i) => ctx.fillText(l, M, ySub + yl(sub, i, 1.2)));
+
+      // filete e duas colunas
+      const yCol = 736, altCol = 1240 - yCol;
+      ctx.fillStyle = tinta; ctx.fillRect(M, yCol - 26, CW, 2);
+      ctx.fillRect(540, yCol, 2, altCol);
+
+      // coluna da esquerda: texto corrido
+      const corpo = caber(ctx, v.texto, 440, altCol, 30, 20, 1.35, FONTE.texto, "400");
+      ctx.fillStyle = tinta; ctx.textAlign = "left";
+      corpo.linhas.forEach((l, i) => ctx.fillText(l, M, yCol + corpo.tam + yl(corpo, i, 1.35)));
+
+      // coluna da direita: foto (ou bloco vermelho) com crédito abaixo, e caixa lateral
+      const XR = 570, WR = 440;
+      if (v.imagem) imagemCobrindo(ctx, v.imagem, XR, yCol, WR, 280);
+      else { ctx.fillStyle = claro ? COR.vermelho : COR.preto; ctx.fillRect(XR, yCol, WR, 280); raios(ctx, XR + WR / 2, yCol + 280, 18, "rgba(255,255,255,.08)", 0); }
+      fonte(ctx, 18, "Special Elite"); ctx.fillStyle = tinta; ctx.textAlign = "left";
+      ctx.fillText(v.credito, XR, yCol + 302);
+
+      const yCaixa = 1080;
+      ctx.fillStyle = claro ? COR.preto : COR.papel; ctx.fillRect(XR, yCaixa, WR, 1240 - yCaixa);
+      etiqueta(ctx, v.caixaTitulo.toUpperCase(), XR + 24, yCaixa + 40, 30, acento, claro ? COR.branco : COR.preto);
+      const cx = caber(ctx, v.caixaTexto, WR - 48, 100, 22, 16, 1.3, FONTE.citacao, "400", "italic");
+      ctx.fillStyle = claro ? COR.papel : COR.preto; ctx.textAlign = "left";
+      cx.linhas.forEach((l, i) => ctx.fillText(l, XR + 24, yCaixa + 66 + cx.tam + yl(cx, i, 1.3)));
+
+      // rodapé: fonte e @
+      ctx.fillStyle = COR.preto; ctx.fillRect(0, 1280, W, H - 1280);
+      fonte(ctx, 22, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, M, 1322);
+      fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, 1324);
+      grao(ctx, W, H, 0.05);
+    },
+  },
+
   // 9) Anúncio de artigo novo — feed 1080×1350: imagem de fundo, título, resumo e autor com foto redonda
   artigo: {
     nome: "Novo artigo", w: 1080, h: 1350,
