@@ -455,6 +455,46 @@ function autorRedondo(ctx, v, CX, CYa, R, W) {
       if (temFuncao) { fonte(ctx, 26, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.fillText(v.funcao, NX, CYa + 50); }
 }
 
+// Reels: logo no topo à esquerda (com margem, para não cortar); na área de baixo, nome do jornal
+// pequeno, título grande, um textinho e o rodapé. O topo fica transparente para o vídeo.
+const CAMPOS_REELS = [
+  { id: "titulo", rotulo: "Nome do jornal (pequeno, em cima do título)", padrao: "JORNAL DA CLASSE TRABALHADORA" },
+  { id: "data", rotulo: "Data", padrao: "12 DE NOVEMBRO DE 2026" },
+  { id: "manchete", rotulo: "Título da notícia (use *asteriscos*)", tipo: "area", padrao: "Trabalhadores do comércio aprovam *greve* contra a escala 6x1" },
+  { id: "subtitulo", rotulo: "Textinho embaixo do título (opcional)", tipo: "area", padrao: "Assembleia reuniu mais de 2 mil pessoas" },
+  { id: "fonte", rotulo: "Fonte (rodapé)", padrao: "Fonte: Agência Brasil" },
+];
+function reelsNoticia(ctx, v) {
+  const W = 1080, H = 1920, M = 90, CW = W - 2 * M, FY = 980, YF = 1600;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = COR.papel; ctx.fillRect(0, FY, W, H - FY);
+  // logo no topo, à esquerda, longe da borda
+  if (pronta(LOGO_LINHA_AM)) { const lh = 84, lw = lh * (LOGO_LINHA_AM.naturalWidth / LOGO_LINHA_AM.naturalHeight); ctx.drawImage(LOGO_LINHA_AM, M, 120, lw, lh); }
+  // nome do jornal, menor, em cima do título
+  let tn = 46; fonte(ctx, tn, "Metadannye");
+  while (ctx.measureText(v.titulo.toUpperCase()).width > CW - 260 && tn > 24) { tn -= 2; fonte(ctx, tn, "Metadannye"); }
+  ctx.fillStyle = COR.preto; ctx.textAlign = "left"; ctx.fillText(v.titulo.toUpperCase(), M, FY + 84);
+  fonte(ctx, 24, FONTE.texto, "700"); ctx.textAlign = "right"; ctx.fillStyle = COR.preto; ctx.fillText(v.data.toUpperCase(), W - M, FY + 84);
+  ctx.fillStyle = COR.vermelho; ctx.fillRect(M, FY + 104, 120, 8);
+  // título grande
+  const r = caber(ctx, v.manchete, CW, 360, 150, 60, 0.95, "Big Shoulders Display", "700");
+  const yT = FY + 124;
+  ctx.textAlign = "left";
+  r.linhas.forEach((l, i) => linhaDestacada(ctx, l, M, yT + r.tam * 0.85 + yl(r, i, 0.95), COR.preto, COR.vermelho));
+  // textinho embaixo do título
+  const yS = yT + r.tam * 0.85 + yl(r, r.linhas.length - 1, 0.95) + 36;
+  if (v.subtitulo.trim()) {
+    const sb = caber(ctx, v.subtitulo, CW, YF - 30 - yS, 46, 26, 1.25, FONTE.citacao, "400", "italic");
+    ctx.fillStyle = COR.preto; ctx.textAlign = "left";
+    sb.linhas.forEach((l, i) => ctx.fillText(l, M, yS + sb.tam + yl(sb, i, 1.25)));
+  }
+  // rodapé: fonte e @
+  ctx.fillStyle = COR.preto; ctx.fillRect(0, YF, W, 70);
+  fonte(ctx, 22, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, M, YF + 44);
+  fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, YF + 46);
+  ctx.save(); ctx.beginPath(); ctx.rect(0, FY, W, H - FY); ctx.clip(); grao(ctx, W, H, 0.05); ctx.restore();
+}
+
 // campos da capa de jornal (notícia no feed, story e Reels)
 const CAMPOS_NOTICIA = [
       { id: "titulo", rotulo: "Nome do jornal (a palavra JORNAL, se começar com ela, sai pequena)", padrao: "JORNAL DA CLASSE TRABALHADORA" },
@@ -1062,8 +1102,8 @@ const MODELOS = {
   },
   noticiaReels: {
     nome: "Notícia · Reels (moldura para vídeo)", w: 1080, h: 1920,
-    campos: CAMPOS_NOTICIA.filter((f) => f.id !== "imagem" && f.id !== "credito"),
-    desenhar(ctx, v) { jornalPeca(ctx, v, 1080, 1920, "reels"); },
+    campos: CAMPOS_REELS,
+    desenhar(ctx, v) { reelsNoticia(ctx, v); },
   },
 
   // 9) Meme — feed 1080×1350, imagem com texto em cima e embaixo
