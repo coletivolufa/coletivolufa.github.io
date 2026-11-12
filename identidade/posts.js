@@ -360,8 +360,8 @@ function jornalPeca(ctx, v, W, H, modo) {
   ctx.textAlign = "right"; ctx.fillText(v.data.toUpperCase(), W - M, Y0 + 26);
 
   // logo do Coletivo Lufã, centralizada
-  const logoImg = claro ? LOGO_LINHA : LOGO_LINHA_AM, lh = 96;
-  if (pronta(logoImg)) { const lw = lh * (logoImg.naturalWidth / logoImg.naturalHeight); ctx.drawImage(logoImg, (W - lw) / 2, Y0 + 44, lw, lh); }
+  const logoImg = claro ? LOGO_LINHA : LOGO_LINHA_AM, lh = 74;
+  if (pronta(logoImg)) { const lw = lh * (logoImg.naturalWidth / logoImg.naturalHeight); ctx.drawImage(logoImg, (W - lw) / 2, Y0 + 62, lw, lh); }
 
   // nome do jornal em Metadannye; a palavra JORNAL fica pequena em cima de "DA"
   const nome = v.titulo.toUpperCase();
@@ -381,7 +381,7 @@ function jornalPeca(ctx, v, W, H, modo) {
   const yLema = yNome + 52;
   let tl = 28; fonte(ctx, tl, "Oswald", "700"); const lema = v.lema.toUpperCase();
   while (ctx.measureText(lema).width > CW - 150 && tl > 16) { tl -= 2; fonte(ctx, tl, "Oswald", "700"); }
-  const lw = ctx.measureText(lema).width, ih = Math.round(tl * 2);
+  const lw = ctx.measureText(lema).width, ih = Math.round(tl * 1.3);
   const corIcone = claro ? COR.vermelho : COR.amarelo;
   desenharIcone(ctx, W / 2 - lw / 2 - 26 - ih, yLema - ih * 0.8, ih, corIcone);
   desenharIcone(ctx, W / 2 + lw / 2 + 26, yLema - ih * 0.8, ih, corIcone);
@@ -431,7 +431,7 @@ function jornalPeca(ctx, v, W, H, modo) {
   ctx.restore();
 
   // rodapé: fonte e @
-  ctx.fillStyle = COR.preto; ctx.fillRect(0, YF, W, 70);
+  ctx.fillStyle = COR.preto; ctx.fillRect(0, YF, W, story ? H - YF : 70);   // no story, a faixa preta vai até o fim
   fonte(ctx, 22, FONTE.texto); ctx.fillStyle = "#cbbfae"; ctx.textAlign = "left"; ctx.fillText(v.fonte, M, YF + 44);
   fonte(ctx, 40); ctx.fillStyle = COR.amarelo; ctx.textAlign = "right"; ctx.fillText(ARROBA.toUpperCase(), W - M, YF + 46);
   ctx.save(); ctx.beginPath(); ctx.rect(0, FY, W, H - FY); ctx.clip(); grao(ctx, W, H, 0.05); ctx.restore();
