@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=63">
+  <link rel="stylesheet" href="assets/style.css?v=64">
 </head>
 <body data-pagina="militante">
 <main>
@@ -37,6 +37,19 @@
           <h2 class="org-nucleo-nome" id="nucleo-nome"></h2>
           <button class="botao botao--vermelho" type="button" id="nova-tarefa" hidden>+ Adicionar tarefa</button>
         </div>
+
+        <section class="org-redacao" id="redacao" hidden>
+          <div class="org-redacao__topo">
+            <h3>Equipe da redação</h3>
+            <a class="botao botao--amarelo" href="jornal.html">Publicar no jornal →</a>
+          </div>
+          <ul class="org-equipe" id="equipe"></ul>
+          <form class="org-redacao__add" id="r-adicionar" hidden>
+            <select id="r-pessoa" aria-label="Militante"></select>
+            <select id="r-funcao" aria-label="Função"></select>
+            <button class="botao botao--vermelho" type="submit">+ Colocar na redação</button>
+          </form>
+        </section>
 
         <div class="orgp-abas" id="abas" role="tablist">
           <button type="button" role="tab" data-aba="afazer" aria-selected="true">A fazer <b id="a-afazer"></b></button>
@@ -86,7 +99,9 @@
     { slug: "feminista", nome: "Núcleo Feminista" }, { slug: "lgbtqia", nome: "Núcleo LGBTQIA+" },
     { slug: "povos", nome: "Núcleo dos Povos Originários" }, { slug: "cultural", nome: "Núcleo Cultural" },
     { slug: "estudantil", nome: "Núcleo Estudantil" },
+    { slug: "jornal", nome: "Redação do Jornal" },   // equipe do Jornal da Classe Trabalhadora
   ];
+  const FUNCOES_REDACAO = ["Editor(a)-chefe", "Repórter", "Redator(a)", "Revisor(a)", "Fotógrafo(a)", "Designer / Diagramador(a)", "Social media"];
   const ESTADO = { afazer: "A fazer", fazendo: "Fazendo", pronto: "Pronto" };
   let perfil = null, admin = false, meus = [], atual = null, tarefas = [], aberta = null, editando = null;
 
@@ -105,10 +120,55 @@
     const lista = NUCLEOS.filter((n) => meus.includes(n.slug));
     $("nucleos").innerHTML = lista.map((n) => `
       <button type="button" role="tab" class="org-nucleo" data-nucleo="${n.slug}" aria-selected="${n.slug === atual}">
-        <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><span>${esc(n.nome.replace(/^Núcleo (dos |d[oa] )?/, ""))}</span>
+        <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><span>${esc(n.slug === "jornal" ? "Redação do Jornal" : n.nome.replace(/^Núcleo (dos |d[oa] )?/, ""))}</span>
       </button>`).join("");
     $("nucleo-nome").textContent = (NUCLEOS.find((n) => n.slug === atual) || {}).nome || "";
+    $("redacao").hidden = atual !== "jornal";
+    if (atual === "jornal") carregarEquipe();
   }
+
+  // ---------- Redação do Jornal: equipe e funções (a administração coloca e tira) ----------
+  async function carregarEquipe() {
+    const ul = $("equipe"); ul.innerHTML = '<li class="org-vazio">Carregando…</li>';
+    const { data, error } = await supa.rpc("equipe_redacao");
+    if (error) { ul.innerHTML = `<li class="org-vazio">${/equipe_redacao|schema cache/i.test(error.message) ? "A redação ainda não está ativada no banco de dados." : esc(mensagemErro(error))}</li>`; return; }
+    const lista = data || [];
+    ul.innerHTML = lista.length ? lista.map((m) => `
+      <li data-id="${m.id}">
+        <img src="${esc(m.foto || "assets/img/avatar.svg")}" alt="">
+        <div><strong>${esc(m.nome)}</strong>
+          ${admin ? `<select data-funcao aria-label="Função de ${esc(m.nome)}">${FUNCOES_REDACAO.map((f) => `<option${f === m.funcao ? " selected" : ""}>${esc(f)}</option>`).join("")}</select>` : `<span>${esc(m.funcao)}</span>`}</div>
+        ${admin ? `<button type="button" class="org-link org-link--apagar" data-tirar>Tirar</button>` : ""}
+      </li>`).join("") : '<li class="org-vazio">Ninguém na redação ainda.</li>';
+    if (admin) montarAdicionar(lista);
+  }
+  async function montarAdicionar(equipe) {
+    const { data } = await supa.from("perfis").select("id,nome,papel,funcao").order("nome");
+    const dentro = new Set(equipe.map((m) => m.id));
+    const opcoes = (data || []).filter((p) => APROVADO.includes(p.papel) && !ehComum(p) && !dentro.has(p.id));
+    $("r-pessoa").innerHTML = '<option value="">Escolha o militante…</option>' + opcoes.map((p) => `<option value="${p.id}">${esc(p.nome)}</option>`).join("");
+    $("r-funcao").innerHTML = FUNCOES_REDACAO.map((f) => `<option>${esc(f)}</option>`).join("");
+    $("r-adicionar").hidden = false;
+  }
+  $("r-adicionar").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!$("r-pessoa").value) return;
+    const { error } = await supa.from("redacao").insert({ id: $("r-pessoa").value, funcao: $("r-funcao").value });
+    if (error) return avisar(mensagemErro(error));
+    avisar("Militante colocado(a) na redação.", "ok"); carregarEquipe();
+  });
+  $("equipe").addEventListener("change", async (e) => {
+    const s = e.target.closest("[data-funcao]"); if (!s) return;
+    const { error } = await supa.from("redacao").update({ funcao: s.value }).eq("id", s.closest("li").dataset.id);
+    avisar(error ? mensagemErro(error) : "Função atualizada.", error ? "erro" : "ok");
+  });
+  $("equipe").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-tirar]"); if (!b) return;
+    const li = b.closest("li"); if (!confirm(`Tirar ${li.querySelector("strong").textContent} da redação?`)) return;
+    const { error } = await supa.from("redacao").delete().eq("id", li.dataset.id);
+    if (error) return avisar(mensagemErro(error));
+    avisar("Saiu da redação.", "ok"); carregarEquipe();
+  });
   $("nucleos").addEventListener("click", (e) => {
     const b = e.target.closest("[data-nucleo]"); if (!b) return;
     atual = b.dataset.nucleo; try { localStorage.setItem("lufa_org_nucleo", atual); } catch (_) {}

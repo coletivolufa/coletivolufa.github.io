@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Oswald:wght@500;600&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=63">
+  <link rel="stylesheet" href="assets/style.css?v=64">
 </head>
 <body data-pagina="artigos">
 
@@ -39,7 +39,7 @@
     </header>
 
     <details class="jn-publicar" id="caixa-publicar" hidden>
-      <summary>+ Publicar uma notícia (administração e editores)</summary>
+      <summary>+ Publicar uma notícia (redação e administração)</summary>
       <form id="form-noticia">
         <div class="campo"><label for="n-titulo">Manchete <small>(palavras entre *asteriscos* saem em vermelho)</small></label><input id="n-titulo" maxlength="200" required placeholder="Corte na *saúde* e *educação* deve ser votado hoje!"></div>
         <div class="campo"><label for="n-linha">Linha fina (subtítulo em itálico)</label><input id="n-linha" maxlength="400"></div>
@@ -180,7 +180,7 @@
   });
 
   (async () => {
-    try { const u = await usuarioAtual(); if (u) { const p = await meuPerfil(); podeEditar = !!p && ["editor", "admin"].includes(p.papel); } } catch (_) {}
+    try { const u = await usuarioAtual(); if (u) { const p = await meuPerfil(); podeEditar = !!p && ["editor", "admin"].includes(p.papel); if (!podeEditar) { const r = await supa.rpc("sou_redacao"); podeEditar = r.data === true; } } } catch (_) {}
     $("caixa-publicar").hidden = !podeEditar;
     await edicao().catch(() => {});
     await abertura.pronto;

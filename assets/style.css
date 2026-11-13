@@ -1353,3 +1353,18 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
   .org-janela__botoes .botao { flex: 1 1 100%; text-align: center; min-height: 52px; font-size: 20px; }
 }
 @keyframes orgp-sobe { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+/* Organização: Redação do Jornal */
+.org-redacao { background: var(--branco); border-left: 8px solid var(--preto); padding: 14px 16px; margin: 0 0 18px; box-shadow: 4px 4px 0 var(--amarelo); }
+.org-redacao[hidden] { display: none; }
+.org-redacao__topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.org-redacao h3 { font-family: var(--titulo); font-size: 26px; margin: 0; }
+.org-equipe { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.org-equipe li { display: flex; align-items: center; gap: 10px; background: var(--papel); padding: 8px 10px; }
+.org-equipe img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none; }
+.org-equipe li div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.org-equipe strong { font-size: 15px; }
+.org-equipe span { font-size: 13px; color: var(--vermelho); font-weight: 700; }
+.org-equipe select { font-size: 14px; padding: 4px 6px; max-width: 100%; }
+.org-redacao__add { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--linha); }
+.org-redacao__add select { flex: 1 1 180px; min-height: 44px; font-size: 16px; }
+@media (max-width: 820px) { .org-redacao__topo .botao, .org-redacao__add .botao { width: 100%; text-align: center; } }
