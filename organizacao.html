@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organização dos núcleos · Coletivo Lufã</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#cc2220">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=62">
+</head>
+<body data-pagina="militante">
+<main>
+  <header class="cabecalho-pagina">
+    <div class="conteudo">
+      <a class="org-voltar" href="militante.html">← Área do Militante</a>
+      <h1>Organização</h1>
+      <p>O que cada núcleo precisa produzir: posts, vídeos, artes. Escolha uma tarefa, faça e marque como concluída. Cada tarefa aprovada vale <b>+10 XP</b>.</p>
+    </div>
+  </header>
+
+  <section class="secao">
+    <div class="conteudo">
+      <div id="mensagem" aria-live="polite"></div>
+      <div class="vazio" id="bloqueio" hidden>
+        <p id="bloqueio-texto"></p>
+        <a class="botao botao--vermelho" id="bloqueio-link" href="conta.html">Entrar</a>
+      </div>
+
+      <div id="area" hidden>
+        <h2 class="org-titulo">Seus núcleos</h2>
+        <div class="org-nucleos" id="nucleos" role="tablist" aria-label="Núcleos"></div>
+
+        <div class="org-topo">
+          <h2 class="org-nucleo-nome" id="nucleo-nome"></h2>
+          <button class="botao botao--vermelho" type="button" id="nova-tarefa" hidden>+ Adicionar tarefa</button>
+        </div>
+
+        <div class="org-quadro" id="quadro">
+          <section class="org-coluna org-coluna--afazer"><h3>A fazer <span id="n-afazer"></span></h3><div class="org-cartoes" id="col-afazer"></div></section>
+          <section class="org-coluna org-coluna--fazendo"><h3>Fazendo <span id="n-fazendo"></span></h3><div class="org-cartoes" id="col-fazendo"></div></section>
+          <section class="org-coluna org-coluna--pronto"><h3>Pronto <span id="n-pronto"></span></h3><div class="org-cartoes" id="col-pronto"></div></section>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- detalhe da tarefa -->
+<dialog class="org-janela" id="janela-tarefa" aria-labelledby="t-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar>×</button>
+  <span class="org-janela__estado" id="t-estado"></span>
+  <h2 id="t-titulo"></h2>
+  <p class="org-janela__meta" id="t-meta"></p>
+  <div class="org-janela__descricao" id="t-descricao"></div>
+  <p class="aviso aviso--erro" id="t-erro" hidden></p>
+  <div class="org-janela__botoes" id="t-botoes"></div>
+</dialog>
+
+<!-- criar / editar (administração) -->
+<dialog class="org-janela" id="janela-editar" aria-labelledby="e-cabeca">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar>×</button>
+  <h2 id="e-cabeca">Nova tarefa</h2>
+  <form id="form-tarefa">
+    <div class="campo"><label for="e-titulo">Título (curto)</label><input id="e-titulo" maxlength="120" required placeholder="Ex.: Vídeo sobre a escala 6x1"></div>
+    <div class="campo"><label for="e-descricao">Descrição (opcional)</label><textarea id="e-descricao" maxlength="4000" style="min-height:130px" placeholder="Explique o que precisa ser feito: formato, prazo, referências…"></textarea></div>
+    <p class="aviso aviso--erro" id="e-erro" hidden></p>
+    <div class="org-janela__botoes"><button class="botao botao--vermelho" type="submit" id="e-salvar">OK</button></div>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="assets/comum.js?v=20"></script>
+<script src="assets/supa.js?v=8"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const NUCLEOS = [
+    { slug: "marxista", nome: "Núcleo Marxista" }, { slug: "racial", nome: "Núcleo Racial" },
+    { slug: "feminista", nome: "Núcleo Feminista" }, { slug: "lgbtqia", nome: "Núcleo LGBTQIA+" },
+    { slug: "povos", nome: "Núcleo dos Povos Originários" }, { slug: "cultural", nome: "Núcleo Cultural" },
+    { slug: "estudantil", nome: "Núcleo Estudantil" },
+  ];
+  const ESTADO = { afazer: "A fazer", fazendo: "Fazendo", pronto: "Pronto" };
+  let perfil = null, admin = false, meus = [], atual = null, tarefas = [], aberta = null, editando = null;
+
+  function avisar(t, tipo = "erro") { $("mensagem").innerHTML = `<p class="aviso aviso--${tipo}">${esc(t)}</p>`; }
+  function bloquear(texto, botao, href) { $("bloqueio").hidden = false; $("bloqueio-texto").textContent = texto; $("bloqueio-link").textContent = botao; $("bloqueio-link").href = href; }
+
+  // ---------- núcleos da pessoa ----------
+  async function carregarNucleos() {
+    if (admin) return NUCLEOS.map((n) => n.slug);
+    const r = await supa.rpc("meus_nucleos");
+    if (!r.error && Array.isArray(r.data)) return r.data;
+    const { data } = await supa.from("fichas").select("nucleos").eq("id", perfil.id).maybeSingle();   // se o SQL 27 ainda não rodou
+    return [...new Set(["marxista", ...((data && data.nucleos) || [])])];
+  }
+  function mostrarNucleos() {
+    const lista = NUCLEOS.filter((n) => meus.includes(n.slug));
+    $("nucleos").innerHTML = lista.map((n) => `
+      <button type="button" role="tab" class="org-nucleo" data-nucleo="${n.slug}" aria-selected="${n.slug === atual}">
+        <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><span>${esc(n.nome)}</span>
+      </button>`).join("");
+    $("nucleo-nome").textContent = (NUCLEOS.find((n) => n.slug === atual) || {}).nome || "";
+  }
+  $("nucleos").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-nucleo]"); if (!b) return;
+    atual = b.dataset.nucleo; try { localStorage.setItem("lufa_org_nucleo", atual); } catch (_) {}
+    mostrarNucleos(); carregarTarefas();
+  });
+
+  // ---------- quadro ----------
+  async function carregarTarefas() {
+    ["afazer", "fazendo", "pronto"].forEach((s) => ($("col-" + s).innerHTML = '<p class="org-vazio">Carregando…</p>'));
+    const { data, error } = await supa.from("tarefas").select("*").eq("nucleo", atual).order("criado_em", { ascending: true });
+    if (error) { ["afazer", "fazendo", "pronto"].forEach((s) => ($("col-" + s).innerHTML = "")); return avisar(/tarefas|does not exist|schema cache/i.test(error.message) ? "A organização ainda não está ativada no banco de dados. Avise a administração." : mensagemErro(error)); }
+    tarefas = data || [];
+    desenhar();
+  }
+  function cartao(t) {
+    const meu = t.responsavel === perfil.id;
+    return `<button type="button" class="org-cartao${meu ? " org-cartao--minha" : ""}${t.aprovada ? " org-cartao--ok" : ""}" data-tarefa="${t.id}">
+      <strong>${esc(t.titulo)}</strong>
+      ${t.responsavel_nome ? `<small>${meu ? "Você" : esc(t.responsavel_nome)}</small>` : ""}
+      ${t.status === "pronto" ? (t.aprovada ? `<span class="org-selo org-selo--ok">✓ Aprovado · +10 XP</span>` : `<span class="org-selo">Aguardando o OK da administração</span>`) : ""}
+    </button>`;
+  }
+  function desenhar() {
+    ["afazer", "fazendo", "pronto"].forEach((s) => {
+      const lista = tarefas.filter((t) => t.status === s);
+      if (s === "pronto") lista.sort((a, b) => Number(a.aprovada) - Number(b.aprovada));
+      $("n-" + s).textContent = lista.length ? `(${lista.length})` : "";
+      $("col-" + s).innerHTML = lista.length ? lista.map(cartao).join("")
+        : `<p class="org-vazio">${s === "afazer" ? "Nenhuma tarefa por enquanto." : s === "fazendo" ? "Ninguém fazendo nada agora." : "Nada pronto ainda."}</p>`;
+    });
+  }
+  $("quadro").addEventListener("click", (e) => { const c = e.target.closest("[data-tarefa]"); if (c) abrir(Number(c.dataset.tarefa)); });
+
+  // ---------- detalhe ----------
+  function abrir(id) {
+    const t = tarefas.find((x) => x.id === id); if (!t) return;
+    aberta = t;
+    const meu = t.responsavel === perfil.id;
+    $("t-estado").textContent = ESTADO[t.status] + (t.aprovada ? " · aprovado" : "");
+    $("t-estado").dataset.estado = t.status;
+    $("t-titulo").textContent = t.titulo;
+    $("t-meta").innerHTML = [`Pedido por <b>${esc(t.criado_por_nome || "administração")}</b> em ${esc(dataPorExtenso(t.criado_em))}`,
+      t.responsavel_nome ? `${t.status === "fazendo" ? "Fazendo" : "Feito por"}: <b>${meu ? "você" : esc(t.responsavel_nome)}</b>` : ""].filter(Boolean).join("<br>");
+    $("t-descricao").innerHTML = t.descricao ? esc(t.descricao).replace(/\n/g, "<br>") : "<i>Sem descrição.</i>";
+    const b = [];
+    if (t.status === "afazer") b.push(`<button class="botao org-verde" data-acao="assumir">✓ Quero fazer</button>`);
+    if (t.status === "fazendo" && (meu || admin)) b.push(`<button class="botao org-verde" data-acao="concluir">✓ Concluído</button>`);
+    if (t.status === "fazendo" && meu) b.push(`<button class="botao botao--claro" data-acao="devolver">Desistir</button>`);
+    if (t.status === "pronto" && admin && !t.aprovada) b.push(`<button class="botao org-verde" data-acao="aprovar">OK, está feito (+10 XP)</button>`, `<button class="botao botao--claro" data-acao="devolver">Devolver para "A fazer"</button>`);
+    if (t.status === "fazendo" && admin && !meu) b.push(`<button class="botao botao--claro" data-acao="devolver">Devolver para "A fazer"</button>`);
+    if (admin) b.push(`<button class="org-link" data-acao="editar">Editar</button>`, `<button class="org-link org-link--apagar" data-acao="apagar">Apagar</button>`);
+    $("t-botoes").innerHTML = b.join("");
+    $("t-erro").hidden = true;
+    $("janela-tarefa").showModal();
+  }
+  $("t-botoes").addEventListener("click", async (e) => {
+    const bt = e.target.closest("[data-acao]"); if (!bt || !aberta) return;
+    const acao = bt.dataset.acao, t = aberta;
+    if (acao === "editar") { $("janela-tarefa").close(); return editar(t); }
+    if (acao === "apagar" && !confirm(`Apagar a tarefa "${t.titulo}"?`)) return;
+    bt.disabled = true;
+    let r;
+    if (acao === "apagar") r = await supa.from("tarefas").delete().eq("id", t.id);
+    else r = await supa.rpc(acao + "_tarefa", { tarefa: t.id });
+    bt.disabled = false;
+    if (r.error) { $("t-erro").textContent = mensagemErro(r.error); $("t-erro").hidden = false; return; }
+    $("janela-tarefa").close();
+    const msg = { assumir: "Tarefa sua! Ela foi para \"Fazendo\".", concluir: "Boa! A tarefa foi para \"Pronto\" e aguarda o OK da administração.", devolver: "A tarefa voltou para \"A fazer\".", aprovar: "Tarefa aprovada: +10 XP para quem fez.", apagar: "Tarefa apagada." }[acao];
+    avisar(msg, "ok");
+    carregarTarefas();
+  });
+
+  // ---------- criar / editar (administração) ----------
+  function editar(t) {
+    editando = t || null;
+    $("e-cabeca").textContent = t ? "Editar tarefa" : `Nova tarefa · ${(NUCLEOS.find((n) => n.slug === atual) || {}).nome}`;
+    $("e-titulo").value = t ? t.titulo : ""; $("e-descricao").value = t ? t.descricao : "";
+    $("e-erro").hidden = true;
+    $("janela-editar").showModal(); $("e-titulo").focus();
+  }
+  $("nova-tarefa").addEventListener("click", () => editar(null));
+  $("form-tarefa").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const dados = { titulo: $("e-titulo").value.trim(), descricao: $("e-descricao").value.trim() };
+    if (dados.titulo.length < 2) return;
+    $("e-salvar").disabled = true;
+    const r = editando ? await supa.from("tarefas").update(dados).eq("id", editando.id)
+      : await supa.from("tarefas").insert({ ...dados, nucleo: atual, criado_por: perfil.id, criado_por_nome: perfil.nome || "" });
+    $("e-salvar").disabled = false;
+    if (r.error) { $("e-erro").textContent = mensagemErro(r.error); $("e-erro").hidden = false; return; }
+    $("janela-editar").close();
+    avisar(editando ? "Tarefa atualizada." : "Tarefa adicionada em \"A fazer\".", "ok");
+    carregarTarefas();
+  });
+  document.querySelectorAll("[data-fechar]").forEach((b) => b.addEventListener("click", () => b.closest("dialog").close()));
+
+  // ---------- entrada: só militantes (membros ativos) e administração ----------
+  (async () => {
+    try {
+      const u = await usuarioAtual();
+      if (!u) return bloquear("Entre na sua conta para acessar a organização.", "Entrar", "conta.html?voltar=organizacao.html");
+      perfil = await meuPerfil();
+      admin = !!perfil && perfil.papel === "admin";
+      if (!perfil || !APROVADO.includes(perfil.papel) || (ehComum(perfil) && !admin))
+        return bloquear("A organização é só para militantes (membros ativos) do coletivo.", "Ir para Minha conta", "conta.html");
+      meus = await carregarNucleos();
+      if (!meus.length) meus = ["marxista"];
+      let salvo = null; try { salvo = localStorage.getItem("lufa_org_nucleo"); } catch (_) {}
+      atual = meus.includes(salvo) ? salvo : NUCLEOS.find((n) => meus.includes(n.slug)).slug;
+      $("nova-tarefa").hidden = !admin;
+      $("area").hidden = false;
+      mostrarNucleos(); carregarTarefas();
+    } catch (e) { avisar(mensagemErro(e)); }
+  })();
+</script>
+</body>
+</html>
