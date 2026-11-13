@@ -11,16 +11,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=62">
+  <link rel="stylesheet" href="assets/style.css?v=63">
 </head>
 <body data-pagina="militante">
 <main>
-  <header class="cabecalho-pagina">
-    <div class="conteudo">
-      <a class="org-voltar" href="militante.html">← Área do Militante</a>
-      <h1>Organização</h1>
-      <p>O que cada núcleo precisa produzir: posts, vídeos, artes. Escolha uma tarefa, faça e marque como concluída. Cada tarefa aprovada vale <b>+10 XP</b>.</p>
-    </div>
+  <header class="orgp-cabeca">
+    <a class="org-voltar" href="militante.html">← Área do Militante</a>
+    <h1>Organização</h1>
+    <p>Pegue uma tarefa do seu núcleo, faça e marque como concluída. Cada tarefa aprovada vale <b>+10 XP</b>.</p>
   </header>
 
   <section class="secao">
@@ -40,7 +38,12 @@
           <button class="botao botao--vermelho" type="button" id="nova-tarefa" hidden>+ Adicionar tarefa</button>
         </div>
 
-        <div class="org-quadro" id="quadro">
+        <div class="orgp-abas" id="abas" role="tablist">
+          <button type="button" role="tab" data-aba="afazer" aria-selected="true">A fazer <b id="a-afazer"></b></button>
+          <button type="button" role="tab" data-aba="fazendo" aria-selected="false">Fazendo <b id="a-fazendo"></b></button>
+          <button type="button" role="tab" data-aba="pronto" aria-selected="false">Pronto <b id="a-pronto"></b></button>
+        </div>
+        <div class="org-quadro" id="quadro" data-aba="afazer">
           <section class="org-coluna org-coluna--afazer"><h3>A fazer <span id="n-afazer"></span></h3><div class="org-cartoes" id="col-afazer"></div></section>
           <section class="org-coluna org-coluna--fazendo"><h3>Fazendo <span id="n-fazendo"></span></h3><div class="org-cartoes" id="col-fazendo"></div></section>
           <section class="org-coluna org-coluna--pronto"><h3>Pronto <span id="n-pronto"></span></h3><div class="org-cartoes" id="col-pronto"></div></section>
@@ -102,7 +105,7 @@
     const lista = NUCLEOS.filter((n) => meus.includes(n.slug));
     $("nucleos").innerHTML = lista.map((n) => `
       <button type="button" role="tab" class="org-nucleo" data-nucleo="${n.slug}" aria-selected="${n.slug === atual}">
-        <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><span>${esc(n.nome)}</span>
+        <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><span>${esc(n.nome.replace(/^Núcleo (dos |d[oa] )?/, ""))}</span>
       </button>`).join("");
     $("nucleo-nome").textContent = (NUCLEOS.find((n) => n.slug === atual) || {}).nome || "";
   }
@@ -133,10 +136,13 @@
       const lista = tarefas.filter((t) => t.status === s);
       if (s === "pronto") lista.sort((a, b) => Number(a.aprovada) - Number(b.aprovada));
       $("n-" + s).textContent = lista.length ? `(${lista.length})` : "";
+      $("a-" + s).textContent = lista.length;
       $("col-" + s).innerHTML = lista.length ? lista.map(cartao).join("")
         : `<p class="org-vazio">${s === "afazer" ? "Nenhuma tarefa por enquanto." : s === "fazendo" ? "Ninguém fazendo nada agora." : "Nada pronto ainda."}</p>`;
     });
   }
+  function irAba(aba) { $("quadro").dataset.aba = aba; document.querySelectorAll("#abas [data-aba]").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.aba === aba))); }
+  $("abas").addEventListener("click", (e) => { const b = e.target.closest("[data-aba]"); if (b) irAba(b.dataset.aba); });
   $("quadro").addEventListener("click", (e) => { const c = e.target.closest("[data-tarefa]"); if (c) abrir(Number(c.dataset.tarefa)); });
 
   // ---------- detalhe ----------
@@ -175,6 +181,8 @@
     $("janela-tarefa").close();
     const msg = { assumir: "Tarefa sua! Ela foi para \"Fazendo\".", concluir: "Boa! A tarefa foi para \"Pronto\" e aguarda o OK da administração.", devolver: "A tarefa voltou para \"A fazer\".", aprovar: "Tarefa aprovada: +10 XP para quem fez.", apagar: "Tarefa apagada." }[acao];
     avisar(msg, "ok");
+    const destino = { assumir: "fazendo", concluir: "pronto", devolver: "afazer", aprovar: "pronto" }[acao];
+    if (destino) irAba(destino);   // no celular, mostra a aba para onde a tarefa foi
     carregarTarefas();
   });
 
@@ -198,6 +206,7 @@
     if (r.error) { $("e-erro").textContent = mensagemErro(r.error); $("e-erro").hidden = false; return; }
     $("janela-editar").close();
     avisar(editando ? "Tarefa atualizada." : "Tarefa adicionada em \"A fazer\".", "ok");
+    if (!editando) irAba("afazer");
     carregarTarefas();
   });
   document.querySelectorAll("[data-fechar]").forEach((b) => b.addEventListener("click", () => b.closest("dialog").close()));
