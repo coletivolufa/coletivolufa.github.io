@@ -1271,3 +1271,6 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .jn-colunas--uma { grid-template-columns: 1fr; }
 .jn-colunas--uma .jn-col { padding-right: 0; max-width: 720px; }
 @media (max-width: 640px) { .jn-nome { white-space: nowrap; } }
+/* administração: estrela de quem concluiu o cadastro da Área do Militante */
+.estrela-concluiu { color: var(--amarelo); -webkit-text-stroke: 1px #9a7413; font-size: 1.15em; }
+.legenda-estrela { font-size: 14px; margin: 8px 0 12px; color: var(--cinza); }

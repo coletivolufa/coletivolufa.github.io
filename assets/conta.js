@@ -1,7 +1,7 @@
 /* Minha conta: cadastro, login, perfil, artigos e administração (Supabase) */
 
 const $ = (id) => document.getElementById(id);
-let perfil = null, editandoArtigo = null, filtroAdmin = "todos", pessoas = [];
+let perfil = null, editandoArtigo = null, filtroAdmin = "todos", pessoas = [], concluiram = new Set();
 
 function avisar(texto, tipo = "") {
   $("mensagem").innerHTML = texto ? `<div class="aviso ${tipo ? "aviso--" + tipo : ""}">${texto}</div>` : "";
@@ -278,7 +278,12 @@ async function carregarPessoas() {
   const ul = $("lista-pessoas"); ul.innerHTML = "<li>Carregando…</li>";
   const { data, error } = await supa.from("perfis").select("*").order("criado_em", { ascending: false });
   if (error) { ul.innerHTML = `<li>${esc(mensagemErro(error))}</li>`; return; }
-  pessoas = data; desenharPessoas();
+  pessoas = data;
+  // quem concluiu o cadastro da Área do Militante (os 4 passos + foto), igual à conferência da própria área
+  const { data: fichas } = await supa.from("fichas").select("id,completo_em,escolaridade,pautas,partido,movimento");
+  const fotoDe = Object.fromEntries(pessoas.map((p) => [p.id, p.foto]));
+  concluiram = new Set((fichas || []).filter((f) => f.completo_em && f.escolaridade && (f.pautas || []).length >= 3 && f.partido && f.movimento && fotoDe[f.id]).map((f) => f.id));
+  desenharPessoas();
 }
 function desenharPessoas() {
   const lista = pessoas.filter((p) => filtroAdmin === "todos" ? true
@@ -288,12 +293,13 @@ function desenharPessoas() {
   const conta = (f) => pessoas.filter((p) => APROVADO.includes(p.papel) && (f === "comum" ? ehComum(p) : !ehComum(p))).length;
   const b = (f) => document.querySelector(`[data-filtro="${f}"]`);
   b("todos").textContent = `Todos (${pessoas.length})`;
-  b("ativos").textContent = `Membros ativos (${conta("ativo")})`;
+  const comEstrela = pessoas.filter((p) => APROVADO.includes(p.papel) && !ehComum(p) && concluiram.has(p.id)).length;
+  b("ativos").textContent = `Membros ativos (${conta("ativo")} · ★ ${comEstrela})`;
   b("comuns").textContent = `Membros comuns (${conta("comum")})`;
   $("lista-pessoas").innerHTML = lista.length ? lista.map((p) => `
     <li data-id="${p.id}">
       <img src="${esc(p.foto || "assets/img/avatar.svg")}" alt="">
-      <div><strong>${esc(p.nome || "(sem nome)")}</strong>
+      <div><strong>${esc(p.nome || "(sem nome)")}${concluiram.has(p.id) ? ' <span class="estrela-concluiu" title="Concluiu o cadastro na Área do Militante">★</span>' : ""}</strong>
         <span class="meta">${APROVADO.includes(p.papel) ? `<b>${esc(textoOcupacao(p))}</b> · ` : ""}${p.arroba ? "@" + esc(p.arroba) + " · " : ""}${p.matricula ? "Nº " + esc(p.matricula) + " · " : ""}cadastro em ${esc(dataPorExtenso(p.criado_em))}${p.idade ? " · " + esc(p.idade) + " anos" : ""}</span></div>
       ${p.papel === "pendente" ? `<button type="button" class="aprovar" data-papel="membro" data-classe="${ATIVO}">Aprovar como ativo</button><button type="button" class="aprovar aprovar--comum" data-papel="membro" data-classe="${COMUM}">Aprovar como comum</button><button type="button" data-papel="recusado">Recusar</button>`
         : `<select data-classe-sel aria-label="Classificação de ${esc(p.nome)}"><option value="${ATIVO}"${!ehComum(p) ? " selected" : ""}>Membro ativo</option><option value="${COMUM}"${ehComum(p) ? " selected" : ""}>Membro comum</option></select>`}
