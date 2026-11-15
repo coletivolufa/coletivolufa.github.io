@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=64">
+  <link rel="stylesheet" href="assets/style.css?v=65">
 </head>
 <body data-pagina="militante">
 <main>
@@ -37,6 +37,14 @@
           <h2 class="org-nucleo-nome" id="nucleo-nome"></h2>
           <button class="botao botao--vermelho" type="button" id="nova-tarefa" hidden>+ Adicionar tarefa</button>
         </div>
+
+        <section class="org-membros" id="membros">
+          <div class="org-membros__topo">
+            <h3>Membros deste núcleo: <b id="membros-n">…</b></h3>
+            <button class="botao botao--claro" type="button" id="ver-membros" aria-expanded="false">Clique aqui para ver os membros</button>
+          </div>
+          <ul class="org-membros__lista" id="membros-lista" hidden></ul>
+        </section>
 
         <section class="org-redacao" id="redacao" hidden>
           <div class="org-redacao__topo">
@@ -124,8 +132,41 @@
       </button>`).join("");
     $("nucleo-nome").textContent = (NUCLEOS.find((n) => n.slug === atual) || {}).nome || "";
     $("redacao").hidden = atual !== "jornal";
+    carregarMembros();
     if (atual === "jornal") carregarEquipe();
   }
+
+  // ---------- membros do núcleo (militantes ativos) com botão para conversar no WhatsApp ----------
+  let membros = [];
+  const linkWhats = (cel, nome) => {
+    let n = String(cel || "").replace(/\D/g, ""); if (!n) return "";
+    if (!(n.length >= 12 && n.startsWith("55"))) n = "55" + n;
+    const nucleo = (NUCLEOS.find((x) => x.slug === atual) || {}).nome || "núcleo";
+    const msg = `Olá, ${primeiro(nome)}! Aqui é ${primeiro(perfil.nome)}, do ${nucleo} do Coletivo Lufã.`;
+    return `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
+  };
+  const primeiro = (n) => String(n || "").trim().split(/\s+/)[0] || "";
+  async function carregarMembros() {
+    const alvo = atual;
+    $("membros-n").textContent = "…"; $("membros-lista").hidden = true; $("ver-membros").setAttribute("aria-expanded", "false");
+    $("ver-membros").textContent = "Clique aqui para ver os membros";
+    const { data, error } = await supa.rpc("membros_do_nucleo", { alvo });
+    if (alvo !== atual) return;
+    if (error) { $("membros-n").textContent = "—"; membros = []; $("membros-lista").innerHTML = `<li class="org-vazio">${/membros_do_nucleo|schema cache/i.test(error.message) ? "A lista de membros ainda não está ativada no banco de dados." : esc(mensagemErro(error))}</li>`; return; }
+    membros = data || [];
+    $("membros-n").textContent = membros.length === 1 ? "1 militante ativo" : `${membros.length} militantes ativos`;
+    $("membros-lista").innerHTML = membros.length ? membros.map((m) => {
+      const eu = m.id === perfil.id, w = linkWhats(m.celular, m.nome);
+      return `<li><img src="${esc(m.foto || "assets/img/avatar.svg")}" alt="" loading="lazy">
+        <strong>${esc(m.nome)}${eu ? " <small>(você)</small>" : ""}</strong>
+        ${eu ? "" : w ? `<a class="botao org-verde org-conversar" href="${esc(w)}" target="_blank" rel="noopener">Conversar</a>` : `<span class="org-sem-whats">sem WhatsApp</span>`}</li>`;
+    }).join("") : '<li class="org-vazio">Ainda não há militantes neste núcleo.</li>';
+  }
+  $("ver-membros").addEventListener("click", () => {
+    const abrir = $("membros-lista").hidden;
+    $("membros-lista").hidden = !abrir; $("ver-membros").setAttribute("aria-expanded", String(abrir));
+    $("ver-membros").textContent = abrir ? "Esconder os membros" : "Clique aqui para ver os membros";
+  });
 
   // ---------- Redação do Jornal: equipe e funções (a administração coloca e tira) ----------
   async function carregarEquipe() {
