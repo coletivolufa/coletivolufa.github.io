@@ -1,5 +1,6 @@
 -- 29 · Membros de cada núcleo (com WhatsApp), na Organização
--- Militantes ativos de um núcleo, com nome, foto e celular. Só quem é do núcleo (ou a administração) vê.
+-- Militantes ativos de um núcleo, com nome e foto. Só quem é do núcleo (ou a administração) vê.
+-- O celular (botão Conversar) só vai para a administração.
 -- Marxista: todos os militantes. Estudantil: quem marcou ou entrou com até 17 anos. Redação: a equipe do jornal.
 create or replace function public.membros_do_nucleo(alvo text)
 returns table (id uuid, nome text, foto text, celular text)
@@ -9,7 +10,7 @@ begin
     return;
   end if;
   return query
-  select p.id, p.nome, p.foto, p.celular
+  select p.id, p.nome, p.foto, case when public.eh_admin() then p.celular else null end   -- celular só para a administração
   from public.perfis p
   left join public.fichas f on f.id = p.id
   where p.papel in ('membro', 'autor', 'editor', 'admin')

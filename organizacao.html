@@ -136,7 +136,7 @@
     if (atual === "jornal") carregarEquipe();
   }
 
-  // ---------- membros do núcleo (militantes ativos) com botão para conversar no WhatsApp ----------
+  // ---------- membros do núcleo (militantes ativos); o botão de WhatsApp é só da administração ----------
   let membros = [];
   const linkWhats = (cel, nome) => {
     let n = String(cel || "").replace(/\D/g, ""); if (!n) return "";
@@ -159,7 +159,7 @@
       const eu = m.id === perfil.id, w = linkWhats(m.celular, m.nome);
       return `<li><img src="${esc(m.foto || "assets/img/avatar.svg")}" alt="" loading="lazy">
         <strong>${esc(m.nome)}${eu ? " <small>(você)</small>" : ""}</strong>
-        ${eu ? "" : w ? `<a class="botao org-verde org-conversar" href="${esc(w)}" target="_blank" rel="noopener">Conversar</a>` : `<span class="org-sem-whats">sem WhatsApp</span>`}</li>`;
+        ${eu || !admin ? "" : w ? `<a class="botao org-verde org-conversar" href="${esc(w)}" target="_blank" rel="noopener">Conversar</a>` : `<span class="org-sem-whats">sem WhatsApp</span>`}</li>`;   // só a administração conversa
     }).join("") : '<li class="org-vazio">Ainda não há militantes neste núcleo.</li>';
   }
   $("ver-membros").addEventListener("click", () => {
