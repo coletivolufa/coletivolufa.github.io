@@ -1382,3 +1382,4 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .org-conversar { flex: none; padding: 8px 14px; font-size: 17px; min-height: 40px; }
 .org-sem-whats { font-size: 12px; color: var(--cinza); }
 @media (max-width: 820px) { .org-membros__topo .botao { width: 100%; text-align: center; } .org-membros__lista { grid-template-columns: 1fr; } }
+.org-membros[hidden] { display: none; }

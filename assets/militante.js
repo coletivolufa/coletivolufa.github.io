@@ -33,6 +33,7 @@ const NUCLEOS = [
   { slug: "feminista", nome: "Núcleo Feminista" },
   { slug: "lgbtqia", nome: "Núcleo LGBTQIA+" },
   { slug: "povos", nome: "Núcleo dos Povos Originários" },
+  { slug: "terreiro", nome: "Núcleo dos Povos de Terreiro" },
   { slug: "cultural", nome: "Núcleo Cultural" },
   { slug: "estudantil", nome: "Núcleo Estudantil" },   // obrigatório para quem entrou com 13 a 17 anos
 ];
