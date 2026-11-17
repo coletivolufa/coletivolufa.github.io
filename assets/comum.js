@@ -162,3 +162,34 @@ function fontesHTML(fontes) {
   const item = (t) => esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   return `<section class="artigo-fontes"><h2>Fontes</h2><ol>${itens.map((t) => `<li>${item(t)}</li>`).join("")}</ol></section>`;
 }
+
+// ---------- apoio: pop-up na primeira visita ao site (uma vez por aparelho) ----------
+const LINK_APOIO = "https://widget.livepix.gg/embed/eab90305-07db-499f-a0a9-12c932a4902b";
+(function () {
+  const CHAVE = "lufa_apoio_visto";
+  try { if (localStorage.getItem(CHAVE)) return; } catch (_) { return; }
+  if (/[?&]embutido=1/.test(location.search)) return;   // não aparece dentro do gerador embutido
+  document.body.insertAdjacentHTML("beforeend", `
+    <dialog class="apoio" id="janela-apoio" aria-labelledby="apoio-titulo">
+      <button class="ficha__fechar apoio__x" type="button" aria-label="Fechar" data-fechar-apoio>×</button>
+      <img class="apoio__logo" src="assets/img/logo-lufa-linha-amarela.png" alt="Coletivo Lufã">
+      <h2 id="apoio-titulo">Você pode tornar este projeto <em>ainda mais forte!</em></h2>
+      <p class="apoio__sub">Colabore com <b>qualquer valor</b>.</p>
+      <div class="apoio__qr"><img src="assets/img/apoie-qrcode.png" alt="QR Code para apoiar o Coletivo Lufã" width="492" height="492"><small>Aponte a câmera do celular</small></div>
+      <a class="botao apoio__botao" href="${LINK_APOIO}" target="_blank" rel="noopener" data-fechar-apoio>Apoiar agora ★</a>
+      <button class="apoio__depois" type="button" data-fechar-apoio>Agora não</button>
+    </dialog>`);
+  const j = document.getElementById("janela-apoio");
+  const marcar = () => { try { localStorage.setItem(CHAVE, "1"); } catch (_) {} };
+  j.addEventListener("close", () => { marcar(); document.documentElement.classList.remove("janela-aberta"); });
+  j.querySelectorAll("[data-fechar-apoio]").forEach((b) => b.addEventListener("click", () => setTimeout(() => j.close(), 50)));
+  j.addEventListener("click", (e) => { if (e.target === j) j.close(); });   // tocar fora fecha
+  // espera a página assentar e não abre por cima de outra janela (canal, cadastro, abertura do jornal…)
+  let tentativas = 0;
+  const tentar = () => {
+    const ocupado = document.querySelector("dialog[open]:not(#janela-apoio)") || document.getElementById("abertura");
+    if (ocupado) { if (++tentativas < 40) setTimeout(tentar, 1500); return; }
+    j.showModal(); document.documentElement.classList.add("janela-aberta");
+  };
+  setTimeout(tentar, 2500);
+})();
