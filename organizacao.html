@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=76">
+  <link rel="stylesheet" href="assets/style.css?v=77">
 </head>
 <body data-pagina="militante">
 <main>
@@ -32,9 +32,7 @@
       <div id="area" hidden>
         <h2 class="org-titulo">Seus núcleos</h2>
         <div class="org-carrossel">
-          <button type="button" class="org-seta org-seta--ant" id="nuc-ant" aria-label="Núcleos anteriores" hidden>‹</button>
           <div class="org-nucleos" id="nucleos" role="tablist" aria-label="Núcleos"></div>
-          <button type="button" class="org-seta org-seta--prox" id="nuc-prox" aria-label="Próximos núcleos" hidden>›</button>
         </div>
 
         <div class="org-topo">
@@ -129,16 +127,6 @@
     const { data } = await supa.from("fichas").select("nucleos").eq("id", perfil.id).maybeSingle();   // se o SQL 27 ainda não rodou
     return [...new Set(["marxista", ...((data && data.nucleos) || [])])];
   }
-  // setinhas da fila de núcleos (aparecem só quando há mais núcleos do que cabe na tela)
-  function setasNucleos() {
-    const g = $("nucleos"), sobra = g.scrollWidth - g.clientWidth;
-    $("nuc-ant").hidden = sobra <= 2 || g.scrollLeft <= 2;
-    $("nuc-prox").hidden = sobra <= 2 || g.scrollLeft >= sobra - 2;
-  }
-  $("nuc-ant").addEventListener("click", () => $("nucleos").scrollBy({ left: -$("nucleos").clientWidth * 0.7, behavior: "smooth" }));
-  $("nuc-prox").addEventListener("click", () => $("nucleos").scrollBy({ left: $("nucleos").clientWidth * 0.7, behavior: "smooth" }));
-  $("nucleos").addEventListener("scroll", setasNucleos, { passive: true });
-  window.addEventListener("resize", setasNucleos);
   function mostrarNucleos() {
     const lista = NUCLEOS.filter((n) => meus.includes(n.slug));
     $("nucleos").innerHTML = lista.map((n) => `
@@ -146,7 +134,7 @@
         <img src="assets/img/nucleos/${n.slug}.jpg" alt=""><span>${esc(n.slug === "jornal" ? "Redação do Jornal" : n.nome.replace(/^Núcleo (dos |d[oa] )?/, ""))}</span>
       </button>`).join("");
     $("nucleo-nome").textContent = (NUCLEOS.find((n) => n.slug === atual) || {}).nome || "";
-    requestAnimationFrame(() => { const sel = $("nucleos").querySelector('[aria-selected="true"]'); if (sel && !$("nucleos").dataset.posto) { sel.scrollIntoView({ block: "nearest", inline: "center" }); $("nucleos").dataset.posto = "1"; } setasNucleos(); });
+    requestAnimationFrame(() => { const sel = $("nucleos").querySelector('[aria-selected="true"]'); if (sel && !$("nucleos").dataset.posto) { sel.scrollIntoView({ block: "nearest", inline: "center" }); $("nucleos").dataset.posto = "1"; } });
     $("redacao").hidden = atual !== "jornal";
     $("membros").hidden = atual === "jornal";   // a Redação já mostra a equipe
     if (atual !== "jornal") carregarMembros();
