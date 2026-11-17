@@ -1498,3 +1498,22 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .jn-man h2 { margin: 0 0 16px; }
 .jn-man__img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
 .jn-lt { align-items: center; }
+/* página inicial: últimas notícias do jornal passando sozinhas */
+.noticias-home { background: #1c1714; color: #f8f3e8; padding: 26px 0 30px; border-bottom: 6px solid var(--vermelho); overflow: hidden; }
+.noticias-home[hidden] { display: none; }
+.noticias-home__topo { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; padding: 0 clamp(20px, 5vw, 64px); margin-bottom: 18px; }
+.noticias-home h2 { font-family: var(--titulo); font-size: clamp(34px, 5vw, 52px); line-height: 1; margin: 0; color: #fff; }
+.noticias-home h2 span { display: block; font-size: .42em; letter-spacing: .12em; color: var(--amarelo); margin-bottom: 6px; }
+.noticias-home__pista { overflow: hidden; }
+.noticias-home__fila { display: flex; gap: 16px; width: max-content; padding-left: 16px; animation: noticias-correm var(--duracao, 40s) linear infinite; }
+.noticias-home__pista:hover .noticias-home__fila, .noticias-home__pista:focus-within .noticias-home__fila, .noticias-home__pista:active .noticias-home__fila { animation-play-state: paused; }
+@keyframes noticias-correm { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.noticia-mini { flex: none; width: 260px; display: flex; flex-direction: column; gap: 6px; background: #f8f3e8; color: #1c1714; text-decoration: none; padding: 0 0 12px; border-top: 6px solid var(--vermelho); }
+.noticia-mini img, .noticia-mini__semfoto { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.noticia-mini__semfoto { display: grid; place-items: center; background: var(--vermelho); }
+.noticia-mini__semfoto img { width: 34%; height: auto; aspect-ratio: auto; }
+.noticia-mini__secao { padding: 0 12px; font-family: "Courier Prime", "Courier New", monospace; font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--vermelho); }
+.noticia-mini__titulo { padding: 0 12px; font-family: "Oswald", var(--titulo); font-weight: 500; font-size: 19px; line-height: 1.18; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.noticia-mini:hover .noticia-mini__titulo { color: var(--vermelho); }
+@media (max-width: 640px) { .noticia-mini { width: 220px; } .noticia-mini__titulo { font-size: 17px; } .noticias-home__topo .botao { width: 100%; text-align: center; } }
+@media (prefers-reduced-motion: reduce) { .noticias-home__pista { overflow-x: auto; } .noticias-home__fila { animation: none; } }

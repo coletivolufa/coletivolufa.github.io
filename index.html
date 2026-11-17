@@ -16,8 +16,8 @@
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=72">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Oswald:wght@500&family=Courier+Prime:wght@700&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=73">
 </head>
 <body data-pagina="inicio">
 <main>
@@ -36,6 +36,14 @@
       MARXISMO ★ ESQUERDA RADICAL ★ ANTICAPITALISMO ★ ANTIFASCISMO ★ PODER POPULAR ★
       MARXISMO ★ ESQUERDA RADICAL ★ ANTICAPITALISMO ★ ANTIFASCISMO ★ PODER POPULAR ★
     </div></div>
+  </section>
+
+  <section class="noticias-home" id="noticias-home" hidden aria-labelledby="noticias-home-titulo">
+    <div class="noticias-home__topo">
+      <h2 id="noticias-home-titulo"><span>★ Jornal da Classe Trabalhadora</span>Leia as últimas notícias</h2>
+      <a class="botao botao--amarelo" href="jornal.html">Abrir o jornal →</a>
+    </div>
+    <div class="noticias-home__pista"><div class="noticias-home__fila" id="noticias-home-fila"></div></div>
   </section>
 
   <section class="secao projeto" id="projeto">
@@ -113,9 +121,25 @@
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="assets/comum.js?v=20"></script>
+<script src="assets/comum.js?v=21"></script>
 <script src="assets/supa.js?v=8"></script>
 <script>
+  // últimas notícias do jornal passando sozinhas na página inicial
+  (async () => {
+    try {
+      const { data, error } = await supa.from("noticias").select("id,titulo,foto,secao,criado_em").eq("publicado", true).order("criado_em", { ascending: false }).limit(10);
+      if (error || !data || !data.length) return;
+      const card = (n) => `<a class="noticia-mini" href="jornal.html?n=${n.id}">
+        ${n.foto ? `<img src="${esc(n.foto)}" alt="" loading="lazy">` : `<span class="noticia-mini__semfoto"><img src="assets/img/logo-lufa-pomba.png" alt=""></span>`}
+        <span class="noticia-mini__secao">${esc(n.secao)}</span>
+        <span class="noticia-mini__titulo">${esc(n.titulo.replace(/\*/g, ""))}</span></a>`;
+      const fila = document.getElementById("noticias-home-fila");
+      const um = data.map(card).join("");
+      fila.innerHTML = um + um;   // repetido para a fila girar sem emenda
+      fila.style.setProperty("--duracao", Math.max(25, data.length * 6) + "s");
+      document.getElementById("noticias-home").hidden = false;
+    } catch (_) {}
+  })();
   (async () => {
     const alvo = document.getElementById("lista-membros");
     try {

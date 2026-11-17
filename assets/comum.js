@@ -12,6 +12,7 @@ const LUFA = {
 const ICONES = {
   militante: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 2.8l2.6 6.1 6.6.5-5 4.3 1.6 6.4L12 16.6l-5.8 3.5 1.6-6.4-5-4.3 6.6-.5z"/></svg>',
   inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg>',
+  jornal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2"/><path d="M7 9h7M7 13h7M7 16h4"/></svg>',
   artigos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg>',
   formacao: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>',
   conta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.4-7 8-7s7 2.5 8 7"/></svg>',
@@ -38,6 +39,7 @@ function montarMenu() {
       <nav>
         <a href="index.html"${atual("inicio")}>${ICONES.inicio}Início</a>
         <a href="artigos.html"${atual("artigos")}>${ICONES.artigos}Artigos</a>
+        <a href="jornal.html"${atual("jornal")}>${ICONES.jornal}Jornal</a>
         <a href="formacao.html"${atual("formacao")}>${ICONES.formacao}Formação</a>
         <a href="biblioteca.html"${atual("biblioteca")}>${ICONES.biblioteca}Biblioteca</a>
         <a href="militante.html"${atual("militante")} data-so-militante${souMilitante() ? "" : " hidden"}>${ICONES.militante}Área do militante</a>
