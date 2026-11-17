@@ -390,6 +390,19 @@ function carregarCarteirinha() {
 }
 
 // ---------- seus núcleos ----------
+// setas do carrossel (para quem não consegue arrastar no celular)
+function atualizarSetasNucleos() {
+  const g = $("meus-nucleos"); if (!g) return;
+  $("nucleos-ant").disabled = g.scrollLeft <= 4;
+  $("nucleos-prox").disabled = g.scrollLeft + g.clientWidth >= g.scrollWidth - 4;
+}
+function passarNucleos(dir) {
+  const g = $("meus-nucleos"), card = g.querySelector(".mil-nucleo");
+  g.scrollBy({ left: dir * ((card ? card.offsetWidth : 120) + 12), behavior: "smooth" });
+}
+$("nucleos-ant").addEventListener("click", () => passarNucleos(-1));
+$("nucleos-prox").addEventListener("click", () => passarNucleos(1));
+$("meus-nucleos").addEventListener("scroll", () => atualizarSetasNucleos(), { passive: true });
 function mostrarNucleos() {
   const meus = [...new Set([...((ficha && ficha.nucleos && ficha.nucleos.length) ? ficha.nucleos : ["marxista"]),
     ...(ficha && ficha.nascimento && estudantilObrigatorio(ficha.nascimento) ? ["estudantil"] : [])])];
@@ -406,6 +419,7 @@ function mostrarNucleos() {
       ${admin && !meu ? `<small>Você não está neste núcleo.</small>` : ""}
     </article>`; }).join("");
   $("dica-nucleos").hidden = lista.length <= 3;
+  atualizarSetasNucleos();
   $("meus-nucleos").querySelectorAll("[data-link]").forEach((b) => b.addEventListener("click", async () => {
     const slug = b.dataset.link;
     const novo = prompt("Cole o link do grupo de WhatsApp deste núcleo (começa com https://). Deixe vazio para tirar o link:", links[slug] || "");

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=74">
+  <link rel="stylesheet" href="assets/style.css?v=75">
 </head>
 <body data-pagina="militante">
 <main>
@@ -83,7 +83,10 @@
 
         <div class="painel mil-nucleos">
           <h2>Seus núcleos</h2>
-          <p class="mil-dica-nucleos" id="dica-nucleos" hidden>Deslize para o lado para ver os outros →</p>
+          <div class="mil-dica-nucleos" id="dica-nucleos" hidden>
+            <span>Deslize para o lado ou use as setas</span>
+            <span class="mil-setas"><button type="button" id="nucleos-ant" aria-label="Núcleos anteriores">‹</button><button type="button" id="nucleos-prox" aria-label="Próximos núcleos">›</button></span>
+          </div>
           <div class="mil-grade-nucleos" id="meus-nucleos"></div>
         </div>
 
@@ -347,6 +350,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=23"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=20"></script>
+<script src="assets/militante.js?v=21"></script>
 </body>
 </html>

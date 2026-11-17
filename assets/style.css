@@ -1531,3 +1531,12 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .apoio__qr small { display: block; font-size: 12px; font-weight: 700; margin-top: 2px; }
 .apoio__botao { display: block; background: var(--amarelo); color: var(--preto); font-size: 24px; padding: 14px 20px; box-shadow: 5px 5px 0 #1c1714; }
 .apoio__depois { background: none; border: 0; color: #fff; opacity: .85; text-decoration: underline; font: inherit; font-size: 15px; margin-top: 12px; cursor: pointer; padding: 6px; }
+/* núcleos: rolagem que funciona em todo Android (sem encaixe obrigatório) */
+.org-nucleos { flex-wrap: wrap; overflow: visible; scroll-snap-type: none; }
+.org-nucleo { white-space: normal; }
+.mil-grade-nucleos { scroll-snap-type: x proximity; overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
+.mil-dica-nucleos { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.mil-dica-nucleos[hidden] { display: none; }
+.mil-setas { display: flex; gap: 8px; }
+.mil-setas button { width: 44px; height: 40px; font-size: 26px; line-height: 1; background: var(--vermelho); color: #fff; border: 0; cursor: pointer; box-shadow: 3px 3px 0 var(--preto); }
+.mil-setas button:disabled { opacity: .3; cursor: default; box-shadow: none; }
