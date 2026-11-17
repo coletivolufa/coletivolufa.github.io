@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Oswald:wght@500;600&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=67">
+  <link rel="stylesheet" href="assets/style.css?v=70">
 </head>
 <body data-pagina="artigos">
 
@@ -57,6 +57,8 @@
           <textarea id="n-texto" maxlength="20000" style="min-height:200px"></textarea><small>Deixe uma linha em branco entre os parágrafos.</small>
           <div class="jn-imgs" id="n-imgs" hidden></div>
         </div>
+        <label class="jn-opcao"><input type="checkbox" id="n-manchete"> <span><b>Fixar como manchete principal</b> (fica no topo da capa; sem nenhuma fixada, a manchete é a notícia mais recente)</span></label>
+        <label class="jn-opcao"><input type="checkbox" id="n-destaque"> <span><b>Destacar em "Leia também"</b> (notícias escolhidas, mesmo que antigas)</span></label>
         <div class="campo"><label for="n-fonte">Fonte da notícia</label><input id="n-fonte" maxlength="200" placeholder="Agência Brasil"></div>
         <div class="campo"><label for="n-link">Link da fonte</label><input id="n-link" type="url" placeholder="https://"></div>
         <p class="aviso aviso--erro" id="n-erro" hidden></p>
@@ -77,6 +79,21 @@
     </footer>
   </div>
 </main>
+
+<dialog class="jn-leitor" id="leitor" aria-label="Notícia">
+  <div class="jn-leitor__topo">
+    <button type="button" class="jn-leitor__bt" id="l-fechar">← Capa</button>
+    <span class="jn-leitor__pag" id="l-pag"></span>
+    <span class="jn-leitor__acoes" id="l-acoes"></span>
+  </div>
+  <div class="jn-leitor__palco" id="l-palco"><div class="jn-pagina" id="l-atual"></div></div>
+  <div class="jn-leitor__nav">
+    <button type="button" class="jn-leitor__seta" id="l-ant" aria-label="Página anterior">‹</button>
+    <span class="jn-leitor__dica" id="l-dica">Arraste para o lado ou use as setas para virar a página</span>
+    <button type="button" class="jn-leitor__seta" id="l-prox" aria-label="Próxima página">›</button>
+  </div>
+</dialog>
+<div class="jn-pagina jn-pagina--medida" id="l-medida" aria-hidden="true"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=20"></script>
@@ -113,47 +130,134 @@
   const apagar = (n) => podeEditar ? `<span><button type="button" class="jn-apagar" data-editar="${n.id}">Editar</button> · <button type="button" class="jn-apagar" data-apagar="${n.id}">Apagar notícia</button></span>` : "";
   const fonteHTML = (n) => n.fonte_nome || n.fonte_link ? `Fonte: ${n.fonte_link ? `<a href="${esc(n.fonte_link)}" target="_blank" rel="noopener">${esc(n.fonte_nome || n.fonte_link)}</a>` : esc(n.fonte_nome)}` : "";
 
-  // uma notícia no desenho do jornal: manchete, linha fina, fio, duas colunas (texto | foto + resto do texto)
-  function bloco(n, completa) {
-    let p = pars(n.texto);
-    if (!completa) p = p.filter((x) => !IMG.test(x));   // na capa, só o texto
-    const curta = !completa && p.length > 4;
-    if (!completa) p = p.slice(0, 4);
-    const meio = Math.max(1, Math.ceil(p.length / 2));
-    const esq = p.slice(0, meio), dir = p.slice(meio);
-    return `
-      <article class="jn-noticia${completa ? " jn-noticia--completa" : ""}">
-        <span class="jn-secao">${esc(n.secao)} · ${esc(dataPorExtenso(n.criado_em))}</span>
-        <h2>${completa ? manchete(n.titulo) : `<a href="${link(n)}">${manchete(n.titulo)}</a>`}</h2>
-        ${n.linha_fina ? `<p class="jn-linha">${esc(n.linha_fina)}</p>` : ""}
-        <div class="jn-colunas${!n.foto && !dir.length ? " jn-colunas--uma" : ""}">
-          <div class="jn-col">${html(esq)}</div>
-          ${!n.foto && !dir.length ? (curta ? `<a class="jn-leia" href="${link(n)}">Continue lendo →</a>` : "") : `<div class="jn-col">
-            ${n.foto ? `<figure class="jn-foto"><img src="${esc(n.foto)}" alt="" loading="lazy">${n.foto_credito ? `<figcaption>${esc(n.foto_credito)}</figcaption>` : ""}</figure>` : ""}
-            <div class="jn-dir">${html(dir)}</div>
-            ${curta ? `<a class="jn-leia" href="${link(n)}">Continue lendo →</a>` : ""}
-          </div>`}
-        </div>
-        <div class="jn-rodape"><span>${fonteHTML(n)}</span>${apagar(n)}</div>
-      </article>`;
-  }
-
-  let ultimas = [];
+  const resumoDe = (n, k = 200) => { const t = pars(n.texto).filter((p) => !IMG.test(p)).join(" ").replace(/\s+/g, " ").trim(); return t.length > k ? t.slice(0, k).replace(/\s+\S*$/, "") + "…" : t; };
+  const dataCurta = (d) => new Date(d).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }).replace(".", "");
+  const capaFoto = (n, cls) => n.foto ? `<img class="${cls}" src="${esc(n.foto)}" alt="" loading="lazy">`
+    : `<span class="${cls} jn-semfoto"><img src="assets/img/logo-lufa-pomba.png" alt=""><b>${esc(n.secao)}</b></span>`;
+  const cartao = (n) => `<button type="button" class="jn-card" data-ler="${n.id}">${capaFoto(n, "jn-card__foto")}
+      <span class="jn-card__secao">${esc(n.secao)} · ${esc(dataCurta(n.criado_em))}</span><span class="jn-card__titulo">${manchete(n.titulo)}</span></button>`;
+  let ultimas = [], porId = {};
   async function edicao() {
     const area = $("edicao");
-    if (idNoticia) {
-      const { data: n } = await supa.from("noticias").select("*").eq("id", Number(idNoticia)).maybeSingle();
-      if (!n) { area.innerHTML = '<p class="jn-vazio">Notícia não encontrada. <a href="jornal.html">Voltar à edição</a></p>'; return; }
-      ultimas = [n];
-      document.title = n.titulo.replace(/\*/g, "") + " · Jornal da Classe Trabalhadora";
-      area.innerHTML = `<a class="jn-voltar" href="jornal.html">← Voltar à edição</a>
-        ${n.publicado ? "" : '<p class="jn-previa-aviso">📝 <b>RASCUNHO</b> · Prévia: só a redação e a administração veem esta página. A notícia ainda não está no jornal.</p>'}${bloco(n, true)}`;
-      return;
-    }
     const { data, error } = await supa.from("noticias").select("*").eq("publicado", true).order("criado_em", { ascending: false }).limit(30);
     ultimas = error ? [] : (data || []);
-    area.innerHTML = ultimas.length ? ultimas.map((n) => bloco(n, false)).join("") : '<p class="jn-vazio">A primeira edição está sendo preparada. Volte em breve.</p>';
+    let destaques = [];
+    const d = await supa.from("noticias").select("*").eq("publicado", true).eq("destaque", true).order("criado_em", { ascending: false }).limit(12);
+    if (!d.error) destaques = d.data || [];
+    [...ultimas, ...destaques].forEach((n) => (porId[n.id] = n));
+    if (!ultimas.length) { area.innerHTML = '<p class="jn-vazio">A primeira edição está sendo preparada. Volte em breve.</p>'; return; }
+    const m = ultimas.find((n) => n.manchete) || ultimas[0];
+    const leia = destaques.filter((n) => n.id !== m.id), idsLeia = new Set(leia.map((n) => n.id));
+    const resto = ultimas.filter((n) => n !== m && !idsLeia.has(n.id)).slice(0, 12);   // quem está em Leia também não repete
+    area.innerHTML = `
+      <article class="jn-man" data-ler="${m.id}" tabindex="0" role="button" aria-label="Ler: ${esc(m.titulo.replace(/\*/g, ""))}">
+        ${m.foto ? `<figure class="jn-man__foto"><img src="${esc(m.foto)}" alt="">${m.foto_credito ? `<figcaption>${esc(m.foto_credito)}</figcaption>` : ""}</figure>` : ""}
+        <span class="jn-secao">${esc(m.secao)} · ${esc(dataPorExtenso(m.criado_em))}</span>
+        <h2>${manchete(m.titulo)}</h2>
+        ${m.linha_fina ? `<p class="jn-linha">${esc(m.linha_fina)}</p>` : ""}
+        <p class="jn-man__resumo">${esc(resumoDe(m, 260))}</p>
+        <span class="jn-leia">Ler a notícia →</span>
+      </article>
+      ${resto.length ? `<section class="jn-sec"><h3 class="jn-sec__titulo">Últimas notícias</h3><div class="jn-grade">${resto.map(cartao).join("")}</div></section>` : ""}
+      ${leia.length ? `<section class="jn-sec jn-sec--leia"><h3 class="jn-sec__titulo">Leia também</h3><div class="jn-leia-tb">${leia.map((n) => `
+        <button type="button" class="jn-lt" data-ler="${n.id}">${capaFoto(n, "jn-lt__foto")}<span><span class="jn-card__secao">${esc(n.secao)} · ${esc(dataCurta(n.criado_em))}</span><span class="jn-lt__titulo">${manchete(n.titulo)}</span><span class="jn-lt__resumo">${esc(resumoDe(n, 110))}</span></span></button>`).join("")}</div></section>` : ""}`;
   }
+
+  // ---------- leitor: a notícia em páginas de jornal, virando como folha ----------
+  let lendo = null, paginas = [], pag = 0, virando = false;
+  function blocosDe(n) {
+    const b = [];
+    if (!n.publicado) b.push('<p class="jn-previa-aviso">📝 <b>RASCUNHO</b> · Prévia: só a redação e a administração veem. A notícia ainda não está no jornal.</p>');
+    b.push(`<div class="jl-cab"><span class="jn-secao">${esc(n.secao)} · ${esc(dataPorExtenso(n.criado_em))}</span><h2>${manchete(n.titulo)}</h2>${n.linha_fina ? `<p class="jn-linha">${esc(n.linha_fina)}</p>` : ""}</div>`);
+    if (n.foto) b.push(`<figure class="jl-foto"><img src="${esc(n.foto)}" alt="">${n.foto_credito ? `<figcaption>${esc(n.foto_credito)}</figcaption>` : ""}</figure>`);
+    let primeira = true;
+    pars(n.texto).forEach((p) => {
+      const m = p.match(IMG);
+      if (m) { b.push(`<figure class="jl-foto"><img src="${esc(m[2])}" alt="${esc(m[1])}">${m[1] ? `<figcaption>${esc(m[1])}</figcaption>` : ""}</figure>`); return; }
+      b.push({ p: p.replace(/\s+/g, " ").trim(), primeira }); primeira = false;   // parágrafo: pode continuar na página seguinte
+    });
+    const f = fonteHTML(n);
+    b.push(`<p class="jl-fim">${f ? f + "<br>" : ""}<span>★ ★ ★</span></p>`);
+    return b;
+  }
+  const pHTML = (texto, primeira, cont) => `<p class="jl-p${primeira ? " jl-p--1" : ""}${cont ? " jl-p--cont" : ""}">${esc(texto)}</p>`;
+  function paginar() {
+    const med = $("l-medida");
+    med.style.width = $("l-atual").offsetWidth + "px"; med.style.height = $("l-atual").offsetHeight + "px";
+    paginas = []; let cur = [];
+    med.innerHTML = '<div class="jl-corpo"></div>'; const corpo = med.firstChild;
+    const cheio = () => corpo.scrollHeight > corpo.clientHeight + 1;
+    const novaPagina = () => { paginas.push(cur); cur = []; corpo.innerHTML = ""; };
+    blocosDe(lendo).forEach((bl) => {
+      if (typeof bl === "string") {   // título, foto, aviso: vai inteiro
+        corpo.insertAdjacentHTML("beforeend", bl);
+        if (cheio() && cur.length) { corpo.lastChild.remove(); novaPagina(); corpo.insertAdjacentHTML("beforeend", bl); }
+        cur.push(bl); return;
+      }
+      // parágrafo: preenche o que cabe nesta página e continua na próxima
+      let palavras = bl.p.split(" "), primeira = bl.primeira, cont = false;
+      while (palavras.length) {
+        corpo.insertAdjacentHTML("beforeend", pHTML(palavras.join(" "), primeira, cont));
+        if (!cheio()) { cur.push(pHTML(palavras.join(" "), primeira, cont)); break; }
+        const el = corpo.lastChild; let lo = 0, hi = palavras.length;   // quantas palavras cabem (busca binária)
+        while (lo < hi) { const mid = Math.ceil((lo + hi) / 2); el.textContent = palavras.slice(0, mid).join(" "); if (cheio()) hi = mid - 1; else lo = mid; }
+        if (lo === 0) { el.remove(); if (!cur.length) { cur.push(pHTML(palavras.join(" "), primeira, cont)); break; } novaPagina(); continue; }
+        cur.push(pHTML(palavras.slice(0, lo).join(" "), primeira, cont).replace('class="jl-p', 'class="jl-p jl-p--parte'));
+        palavras = palavras.slice(lo); primeira = false; cont = true; novaPagina();
+      }
+    });
+    if (cur.length) paginas.push(cur);
+    med.innerHTML = "";
+  }
+  const paginaHTML = (i) => `<div class="jl-cabeca"><span>Jornal da Classe Trabalhadora</span><span>${esc(lendo.secao)}</span></div>
+    <div class="jl-corpo">${paginas[i].join("")}</div><div class="jl-rodape">${i + 1}</div>`;
+  function mostrar(i) {
+    pag = i; $("l-atual").innerHTML = paginaHTML(i);
+    $("l-pag").textContent = `Página ${i + 1} de ${paginas.length}`;
+    $("l-ant").disabled = i === 0; $("l-prox").disabled = i === paginas.length - 1;
+    $("l-dica").textContent = i === paginas.length - 1 ? (paginas.length > 1 ? "Fim da notícia" : "") : "Arraste para o lado ou use as setas para virar a página";
+  }
+  function virar(dir) {
+    const i = pag + dir; if (virando || i < 0 || i >= paginas.length) return;
+    virando = true;
+    const palco = $("l-palco"), folha = document.createElement("div");
+    folha.className = "jn-pagina jn-folha-virando " + (dir > 0 ? "vai" : "volta");
+    folha.style.cssText = `left:${$("l-atual").offsetLeft}px;top:${$("l-atual").offsetTop}px;width:${$("l-atual").offsetWidth}px;height:${$("l-atual").offsetHeight}px`;
+    if (dir > 0) { folha.innerHTML = $("l-atual").innerHTML; mostrar(i); }   // a folha de cima vira e revela a próxima
+    else folha.innerHTML = paginaHTML(i);                                     // a anterior volta por cima
+    palco.appendChild(folha);
+    const fim = () => { folha.remove(); if (dir < 0) mostrar(i); virando = false; };
+    folha.addEventListener("animationend", fim, { once: true });
+    setTimeout(() => { if (folha.isConnected) fim(); }, 1200);
+  }
+  function abrirLeitor(n, empilhar = true) {
+    lendo = n;
+    document.title = n.titulo.replace(/\*/g, "") + " · Jornal da Classe Trabalhadora";
+    if (empilhar) history.pushState({ n: n.id }, "", "jornal.html?n=" + n.id);
+    $("l-acoes").innerHTML = podeEditar ? `<button type="button" class="jn-leitor__bt" data-editar="${n.id}">Editar</button><button type="button" class="jn-leitor__bt" data-apagar="${n.id}">Apagar</button>` : "";
+    if (!$("leitor").open) { $("leitor").showModal(); document.documentElement.classList.add("janela-aberta"); }
+    paginar(); mostrar(0);
+  }
+  function fecharLeitor(voltarHistorico = true) {
+    if (!$("leitor").open) return;
+    $("leitor").close(); document.documentElement.classList.remove("janela-aberta");
+    document.title = "Jornal da Classe Trabalhadora · Coletivo Lufã";
+    if (voltarHistorico) { if (history.state && history.state.n) history.back(); else history.replaceState(null, "", "jornal.html"); }
+  }
+  $("l-fechar").addEventListener("click", () => fecharLeitor());
+  $("leitor").addEventListener("cancel", (e) => { e.preventDefault(); fecharLeitor(); });
+  window.addEventListener("popstate", () => { const id = new URLSearchParams(location.search).get("n"); if (!id) fecharLeitor(false); else if (porId[id]) abrirLeitor(porId[id], false); });
+  $("l-prox").addEventListener("click", () => virar(1));
+  $("l-ant").addEventListener("click", () => virar(-1));
+  document.addEventListener("keydown", (e) => { if (!$("leitor").open) return; if (e.key === "ArrowRight") virar(1); if (e.key === "ArrowLeft") virar(-1); });
+  let x0 = null, y0 = null;
+  $("l-palco").addEventListener("pointerdown", (e) => { x0 = e.clientX; y0 = e.clientY; });
+  $("l-palco").addEventListener("pointerup", (e) => { if (x0 === null) return; const dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) virar(dx < 0 ? 1 : -1); });
+  let tRedim = null;
+  window.addEventListener("resize", () => { if (!$("leitor").open) return; clearTimeout(tRedim); tRedim = setTimeout(() => { const prop = pag / Math.max(1, paginas.length); paginar(); mostrar(Math.min(paginas.length - 1, Math.round(prop * paginas.length))); }, 250); });
+  $("edicao").addEventListener("click", (e) => { const c = e.target.closest("[data-ler]"); if (c && porId[c.dataset.ler]) abrirLeitor(porId[c.dataset.ler]); });
+  $("edicao").addEventListener("keydown", (e) => { const c = e.target.closest("[data-ler]"); if (c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrirLeitor(porId[c.dataset.ler]); } });
 
   // ---------- publicação (administração e editores; o banco também confere) ----------
   function reduzir(arquivo, max = 1400) {
@@ -182,6 +286,7 @@
     $("n-titulo").value = n.titulo || ""; $("n-linha").value = n.linha_fina || ""; $("n-secao").value = n.secao || "Brasil";
     $("n-texto").value = n.texto || ""; $("n-credito").value = n.foto_credito || ""; $("n-fonte").value = n.fonte_nome || ""; $("n-link").value = n.fonte_link || "";
     $("n-foto").value = ""; mostrarFotoAtual(); mostrarImagens();
+    $("n-manchete").checked = !!n.manchete; $("n-destaque").checked = !!n.destaque;
     $("n-editando").hidden = !editId;
     $("n-editando").innerHTML = editId ? (n.publicado ? "✎ Editando uma notícia <b>já publicada</b>." : `✎ Editando um <b>rascunho</b>. <a href="jornal.html?n=${editId}" target="_blank" rel="noopener">Ver prévia ↗</a>`) : "";
     $("n-nova").hidden = !editId;
@@ -264,14 +369,17 @@
         foto = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
       }
       const dados = { titulo, linha_fina: $("n-linha").value.trim(), secao: $("n-secao").value, texto, foto, foto_credito: $("n-credito").value.trim(),
-        fonte_nome: $("n-fonte").value.trim(), fonte_link: linkFonte, publicado: publicar };
-      let r;
-      if (editId) r = await supa.from("noticias").update(dados).eq("id", editId).select("*").single();
-      else r = await supa.from("noticias").insert({ ...dados, autor_id: u.id }).select("*").single();
+        fonte_nome: $("n-fonte").value.trim(), fonte_link: linkFonte, publicado: publicar, manchete: $("n-manchete").checked, destaque: $("n-destaque").checked };
+      const gravar = (d) => editId ? supa.from("noticias").update(d).eq("id", editId).select("*").single() : supa.from("noticias").insert({ ...d, autor_id: u.id }).select("*").single();
+      let r = await gravar(dados);
+      if (r.error && /manchete|destaque/.test(r.error.message || "")) {   // SQL 31 ainda não rodou: salva sem as opções de capa
+        const { manchete: _m, destaque: _d, ...semCapa } = dados; r = await gravar(semCapa);
+        if (!r.error) status("Aviso: as opções de manchete e “Leia também” ainda não estão ativadas no banco de dados.");
+      }
       if (r.error) throw r.error;
+      if (dados.manchete && r.data.manchete) await supa.from("noticias").update({ manchete: false }).neq("id", r.data.id).eq("manchete", true);
       if (publicar) {
         limpar(); $("caixa-publicar").open = false;
-        if (idNoticia) { location.href = "jornal.html?n=" + r.data.id; return; }
         await edicao(); carregarRascunhos(); $("edicao").scrollIntoView({ behavior: "smooth" });
       } else {
         preencher(r.data); try { localStorage.removeItem(CHAVE); } catch (_) {}
@@ -290,22 +398,23 @@
     $("rascunhos").hidden = !lista.length;
     $("rascunhos").innerHTML = `<b>📝 Rascunhos guardados (${lista.length})</b><ul>` + lista.map((n) => `
       <li><span>${esc(n.titulo.replace(/\*/g, ""))} <small>· ${esc(dataPorExtenso(n.criado_em))}</small></span>
-        <span class="jn-rasc-bts"><button type="button" data-continuar="${n.id}">Continuar</button><a href="jornal.html?n=${n.id}" target="_blank" rel="noopener">Prévia ↗</a><button type="button" data-apagar-r="${n.id}">Apagar</button></span></li>`).join("") + "</ul>";
+        <span class="jn-rasc-bts"><button type="button" data-continuar="${n.id}">Continuar</button><button type="button" data-previa="${n.id}">Prévia</button><button type="button" data-apagar-r="${n.id}">Apagar</button></span></li>`).join("") + "</ul>";
   }
   $("rascunhos").addEventListener("click", async (e) => {
+    const pv = e.target.closest("[data-previa]");
+    if (pv) { const { data } = await supa.from("noticias").select("*").eq("id", Number(pv.dataset.previa)).maybeSingle(); if (data) { porId[data.id] = data; abrirLeitor(data); } return; }
     const c = e.target.closest("[data-continuar]"), a = e.target.closest("[data-apagar-r]");
     if (c) { const { data } = await supa.from("noticias").select("*").eq("id", Number(c.dataset.continuar)).maybeSingle(); if (data) { preencher(data); status(""); $("form-noticia").scrollIntoView({ behavior: "smooth" }); } }
     if (a && confirm("Apagar este rascunho?")) { const { error } = await supa.from("noticias").delete().eq("id", Number(a.dataset.apagarR)); if (error) return alert(mensagemErro(error)); if (editId === Number(a.dataset.apagarR)) limpar(); carregarRascunhos(); }
   });
 
-  $("edicao").addEventListener("click", async (ev) => {
-    const ed = ev.target.closest("[data-editar]");
-    if (ed) { const n = ultimas.find((x) => x.id === Number(ed.dataset.editar)); if (n) { preencher(n); status(""); $("caixa-publicar").open = true; $("caixa-publicar").scrollIntoView({ behavior: "smooth" }); } return; }
-    const bt = ev.target.closest("[data-apagar]"); if (!bt) return;
-    if (!confirm("Apagar esta notícia do jornal?")) return;
-    const { error } = await supa.from("noticias").delete().eq("id", Number(bt.dataset.apagar));
+  $("l-acoes").addEventListener("click", async (ev) => {
+    const ed = ev.target.closest("[data-editar]"), ap = ev.target.closest("[data-apagar]");
+    if (ed) { const n = lendo; fecharLeitor(); preencher(n); status(""); $("caixa-publicar").open = true; $("caixa-publicar").scrollIntoView({ behavior: "smooth" }); return; }
+    if (!ap || !confirm("Apagar esta notícia do jornal?")) return;
+    const { error } = await supa.from("noticias").delete().eq("id", Number(ap.dataset.apagar));
     if (error) return alert(mensagemErro(error));
-    if (idNoticia) location.href = "jornal.html"; else edicao();
+    fecharLeitor(); edicao();
   });
 
   (async () => {
@@ -321,6 +430,11 @@
       }
     }
     await edicao().catch(() => {});
+    if (idNoticia) {   // link direto para uma notícia (ou prévia de rascunho): abre no leitor
+      let n = porId[idNoticia];
+      if (!n) { const r = await supa.from("noticias").select("*").eq("id", Number(idNoticia)).maybeSingle(); n = r.data; if (n) porId[n.id] = n; }
+      if (n) { history.replaceState(null, "", "jornal.html"); abrirLeitor(n); }
+    }
     await abertura.pronto;
     abertura.fechar();
   })();

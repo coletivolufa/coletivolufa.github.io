@@ -1419,3 +1419,79 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-art-salvo { background: #eef7ea; border-left: 5px solid #2f8f46; padding: 8px 12px; font-size: 15px; margin: 10px 0 0; }
 .mil-art-salvo a { color: var(--vermelho); font-weight: 700; }
 .aviso-rascunho { background: var(--amarelo); color: var(--preto); padding: 10px 14px; font-size: 15px; margin: 12px 0 18px; }
+/* ===== Jornal: capa (manchete, últimas notícias, leia também) ===== */
+.jn-opcao { display: flex; gap: 10px; align-items: flex-start; font-family: var(--texto); font-size: 15px; margin: 4px 0 12px; cursor: pointer; }
+.jn-opcao input { width: 22px; height: 22px; margin-top: 1px; flex: none; accent-color: var(--vermelho); }
+.jn-man { cursor: pointer; padding-bottom: 26px; margin-bottom: 26px; border-bottom: 5px solid var(--jn-tinta); }
+.jn-man:hover h2, .jn-man:focus-visible h2 { text-decoration: underline; text-decoration-thickness: 3px; }
+.jn-man__foto { margin: 0 0 16px; }
+.jn-man__foto img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.jn-man__foto figcaption { font-family: "Courier Prime", monospace; font-size: 13px; margin-top: 6px; }
+.jn-man h2 { font-family: "Oswald", var(--titulo); font-weight: 500; font-size: clamp(34px, 6.4vw, 68px); line-height: 1.04; margin: 6px 0 10px; }
+.jn-man h2 em, .jn-card__titulo em, .jn-lt__titulo em, .jl-cab h2 em { font-style: normal; color: var(--vermelho); }
+.jn-man__resumo { font-size: clamp(16px, 2vw, 19px); line-height: 1.55; margin: 0 0 12px; }
+.jn-man .jn-leia { font-family: "Courier Prime", monospace; font-weight: 700; color: var(--vermelho); }
+.jn-sec { margin-bottom: 30px; }
+.jn-sec__titulo { font-family: "Oswald", var(--titulo); font-weight: 600; text-transform: uppercase; font-size: 26px; letter-spacing: .03em; margin: 0 0 14px; padding: 4px 0; border-top: 2px solid var(--jn-tinta); border-bottom: 2px solid var(--jn-tinta); }
+.jn-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+.jn-card { display: flex; flex-direction: column; gap: 6px; text-align: left; background: none; border: 0; padding: 0 0 12px; font: inherit; color: inherit; cursor: pointer; border-bottom: 1px solid #b9ab8e; }
+.jn-card__foto { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.jn-semfoto { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: var(--vermelho); color: #fff; }
+.jn-semfoto img { width: 34%; height: auto; opacity: .9; }
+.jn-semfoto b { font-family: "Oswald", var(--titulo); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; font-size: 14px; }
+.jn-card__secao { font-family: "Courier Prime", monospace; font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--vermelho); }
+.jn-card__titulo { font-family: "Oswald", var(--titulo); font-weight: 500; font-size: 21px; line-height: 1.15; }
+.jn-card:hover .jn-card__titulo { text-decoration: underline; }
+.jn-sec--leia { background: #efe5cf; padding: 6px 14px 18px; }
+.jn-leia-tb { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.jn-lt { display: grid; grid-template-columns: 110px 1fr; gap: 12px; text-align: left; background: var(--jn-papel); border: 0; border-left: 5px solid var(--vermelho); padding: 10px; font: inherit; color: inherit; cursor: pointer; }
+.jn-lt__foto { display: block; width: 110px; height: 84px; object-fit: cover; }
+.jn-lt > span { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.jn-lt__titulo { font-family: "Oswald", var(--titulo); font-weight: 500; font-size: 18px; line-height: 1.15; }
+.jn-lt__resumo { font-size: 13.5px; line-height: 1.4; color: #4a413b; }
+@media (max-width: 640px) {
+  .jn-grade { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .jn-card__titulo { font-size: 17px; }
+  .jn-leia-tb { grid-template-columns: 1fr; }
+  .jn-lt { grid-template-columns: 88px 1fr; } .jn-lt__foto { width: 88px; height: 72px; }
+}
+/* ===== Jornal: leitor em páginas, com folha virando ===== */
+.jn-leitor { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #2a221d; display: none; flex-direction: column; overflow: hidden; }
+.jn-leitor[open] { display: flex; }
+.jn-leitor::backdrop { background: #2a221d; }
+.jn-leitor__topo { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 14px 10px; color: #f3ead6; }
+.jn-leitor__bt { background: none; border: 2px solid rgba(243,234,214,.5); color: #f3ead6; font-family: "Oswald", var(--titulo); font-size: 16px; padding: 6px 12px; cursor: pointer; min-height: 40px; }
+.jn-leitor__acoes { display: flex; gap: 8px; }
+.jn-leitor__pag { font-family: "Courier Prime", monospace; font-weight: 700; font-size: 14px; }
+.jn-leitor__palco { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: stretch; padding: 0 12px; perspective: 2200px; touch-action: pan-y; user-select: none; }
+.jn-pagina { position: relative; width: min(100%, 680px); height: 100%; background: #f8f3e8; color: #1c1714; box-shadow: 0 10px 40px rgba(0,0,0,.45); padding: 34px clamp(18px, 5vw, 46px) 40px; overflow: hidden; font-family: "Special Elite", "Courier Prime", monospace; }
+.jn-pagina::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.10), rgba(0,0,0,0) 6%, rgba(0,0,0,0) 94%, rgba(0,0,0,.06)); }
+.jn-pagina--medida { position: fixed; left: -9999px; top: 0; visibility: hidden; }
+.jl-cabeca { position: absolute; top: 10px; left: clamp(18px, 5vw, 46px); right: clamp(18px, 5vw, 46px); display: flex; justify-content: space-between; font-family: "Courier Prime", monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #1c1714; padding-bottom: 3px; }
+.jl-rodape { position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font-family: "Courier Prime", monospace; font-weight: 700; font-size: 13px; }
+.jl-corpo { height: 100%; overflow: hidden; }
+.jl-cab h2 { font-family: "Oswald", var(--titulo); font-weight: 500; font-size: clamp(30px, 6vw, 46px); line-height: 1.06; margin: 6px 0 10px; }
+.jl-cab .jn-linha { font-size: clamp(15px, 2vw, 18px); margin-bottom: 14px; padding-bottom: 14px; }
+.jl-foto { margin: 0 0 14px; }
+.jl-foto img { display: block; width: 100%; height: clamp(150px, 30vh, 300px); object-fit: cover; }
+.jl-foto figcaption { font-family: "Courier Prime", monospace; font-size: 12px; margin-top: 4px; }
+.jl-p { font-size: clamp(16px, 2.1vw, 18.5px); line-height: 1.6; margin: 0 0 14px; text-align: justify; hyphens: auto; }
+.jl-p--1::first-letter { float: left; font-family: "Oswald", var(--titulo); font-size: 3.4em; line-height: .85; padding: 4px 8px 0 0; color: var(--vermelho); }
+.jl-fim { font-family: "Courier Prime", monospace; font-size: 14px; text-align: center; margin: 18px 0 0; color: #5d524a; }
+.jl-fim span { display: block; margin-top: 8px; color: var(--vermelho); letter-spacing: .4em; }
+.jl-fim a { color: var(--vermelho); }
+.jn-pagina .jn-previa-aviso { margin-bottom: 12px; }
+.jn-folha-virando { position: absolute; z-index: 3; transform-origin: left center; backface-visibility: hidden; will-change: transform; }
+.jn-folha-virando.vai { animation: folha-vai .75s cubic-bezier(.45,.05,.4,1) forwards; }
+.jn-folha-virando.volta { animation: folha-volta .75s cubic-bezier(.45,.05,.4,1) forwards; }
+.jn-folha-virando::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.35)); opacity: 0; animation: folha-sombra .75s ease forwards; }
+@keyframes folha-vai { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
+@keyframes folha-volta { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
+@keyframes folha-sombra { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+.jn-leitor__nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px calc(12px + env(safe-area-inset-bottom)); color: #cbbfae; }
+.jn-leitor__seta { width: 56px; height: 48px; font-size: 34px; line-height: 1; background: var(--vermelho); color: #fff; border: 0; cursor: pointer; box-shadow: 4px 4px 0 #000; }
+.jn-leitor__seta:disabled { opacity: .3; cursor: default; box-shadow: none; }
+.jn-leitor__dica { font-family: "Courier Prime", monospace; font-size: 13px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .jn-folha-virando.vai, .jn-folha-virando.volta { animation-duration: .01s; } }
+.jl-p--parte { text-align-last: justify; margin-bottom: 0; }
+.jl-p--cont { text-indent: 0; }
