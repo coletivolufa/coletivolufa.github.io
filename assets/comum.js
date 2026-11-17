@@ -164,7 +164,8 @@ function fontesHTML(fontes) {
 }
 
 // ---------- apoio: pop-up na primeira visita ao site (uma vez por aparelho) ----------
-const LINK_APOIO = "https://widget.livepix.gg/embed/eab90305-07db-499f-a0a9-12c932a4902b";
+const LINK_APOIO = "https://widget.livepix.gg/embed/eab90305-07db-499f-a0a9-12c932a4902b";   // o do QR Code
+const LINK_BOTAO_APOIO = "https://livepix.gg/coletivolufa";   // o do botão "Apoiar agora"
 (function () {
   const CHAVE = "lufa_apoio_visto";
   try { if (localStorage.getItem(CHAVE)) return; } catch (_) { return; }
@@ -176,7 +177,7 @@ const LINK_APOIO = "https://widget.livepix.gg/embed/eab90305-07db-499f-a0a9-12c9
       <h2 id="apoio-titulo">Você pode tornar este projeto <em>ainda mais forte!</em></h2>
       <p class="apoio__sub">Colabore com <b>qualquer valor</b>.</p>
       <div class="apoio__qr"><img src="assets/img/apoie-qrcode.png" alt="QR Code para apoiar o Coletivo Lufã" width="492" height="492"><small>Aponte a câmera do celular</small></div>
-      <a class="botao apoio__botao" href="${LINK_APOIO}" target="_blank" rel="noopener" data-fechar-apoio>Apoiar agora ★</a>
+      <a class="botao apoio__botao" href="${LINK_BOTAO_APOIO}" target="_blank" rel="noopener" data-fechar-apoio>Apoiar agora ★</a>
       <button class="apoio__depois" type="button" data-fechar-apoio>Agora não</button>
     </dialog>`);
   const j = document.getElementById("janela-apoio");
