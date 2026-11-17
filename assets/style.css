@@ -1532,8 +1532,14 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .apoio__botao { display: block; background: var(--amarelo); color: var(--preto); font-size: 24px; padding: 14px 20px; box-shadow: 5px 5px 0 #1c1714; }
 .apoio__depois { background: none; border: 0; color: #fff; opacity: .85; text-decoration: underline; font: inherit; font-size: 15px; margin-top: 12px; cursor: pointer; padding: 6px; }
 /* núcleos: rolagem que funciona em todo Android (sem encaixe obrigatório) */
-.org-nucleos { flex-wrap: wrap; overflow: visible; scroll-snap-type: none; }
-.org-nucleo { white-space: normal; }
+/* fila de núcleos: passa para o lado (arrastando ou pelas setinhas), sem encaixe que trava no Android */
+.org-carrossel { position: relative; }
+.org-nucleos { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scroll-snap-type: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.org-nucleos::-webkit-scrollbar { display: none; }
+.org-seta { position: absolute; top: 4px; z-index: 2; width: 40px; height: 48px; border: 0; background: var(--vermelho); color: #fff; font-size: 30px; line-height: 1; cursor: pointer; box-shadow: 3px 3px 0 var(--preto); }
+.org-seta[hidden] { display: none; }
+.org-seta--ant { left: -4px; }
+.org-seta--prox { right: -4px; }
 .mil-grade-nucleos { scroll-snap-type: x proximity; overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
 .mil-dica-nucleos { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .mil-dica-nucleos[hidden] { display: none; }
