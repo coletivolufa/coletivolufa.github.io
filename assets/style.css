@@ -1383,3 +1383,39 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .org-sem-whats { font-size: 12px; color: var(--cinza); }
 @media (max-width: 820px) { .org-membros__topo .botao { width: 100%; text-align: center; } .org-membros__lista { grid-template-columns: 1fr; } }
 .org-membros[hidden] { display: none; }
+/* jornal: rascunhos, edição e imagens no texto */
+.jn-rascunhos { background: #fff7dc; border-left: 6px solid var(--amarelo); padding: 10px 14px; margin: 12px 0; font-size: 15px; }
+.jn-rascunhos ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.jn-rascunhos li { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; padding: 8px 10px; }
+.jn-rascunhos small { color: var(--cinza); }
+.jn-rasc-bts { display: flex; gap: 12px; align-items: center; }
+.jn-rasc-bts button, .jn-rasc-bts a, .jn-link { background: none; border: 0; padding: 0; font: inherit; font-size: 14px; font-weight: 700; color: var(--vermelho); text-decoration: underline; cursor: pointer; }
+.jn-editando { background: #fff3c4; padding: 8px 12px; font-size: 15px; margin: 0 0 12px; }
+.jn-editando a { color: var(--vermelho); font-weight: 700; }
+.jn-status { font-size: 15px; margin: 6px 0; } .jn-status a { color: var(--vermelho); font-weight: 700; }
+.jn-botoes { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.jn-barra { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.jn-barra small { color: var(--cinza); }
+.jn-foto-atual { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.jn-foto-atual img { width: 120px; height: 80px; object-fit: cover; border: 2px solid var(--preto); }
+.jn-imgs { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; background: #f6f1e6; padding: 10px; }
+.jn-img { display: grid; grid-template-columns: 96px 1fr auto; gap: 10px; align-items: center; background: #fff; padding: 8px; }
+.jn-img img { width: 96px; height: 64px; object-fit: cover; display: block; }
+.jn-img input { width: 100%; font-size: 16px; padding: 6px 8px; }
+.jn-img small { display: block; font-size: 12px; color: var(--cinza); margin-top: 4px; overflow-wrap: anywhere; }
+.jn-img__bts { display: flex; gap: 6px; }
+.jn-img__bts button { width: 40px; height: 40px; border: 2px solid var(--preto); background: #fff; font-size: 18px; font-weight: 700; cursor: pointer; }
+.jn-img__bts button:disabled { opacity: .3; cursor: default; }
+.jn-foto--texto { margin: 4px 0 20px; }
+.jn-previa-aviso { background: var(--amarelo); color: var(--preto); padding: 10px 14px; font-family: var(--texto); font-size: 15px; margin: 0 0 18px; }
+@media (max-width: 640px) { .jn-img { grid-template-columns: 72px 1fr; } .jn-img img { width: 72px; height: 54px; } .jn-img__bts { grid-column: 1 / -1; justify-content: flex-end; } .jn-botoes .botao { flex: 1 1 100%; text-align: center; } }
+/* artigos: rascunhos */
+.mil-rascunhos { background: #fff7dc; border-left: 6px solid var(--amarelo); padding: 10px 14px; font-size: 15px; }
+.mil-rascunhos ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mil-rascunhos li { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; padding: 8px 10px; }
+.mil-rascunhos small { color: var(--cinza); }
+.mil-rasc-bts { display: flex; gap: 14px; }
+.mil-rasc-bts button, .mil-rasc-bts a { background: none; border: 0; padding: 0; font: inherit; font-size: 14px; font-weight: 700; color: var(--vermelho); text-decoration: underline; cursor: pointer; }
+.mil-art-salvo { background: #eef7ea; border-left: 5px solid #2f8f46; padding: 8px 12px; font-size: 15px; margin: 10px 0 0; }
+.mil-art-salvo a { color: var(--vermelho); font-weight: 700; }
+.aviso-rascunho { background: var(--amarelo); color: var(--preto); padding: 10px 14px; font-size: 15px; margin: 12px 0 18px; }

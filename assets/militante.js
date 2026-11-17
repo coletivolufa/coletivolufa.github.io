@@ -738,43 +738,98 @@ $("art-ver-previa").addEventListener("click", () => {
   atualizarPrevia();
 });
 const slugDe = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "artigo";
-function abrirArtigo() {
-  $("form-artigo").reset(); $("art-autor").value = perfil.nome || ""; $("art-erro").hidden = true; $("art-status").textContent = "";
-  mostrarMini(null); imagemPendente = null; $("art-enviar").textContent = "Publicar";
+// rascunho: fica no banco (dá para continuar de qualquer aparelho) e uma cópia automática fica neste aparelho
+let artId = null, artSlug = "", artPublicado = false, artFoto = "";   // artFoto: como estava no último salvamento
+const artAgora = () => JSON.stringify([$("art-titulo").value, $("art-autor").value, AT().value, $("art-fontes").value]);
+const chaveArt = () => "lufa_artigo_" + (perfil ? perfil.id : "x");
+function guardarArtLocal() {
+  const d = { artId, artSlug, titulo: $("art-titulo").value, autor: $("art-autor").value, texto: AT().value, fontes: $("art-fontes").value };
+  const igual = artAgora() === artFoto;   // nada mudou desde o último salvamento: não precisa de cópia
+  try { if (!igual && (d.titulo + d.texto + d.fontes).trim()) localStorage.setItem(chaveArt(), JSON.stringify(d)); else localStorage.removeItem(chaveArt()); } catch (_) {}
+}
+let tArt = null;
+$("form-artigo").addEventListener("input", () => { clearTimeout(tArt); tArt = setTimeout(guardarArtLocal, 600); });
+function marcarSalvo(texto) { $("art-salvo").innerHTML = texto || ""; $("art-salvo").hidden = !texto; }
+function botoesArtigo() {
+  $("art-rascunho").textContent = artPublicado ? "Tirar do ar (virar rascunho)" : "Salvar rascunho";
+  $("art-enviar").textContent = artPublicado ? "Salvar alterações" : "Publicar";
+  $("art-titulo-janela").textContent = artId ? (artPublicado ? "Editar artigo" : "Continuar rascunho") : "Publicar artigo";
+}
+function abrirArtigo(dados) {
+  $("form-artigo").reset(); $("art-erro").hidden = true; $("art-status").textContent = ""; marcarSalvo("");
+  mostrarMini(null); imagemPendente = null;
   if (!$("art-previa").hidden) $("art-ver-previa").click();
+  let d = dados, recuperado = false;
+  if (!d) { try { d = JSON.parse(localStorage.getItem(chaveArt()) || "null"); recuperado = !!d; } catch (_) {} }
+  artId = (d && (d.id || d.artId)) || null; artSlug = (d && (d.slug || d.artSlug)) || ""; artPublicado = !!(d && d.publicado);
+  $("art-titulo").value = (d && d.titulo) || ""; $("art-autor").value = (d && (d.autor_nome || d.autor)) || perfil.nome || "";
+  AT().value = (d && d.texto) || ""; $("art-fontes").value = (d && d.fontes) || "";
+  botoesArtigo();
+  artFoto = recuperado ? "" : artAgora();
+  if (recuperado) marcarSalvo("↺ Recuperamos o que você estava escrevendo neste aparelho (ainda não salvo como rascunho).");
+  else if (artId && !artPublicado) marcarSalvo(`📝 Rascunho guardado. <a href="artigos.html?a=${encodeURIComponent(artSlug)}" target="_blank" rel="noopener">Ver prévia ↗</a>`);
   $("janela-artigo").showModal(); document.documentElement.classList.add("janela-aberta");
 }
-$("abrir-artigo").addEventListener("click", abrirArtigo);
-$("art-cancelar").addEventListener("click", () => {
-  if (AT().value.trim() && !confirm("Sair sem publicar? O texto escrito será perdido.")) return;
-  $("janela-artigo").close();
-});
-$("janela-artigo").addEventListener("cancel", (ev) => { if (AT().value.trim()) { ev.preventDefault(); $("art-cancelar").click(); } });
+$("abrir-artigo").addEventListener("click", () => abrirArtigo());
+$("art-cancelar").addEventListener("click", () => { guardarArtLocal(); $("janela-artigo").close(); });
+$("janela-artigo").addEventListener("cancel", () => guardarArtLocal());
 $("janela-artigo").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
 $("form-artigo").addEventListener("submit", async (ev) => {
   ev.preventDefault();
+  const publicar = (ev.submitter && ev.submitter.value) === "publicar";
   const erro = (t, c) => { $("art-erro").textContent = t; $("art-erro").hidden = false; if (c) $(c).focus(); };
+  $("art-erro").hidden = true;
   const titulo = $("art-titulo").value.trim(), autor_nome = $("art-autor").value.trim(), texto = AT().value.trim(), fontes = $("art-fontes").value.trim();
   if (titulo.length < 3) return erro("Escreva o título do artigo.", "art-titulo");
   if (!autor_nome) return erro("Escreva o nome do autor.", "art-autor");
-  if (texto.length < 20) { if (!$("art-previa").hidden) $("art-ver-previa").click(); return erro("Escreva o texto do artigo.", "art-texto"); }
-  const publicado = $("art-publicado").checked, b = $("art-enviar"); b.disabled = true; b.textContent = "Salvando…";
+  if (publicar && texto.length < 20) { if (!$("art-previa").hidden) $("art-ver-previa").click(); return erro("Escreva o texto do artigo.", "art-texto"); }
+  const bts = [$("art-rascunho"), $("art-enviar")]; bts.forEach((b) => (b.disabled = true));
+  marcarSalvo(publicar ? "Publicando…" : "Salvando o rascunho…");
   try {
-    let s = slugDe(titulo);
-    const { data: iguais } = await supa.from("artigos").select("slug").like("slug", s + "%");
-    if (iguais && iguais.some((x) => x.slug === s)) s += "-" + Date.now().toString(36).slice(-4);
-    const { error } = await supa.from("artigos").insert({ slug: s, titulo, texto, fontes, publicado, autor_id: perfil.id, autor_nome });
-    if (error) throw error;
-    $("janela-artigo").close();
-    avisar(publicado ? `Artigo publicado! <a href="artigos.html?a=${encodeURIComponent(s)}">Ver no site</a>` : "Rascunho salvo. Você pode publicar depois em Minha conta → Meus artigos.", "ok");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    let r;
+    if (artId) r = await supa.from("artigos").update({ titulo, texto, fontes, autor_nome, publicado: publicar, editado_em: new Date().toISOString() }).eq("id", artId).select("id,slug,publicado").single();
+    else {
+      let s = slugDe(titulo);
+      const { data: iguais } = await supa.from("artigos").select("slug").like("slug", s + "%");
+      if (iguais && iguais.some((x) => x.slug === s)) s += "-" + Date.now().toString(36).slice(-4);
+      r = await supa.from("artigos").insert({ slug: s, titulo, texto, fontes, publicado: publicar, autor_id: perfil.id, autor_nome }).select("id,slug,publicado").single();
+    }
+    if (r.error) throw r.error;
+    artId = r.data.id; artSlug = r.data.slug; artPublicado = r.data.publicado; artFoto = artAgora();
+    try { localStorage.removeItem(chaveArt()); } catch (_) {}
+    carregarRascunhos();
+    if (publicar) {
+      $("janela-artigo").close();
+      avisar(`Artigo publicado! <a href="artigos.html?a=${encodeURIComponent(artSlug)}">Ver no site</a>`, "ok");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      botoesArtigo();
+      const hora = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      marcarSalvo(`✓ Rascunho salvo às ${hora}. Ele fica guardado mesmo se você sair do site. <a href="artigos.html?a=${encodeURIComponent(artSlug)}" target="_blank" rel="noopener">Ver prévia ↗</a>`);
+    }
   } catch (e) {
+    marcarSalvo("");
     const m = String((e && e.message) || "");
     erro(/fontes/.test(m) ? "O campo de fontes ainda não está ativado no banco de dados. Avise a administração." : mensagemErro(e));
   }
-  b.disabled = false; b.textContent = "Publicar";
+  bts.forEach((b) => (b.disabled = false));
 });
-$("art-publicado").addEventListener("change", () => { $("art-enviar").textContent = $("art-publicado").checked ? "Publicar" : "Salvar rascunho"; });
+// meus rascunhos (aparecem embaixo de "Publicar artigo")
+async function carregarRascunhos() {
+  const { data, error } = await supa.from("artigos").select("id,slug,titulo,criado_em,editado_em").eq("autor_id", perfil.id).eq("publicado", false).order("criado_em", { ascending: false });
+  const lista = error ? [] : (data || []);
+  $("meus-rascunhos").hidden = !lista.length;
+  $("meus-rascunhos").innerHTML = `<b>📝 Meus rascunhos (${lista.length})</b><ul>` + lista.map((a) => `
+    <li><span>${esc(a.titulo)} <small>· ${esc(dataPorExtenso(a.editado_em || a.criado_em))}</small></span>
+      <span class="mil-rasc-bts"><button type="button" data-continuar="${a.id}">Continuar</button><a href="artigos.html?a=${encodeURIComponent(a.slug)}" target="_blank" rel="noopener">Prévia ↗</a></span></li>`).join("") + "</ul>";
+}
+$("meus-rascunhos").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-continuar]"); if (!b) return;
+  const { data, error } = await supa.from("artigos").select("*").eq("id", b.dataset.continuar).single();
+  if (error) return avisar(mensagemErro(error), "erro");
+  try { localStorage.removeItem(chaveArt()); } catch (_) {}
+  abrirArtigo(data);
+});
 
 // ---------- criação de conteúdo (gerador de imagens) ----------
 $("abrir-gerador").addEventListener("click", () => {
@@ -828,6 +883,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   mostrarCabecalho(); carregarCarteirinha();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
   $("linha-artigo").hidden = false; // todo militante pode publicar artigos
+  carregarRascunhos();
   carregarAvisos(); carregarRanking(); carregarConvitesAdmin(); carregarCamaradas(); carregarInscricoes();
   const { data, error } = await supa.from("fichas").select("*").eq("id", perfil.id).maybeSingle();
   await carregarLinks(); mostrarGrupoGeral();

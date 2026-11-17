@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=66">
+  <link rel="stylesheet" href="assets/style.css?v=67">
 </head>
 <body data-pagina="artigos">
 <main>
@@ -70,12 +70,17 @@
     document.getElementById("faixa-jornal").hidden = true;
     try {
       let a = await lerJSON("artigos/" + encodeURIComponent(slug) + ".json").catch(() => null);
-      if (!a) a = (await artigosDoBanco()).find((x) => x.slug === slug);
+      let rascunho = false;
+      if (!a) {   // do banco: o autor (e a edição) também enxerga o próprio rascunho, como prévia
+        const { data: b } = await supa.from("artigos").select("*").eq("slug", slug).maybeSingle();
+        if (b) { a = { slug: b.slug, titulo: b.titulo, autor: b.autor_nome, data: b.criado_em, texto: b.texto, fontes: b.fontes || "" }; rascunho = !b.publicado; }
+      }
       if (!a) throw new Error("não encontrado");
       document.title = a.titulo + " · Coletivo Lufã";
       area.innerHTML = `
         <article class="artigo">
           <a class="artigo__voltar" href="artigos.html">← Todos os artigos</a>
+          ${rascunho ? '<p class="aviso-rascunho">📝 <b>RASCUNHO</b> · Prévia: só você e a edição do site veem esta página. O artigo ainda não foi publicado.</p>' : ""}
           <h1>${esc(a.titulo)}</h1>
           <div class="meta">Por <strong>${esc(a.autor)}</strong> · ${esc(dataPorExtenso(a.data))}</div>
           <div class="texto-artigo">${markdown(a.texto)}</div>

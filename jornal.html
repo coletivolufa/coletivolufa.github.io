@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Oswald:wght@500;600&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=66">
+  <link rel="stylesheet" href="assets/style.css?v=67">
 </head>
 <body data-pagina="artigos">
 
@@ -39,19 +39,33 @@
     </header>
 
     <details class="jn-publicar" id="caixa-publicar" hidden>
-      <summary>+ Publicar uma notícia (redação e administração)</summary>
-      <form id="form-noticia">
-        <div class="campo"><label for="n-titulo">Manchete <small>(palavras entre *asteriscos* saem em vermelho)</small></label><input id="n-titulo" maxlength="200" required placeholder="Corte na *saúde* e *educação* deve ser votado hoje!"></div>
+      <summary id="pub-resumo">+ Escrever uma notícia (redação e administração)</summary>
+      <div class="jn-rascunhos" id="rascunhos" hidden></div>
+      <form id="form-noticia" novalidate>
+        <p class="jn-editando" id="n-editando" hidden></p>
+        <div class="campo"><label for="n-titulo">Manchete <small>(palavras entre *asteriscos* saem em vermelho)</small></label><input id="n-titulo" maxlength="200" placeholder="Corte na *saúde* e *educação* deve ser votado hoje!"></div>
         <div class="campo"><label for="n-linha">Linha fina (subtítulo em itálico)</label><input id="n-linha" maxlength="400"></div>
         <div class="campo"><label for="n-secao">Seção</label>
           <select id="n-secao"><option>Brasil</option><option>Mundo</option><option>Trabalho</option><option>Política</option><option>Movimentos</option><option>Educação</option><option>Cultura</option><option>Coletivo Lufã</option></select></div>
-        <div class="campo"><label for="n-texto">Texto da notícia</label><textarea id="n-texto" maxlength="20000" required style="min-height:160px"></textarea><small>Deixe uma linha em branco entre os parágrafos.</small></div>
-        <div class="campo"><label for="n-foto">Foto (opcional)</label><input id="n-foto" type="file" accept="image/*"></div>
-        <div class="campo"><label for="n-credito">Crédito da foto</label><input id="n-credito" maxlength="200" placeholder="Foto: Paula Froes/ AI Jaques Wagner"></div>
+        <div class="campo"><label for="n-foto">Foto principal (aparece ao lado da manchete; opcional)</label>
+          <div class="jn-foto-atual" id="n-foto-atual" hidden><img id="n-foto-atual-img" alt=""><button type="button" class="jn-link" id="n-foto-tirar">Tirar a foto principal</button></div>
+          <input id="n-foto" type="file" accept="image/*"></div>
+        <div class="campo"><label for="n-credito">Crédito da foto principal</label><input id="n-credito" maxlength="200" placeholder="Foto: Paula Froes/ AI Jaques Wagner"></div>
+        <div class="campo"><label for="n-texto">Texto da notícia</label>
+          <div class="jn-barra"><button type="button" class="botao botao--claro" id="n-img-bt">🖼 Inserir imagens no texto</button><small>A imagem entra onde o cursor estiver. Depois, organize abaixo.</small></div>
+          <input type="file" id="n-img" accept="image/*" multiple hidden>
+          <textarea id="n-texto" maxlength="20000" style="min-height:200px"></textarea><small>Deixe uma linha em branco entre os parágrafos.</small>
+          <div class="jn-imgs" id="n-imgs" hidden></div>
+        </div>
         <div class="campo"><label for="n-fonte">Fonte da notícia</label><input id="n-fonte" maxlength="200" placeholder="Agência Brasil"></div>
         <div class="campo"><label for="n-link">Link da fonte</label><input id="n-link" type="url" placeholder="https://"></div>
         <p class="aviso aviso--erro" id="n-erro" hidden></p>
-        <button class="botao botao--vermelho" type="submit" id="n-enviar">Publicar no jornal</button>
+        <p class="jn-status" id="n-status"></p>
+        <div class="jn-botoes">
+          <button class="botao botao--claro" type="submit" value="rascunho" id="n-rascunho">Salvar rascunho</button>
+          <button class="botao botao--vermelho" type="submit" value="publicar" id="n-enviar">Publicar no jornal</button>
+          <button class="jn-link" type="button" id="n-nova" hidden>Começar outra notícia</button>
+        </div>
       </form>
     </details>
 
@@ -91,14 +105,18 @@
   $("jn-data").textContent = new Date().toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" }).toUpperCase();
   const manchete = (t) => esc(t).replace(/\*([^*]+)\*/g, "<em>$1</em>");
   const pars = (t) => String(t || "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-  const html = (lista) => lista.map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+  const IMG = /^!\[([^\]]*)\]\((https:\/\/[^)\s]+)\)$/;   // imagem no texto: ![legenda](endereço)
+  const html = (lista) => lista.map((p) => { const m = p.match(IMG);
+    return m ? `<figure class="jn-foto jn-foto--texto"><img src="${esc(m[2])}" alt="${esc(m[1])}" loading="lazy">${m[1] ? `<figcaption>${esc(m[1])}</figcaption>` : ""}</figure>`
+             : `<p>${esc(p).replace(/\n/g, "<br>")}</p>`; }).join("");
   const link = (n) => `jornal.html?n=${n.id}`;
-  const apagar = (n) => podeEditar ? `<button type="button" class="jn-apagar" data-apagar="${n.id}">Apagar notícia</button>` : "";
+  const apagar = (n) => podeEditar ? `<span><button type="button" class="jn-apagar" data-editar="${n.id}">Editar</button> · <button type="button" class="jn-apagar" data-apagar="${n.id}">Apagar notícia</button></span>` : "";
   const fonteHTML = (n) => n.fonte_nome || n.fonte_link ? `Fonte: ${n.fonte_link ? `<a href="${esc(n.fonte_link)}" target="_blank" rel="noopener">${esc(n.fonte_nome || n.fonte_link)}</a>` : esc(n.fonte_nome)}` : "";
 
   // uma notícia no desenho do jornal: manchete, linha fina, fio, duas colunas (texto | foto + resto do texto)
   function bloco(n, completa) {
     let p = pars(n.texto);
+    if (!completa) p = p.filter((x) => !IMG.test(x));   // na capa, só o texto
     const curta = !completa && p.length > 4;
     if (!completa) p = p.slice(0, 4);
     const meio = Math.max(1, Math.ceil(p.length / 2));
@@ -120,18 +138,21 @@
       </article>`;
   }
 
+  let ultimas = [];
   async function edicao() {
     const area = $("edicao");
-    const { data, error } = await supa.from("noticias").select("*").order("criado_em", { ascending: false }).limit(30);
-    const lista = error ? [] : (data || []);
     if (idNoticia) {
-      const n = lista.find((x) => String(x.id) === idNoticia);
+      const { data: n } = await supa.from("noticias").select("*").eq("id", Number(idNoticia)).maybeSingle();
       if (!n) { area.innerHTML = '<p class="jn-vazio">Notícia não encontrada. <a href="jornal.html">Voltar à edição</a></p>'; return; }
+      ultimas = [n];
       document.title = n.titulo.replace(/\*/g, "") + " · Jornal da Classe Trabalhadora";
-      area.innerHTML = `<a class="jn-voltar" href="jornal.html">← Voltar à edição</a>${bloco(n, true)}`;
+      area.innerHTML = `<a class="jn-voltar" href="jornal.html">← Voltar à edição</a>
+        ${n.publicado ? "" : '<p class="jn-previa-aviso">📝 <b>RASCUNHO</b> · Prévia: só a redação e a administração veem esta página. A notícia ainda não está no jornal.</p>'}${bloco(n, true)}`;
       return;
     }
-    area.innerHTML = lista.length ? lista.map((n) => bloco(n, false)).join("") : '<p class="jn-vazio">A primeira edição está sendo preparada. Volte em breve.</p>';
+    const { data, error } = await supa.from("noticias").select("*").eq("publicado", true).order("criado_em", { ascending: false }).limit(30);
+    ultimas = error ? [] : (data || []);
+    area.innerHTML = ultimas.length ? ultimas.map((n) => bloco(n, false)).join("") : '<p class="jn-vazio">A primeira edição está sendo preparada. Volte em breve.</p>';
   }
 
   // ---------- publicação (administração e editores; o banco também confere) ----------
@@ -145,33 +166,141 @@
       img.src = URL.createObjectURL(arquivo);
     });
   }
-  $("form-noticia").addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    const erro = (m) => { $("n-erro").textContent = m; $("n-erro").hidden = false; };
-    $("n-erro").hidden = true;
-    const linkFonte = $("n-link").value.trim();
-    if (linkFonte && !/^https?:\/\//i.test(linkFonte)) return erro("O link da fonte precisa começar com http:// ou https://");
-    const b = $("n-enviar"); b.disabled = true; b.textContent = "Publicando…";
+  // ---------- escrever, salvar rascunho, publicar e editar ----------
+  let editId = null, fotoAtual = "", meuId = null;
+  const CHAVE = "lufa_jornal_rascunho";
+  const campos = ["n-titulo", "n-linha", "n-secao", "n-texto", "n-credito", "n-fonte", "n-link"];
+  function status(t) { $("n-status").innerHTML = t; }
+  function guardarLocal() {   // cópia neste aparelho, para não perder o que foi escrito
+    const d = { editId, fotoAtual }; campos.forEach((c) => (d[c] = $(c).value));
+    try { if (campos.some((c) => c !== "n-secao" && d[c].trim())) localStorage.setItem(CHAVE, JSON.stringify(d)); else localStorage.removeItem(CHAVE); } catch (_) {}
+  }
+  let tGuardar = null;
+  $("form-noticia").addEventListener("input", () => { clearTimeout(tGuardar); tGuardar = setTimeout(guardarLocal, 600); });
+  function preencher(n) {
+    editId = n.id || null; fotoAtual = n.foto || "";
+    $("n-titulo").value = n.titulo || ""; $("n-linha").value = n.linha_fina || ""; $("n-secao").value = n.secao || "Brasil";
+    $("n-texto").value = n.texto || ""; $("n-credito").value = n.foto_credito || ""; $("n-fonte").value = n.fonte_nome || ""; $("n-link").value = n.fonte_link || "";
+    $("n-foto").value = ""; mostrarFotoAtual(); mostrarImagens();
+    $("n-editando").hidden = !editId;
+    $("n-editando").innerHTML = editId ? (n.publicado ? "✎ Editando uma notícia <b>já publicada</b>." : `✎ Editando um <b>rascunho</b>. <a href="jornal.html?n=${editId}" target="_blank" rel="noopener">Ver prévia ↗</a>`) : "";
+    $("n-nova").hidden = !editId;
+    $("n-rascunho").textContent = n.publicado ? "Tirar do ar (virar rascunho)" : "Salvar rascunho";
+    $("n-enviar").textContent = n.publicado ? "Salvar alterações" : "Publicar no jornal";
+  }
+  function limpar() { preencher({}); try { localStorage.removeItem(CHAVE); } catch (_) {} status(""); }
+  function mostrarFotoAtual() { $("n-foto-atual").hidden = !fotoAtual; if (fotoAtual) $("n-foto-atual-img").src = fotoAtual; }
+  $("n-foto-tirar").addEventListener("click", () => { fotoAtual = ""; mostrarFotoAtual(); guardarLocal(); });
+  $("n-nova").addEventListener("click", () => { if (confirm("Começar outra notícia? O que não foi salvo nesta se perde.")) limpar(); });
+
+  // imagens no meio do texto: cada uma fica num parágrafo próprio ![legenda](endereço)
+  const blocos = () => pars($("n-texto").value);
+  function gravarBlocos(b) { $("n-texto").value = b.join("\n\n"); mostrarImagens(); guardarLocal(); }
+  function mostrarImagens() {
+    const b = blocos(), imgs = b.map((p, i) => ({ i, m: p.match(IMG) })).filter((x) => x.m);
+    $("n-imgs").hidden = !imgs.length;
+    $("n-imgs").innerHTML = imgs.length ? `<b>Imagens no texto (na ordem em que aparecem)</b>` + imgs.map((x, k) => `
+      <div class="jn-img" data-i="${x.i}">
+        <img src="${esc(x.m[2])}" alt="">
+        <div><input data-legenda value="${esc(x.m[1])}" maxlength="200" placeholder="Legenda / crédito (opcional)" aria-label="Legenda da imagem ${k + 1}">
+          <small>${x.i === 0 ? "No começo do texto" : `Depois do parágrafo: “${esc(b[x.i - 1].replace(IMG, "[imagem]").slice(0, 60))}…”`}</small></div>
+        <span class="jn-img__bts"><button type="button" data-mover="-1" title="Subir" ${x.i === 0 ? "disabled" : ""}>↑</button><button type="button" data-mover="1" title="Descer" ${x.i === b.length - 1 ? "disabled" : ""}>↓</button><button type="button" data-tirar title="Tirar a imagem">✕</button></span>
+      </div>`).join("") : "";
+  }
+  $("n-texto").addEventListener("input", () => { clearTimeout(tImgs); tImgs = setTimeout(mostrarImagens, 500); });
+  let tImgs = null;
+  $("n-imgs").addEventListener("click", (e) => {
+    const bt = e.target.closest("button"); if (!bt) return;
+    const i = Number(bt.closest("[data-i]").dataset.i), b = blocos();
+    if (bt.dataset.mover) { const j = i + Number(bt.dataset.mover); if (j < 0 || j >= b.length) return; [b[i], b[j]] = [b[j], b[i]]; }
+    if (bt.hasAttribute("data-tirar")) { if (!confirm("Tirar esta imagem do texto?")) return; b.splice(i, 1); }
+    gravarBlocos(b);
+  });
+  $("n-imgs").addEventListener("change", (e) => {
+    const inp = e.target.closest("[data-legenda]"); if (!inp) return;
+    const i = Number(inp.closest("[data-i]").dataset.i), b = blocos(), m = b[i].match(IMG);
+    if (m) { b[i] = `![${inp.value.replace(/[\[\]\n]/g, " ").trim()}](${m[2]})`; gravarBlocos(b); }
+  });
+  $("n-img-bt").addEventListener("click", () => $("n-img").click());
+  $("n-img").addEventListener("change", async () => {
+    const arqs = [...$("n-img").files]; $("n-img").value = ""; if (!arqs.length) return;
+    const t = $("n-texto"); let pos = t.selectionStart ?? t.value.length;
     try {
       const u = await usuarioAtual();
-      let urlFoto = "";
+      for (const [k, arq] of arqs.entries()) {
+        status(`Enviando imagem ${k + 1} de ${arqs.length}…`);
+        const caminho = `${u.id}/noticias/${Date.now()}-${k}.jpg`;
+        const { error } = await supa.storage.from("fotos").upload(caminho, await reduzir(arq), { contentType: "image/jpeg" });
+        if (error) throw error;
+        const marca = `![](${supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl})`;
+        const antes = t.value.slice(0, pos), depois = t.value.slice(pos);
+        const pre = !antes.trim() ? "" : antes.endsWith("\n\n") ? "" : antes.endsWith("\n") ? "\n" : "\n\n";
+        const novo = pre + marca + "\n\n";
+        t.value = antes + novo + depois.replace(/^\n+/, ""); pos = (antes + novo).length;
+      }
+      mostrarImagens(); guardarLocal(); status("Imagem colocada no texto. Escreva a legenda e use ↑ ↓ para mudar o lugar.");
+    } catch (e) { status(""); $("n-erro").textContent = "Não deu para enviar a imagem: " + mensagemErro(e); $("n-erro").hidden = false; }
+  });
+
+  $("form-noticia").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const publicar = (ev.submitter && ev.submitter.value) === "publicar";
+    const erro = (m, c) => { $("n-erro").textContent = m; $("n-erro").hidden = false; if (c) $(c).focus(); };
+    $("n-erro").hidden = true;
+    const titulo = $("n-titulo").value.trim(), texto = $("n-texto").value.trim(), linkFonte = $("n-link").value.trim();
+    if (titulo.length < 3) return erro("Escreva a manchete (pelo menos 3 letras).", "n-titulo");
+    if (publicar && texto.replace(/!\[[^\]]*\]\([^)]*\)/g, "").trim().length < 20) return erro("Escreva o texto da notícia antes de publicar.", "n-texto");
+    if (linkFonte && !/^https?:\/\//i.test(linkFonte)) return erro("O link da fonte precisa começar com http:// ou https://", "n-link");
+    const bts = [$("n-rascunho"), $("n-enviar")]; bts.forEach((b) => (b.disabled = true));
+    status(publicar ? "Publicando…" : "Salvando o rascunho…");
+    try {
+      const u = await usuarioAtual();
+      let foto = fotoAtual;
       const arq = $("n-foto").files[0];
       if (arq) {
         const caminho = `${u.id}/noticias/${Date.now()}.jpg`;
         const { error: ef } = await supa.storage.from("fotos").upload(caminho, await reduzir(arq), { contentType: "image/jpeg" });
         if (ef) throw ef;
-        urlFoto = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
+        foto = supa.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
       }
-      const { error } = await supa.from("noticias").insert({
-        titulo: $("n-titulo").value.trim(), linha_fina: $("n-linha").value.trim(), secao: $("n-secao").value, texto: $("n-texto").value.trim(),
-        foto: urlFoto, foto_credito: $("n-credito").value.trim(), fonte_nome: $("n-fonte").value.trim(), fonte_link: linkFonte, autor_id: u.id });
-      if (error) throw error;
-      $("form-noticia").reset(); $("caixa-publicar").open = false;
-      await edicao(); $("edicao").scrollIntoView({ behavior: "smooth" });
-    } catch (e) { erro(mensagemErro(e)); }
-    finally { b.disabled = false; b.textContent = "Publicar no jornal"; }
+      const dados = { titulo, linha_fina: $("n-linha").value.trim(), secao: $("n-secao").value, texto, foto, foto_credito: $("n-credito").value.trim(),
+        fonte_nome: $("n-fonte").value.trim(), fonte_link: linkFonte, publicado: publicar };
+      let r;
+      if (editId) r = await supa.from("noticias").update(dados).eq("id", editId).select("*").single();
+      else r = await supa.from("noticias").insert({ ...dados, autor_id: u.id }).select("*").single();
+      if (r.error) throw r.error;
+      if (publicar) {
+        limpar(); $("caixa-publicar").open = false;
+        if (idNoticia) { location.href = "jornal.html?n=" + r.data.id; return; }
+        await edicao(); carregarRascunhos(); $("edicao").scrollIntoView({ behavior: "smooth" });
+      } else {
+        preencher(r.data); try { localStorage.removeItem(CHAVE); } catch (_) {}
+        const hora = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+        status(`✓ Rascunho salvo às ${hora}. Ele fica guardado mesmo se você sair do site. <a href="jornal.html?n=${r.data.id}" target="_blank" rel="noopener">Ver prévia ↗</a>`);
+        carregarRascunhos();
+      }
+    } catch (e) { status(""); erro(mensagemErro(e)); }
+    finally { bts.forEach((b) => (b.disabled = false)); }
   });
+
+  // rascunhos guardados (redação e administração veem todos)
+  async function carregarRascunhos() {
+    const { data, error } = await supa.from("noticias").select("id,titulo,criado_em,autor_id").eq("publicado", false).order("criado_em", { ascending: false }).limit(30);
+    const lista = error ? [] : (data || []);
+    $("rascunhos").hidden = !lista.length;
+    $("rascunhos").innerHTML = `<b>📝 Rascunhos guardados (${lista.length})</b><ul>` + lista.map((n) => `
+      <li><span>${esc(n.titulo.replace(/\*/g, ""))} <small>· ${esc(dataPorExtenso(n.criado_em))}</small></span>
+        <span class="jn-rasc-bts"><button type="button" data-continuar="${n.id}">Continuar</button><a href="jornal.html?n=${n.id}" target="_blank" rel="noopener">Prévia ↗</a><button type="button" data-apagar-r="${n.id}">Apagar</button></span></li>`).join("") + "</ul>";
+  }
+  $("rascunhos").addEventListener("click", async (e) => {
+    const c = e.target.closest("[data-continuar]"), a = e.target.closest("[data-apagar-r]");
+    if (c) { const { data } = await supa.from("noticias").select("*").eq("id", Number(c.dataset.continuar)).maybeSingle(); if (data) { preencher(data); status(""); $("form-noticia").scrollIntoView({ behavior: "smooth" }); } }
+    if (a && confirm("Apagar este rascunho?")) { const { error } = await supa.from("noticias").delete().eq("id", Number(a.dataset.apagarR)); if (error) return alert(mensagemErro(error)); if (editId === Number(a.dataset.apagarR)) limpar(); carregarRascunhos(); }
+  });
+
   $("edicao").addEventListener("click", async (ev) => {
+    const ed = ev.target.closest("[data-editar]");
+    if (ed) { const n = ultimas.find((x) => x.id === Number(ed.dataset.editar)); if (n) { preencher(n); status(""); $("caixa-publicar").open = true; $("caixa-publicar").scrollIntoView({ behavior: "smooth" }); } return; }
     const bt = ev.target.closest("[data-apagar]"); if (!bt) return;
     if (!confirm("Apagar esta notícia do jornal?")) return;
     const { error } = await supa.from("noticias").delete().eq("id", Number(bt.dataset.apagar));
@@ -182,6 +311,15 @@
   (async () => {
     try { const u = await usuarioAtual(); if (u) { const p = await meuPerfil(); podeEditar = !!p && ["editor", "admin"].includes(p.papel); if (!podeEditar) { const r = await supa.rpc("sou_redacao"); podeEditar = r.data === true; } } } catch (_) {}
     $("caixa-publicar").hidden = !podeEditar;
+    if (podeEditar) {
+      carregarRascunhos();
+      let salvo = null; try { salvo = JSON.parse(localStorage.getItem(CHAVE) || "null"); } catch (_) {}
+      if (salvo) {   // texto que ficou neste aparelho sem salvar
+        preencher({ id: salvo.editId, foto: salvo.fotoAtual, titulo: salvo["n-titulo"], linha_fina: salvo["n-linha"], secao: salvo["n-secao"], texto: salvo["n-texto"], foto_credito: salvo["n-credito"], fonte_nome: salvo["n-fonte"], fonte_link: salvo["n-link"] });
+        status("↺ Recuperamos o que você estava escrevendo neste aparelho (ainda não salvo como rascunho).");
+        if (!idNoticia) $("caixa-publicar").open = true;
+      }
+    }
     await edicao().catch(() => {});
     await abertura.pronto;
     abertura.fechar();

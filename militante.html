@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=66">
+  <link rel="stylesheet" href="assets/style.css?v=67">
 </head>
 <body data-pagina="militante">
 <main>
@@ -96,6 +96,7 @@
             <h2>Publicar artigo</h2>
             <button class="botao botao--vermelho" type="button" id="abrir-artigo">Publicar</button>
           </div>
+          <div class="mil-rascunhos" id="meus-rascunhos" hidden></div>
           <div class="mil-linha">
             <h2>Convide um militante</h2>
             <button class="botao botao--vermelho" type="button" id="abrir-convite">Convidar</button>
@@ -194,13 +195,14 @@
           <textarea id="art-fontes" class="art-fontes" maxlength="6000" placeholder="Cole aqui as fontes, uma por linha. Ex.:&#10;IBGE, Pesquisa Nacional por Amostra de Domicílios, 2024 – https://www.ibge.gov.br/…&#10;MARX, Karl. O Capital, livro I."></textarea>
           <small>Uma fonte por linha. Os links ficam clicáveis no artigo.</small>
         </div>
-        <label class="mil-check"><input type="checkbox" id="art-publicado" checked> Publicar no site agora (desmarque para salvar como rascunho)</label>
       </fieldset>
       <p class="aviso aviso--erro" id="art-erro" hidden></p>
+      <p class="mil-art-salvo" id="art-salvo" hidden></p>
     </div>
     <div class="ficha-mil__botoes">
-      <button class="botao botao--claro" type="button" id="art-cancelar">Cancelar</button>
-      <button class="botao botao--vermelho" type="submit" id="art-enviar">Publicar</button>
+      <button class="botao botao--claro" type="button" id="art-cancelar">Fechar</button>
+      <button class="botao botao--amarelo" type="submit" value="rascunho" id="art-rascunho">Salvar rascunho</button>
+      <button class="botao botao--vermelho" type="submit" value="publicar" id="art-enviar">Publicar</button>
     </div>
   </form>
 </dialog>
@@ -345,6 +347,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=20"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=19"></script>
+<script src="assets/militante.js?v=20"></script>
 </body>
 </html>
