@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Oswald:wght@500;600&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=71">
+  <link rel="stylesheet" href="assets/style.css?v=72">
 </head>
 <body data-pagina="artigos">
 
@@ -151,16 +151,13 @@
     const resto = ultimas.filter((n) => n !== m && !idsLeia.has(n.id)).slice(0, 12);   // quem está em Leia também não repete
     area.innerHTML = `
       <article class="jn-man" data-ler="${m.id}" tabindex="0" role="button" aria-label="Ler: ${esc(m.titulo.replace(/\*/g, ""))}">
-        ${m.foto ? `<figure class="jn-man__foto"><img src="${esc(m.foto)}" alt="">${m.foto_credito ? `<figcaption>${esc(m.foto_credito)}</figcaption>` : ""}</figure>` : ""}
-        <span class="jn-secao">${esc(m.secao)} · ${esc(dataPorExtenso(m.criado_em))}</span>
+        <span class="jn-urgente">Urgente</span>
         <h2>${manchete(m.titulo)}</h2>
-        ${m.linha_fina ? `<p class="jn-linha">${esc(m.linha_fina)}</p>` : ""}
-        <p class="jn-man__resumo">${esc(resumoDe(m, 260))}</p>
-        <span class="jn-leia">Ler a notícia →</span>
+        ${m.foto ? `<img class="jn-man__img" src="${esc(m.foto)}" alt="">` : ""}
       </article>
       ${resto.length ? `<section class="jn-sec"><h3 class="jn-sec__titulo">Últimas notícias</h3><div class="jn-grade">${resto.map(cartao).join("")}</div></section>` : ""}
       ${leia.length ? `<section class="jn-sec jn-sec--leia"><h3 class="jn-sec__titulo">Leia também</h3><div class="jn-leia-tb">${leia.map((n) => `
-        <button type="button" class="jn-lt" data-ler="${n.id}">${capaFoto(n, "jn-lt__foto")}<span><span class="jn-card__secao">${esc(n.secao)} · ${esc(dataCurta(n.criado_em))}</span><span class="jn-lt__titulo">${manchete(n.titulo)}</span><span class="jn-lt__resumo">${esc(resumoDe(n, 110))}</span></span></button>`).join("")}</div></section>` : ""}`;
+        <button type="button" class="jn-lt" data-ler="${n.id}">${capaFoto(n, "jn-lt__foto")}<span><span class="jn-card__secao">${esc(n.secao)} · ${esc(dataCurta(n.criado_em))}</span><span class="jn-lt__titulo">${manchete(n.titulo)}</span></span></button>`).join("")}</div></section>` : ""}`;
   }
 
   // ---------- leitor: a notícia em páginas de jornal, virando como folha ----------

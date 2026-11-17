@@ -1493,3 +1493,8 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 @media (prefers-reduced-motion: reduce) { .jn-folha-virando.vai, .jn-folha-virando.volta { animation-duration: .01s; } }
 .jl-p--parte { text-align-last: justify; margin-bottom: 0; }
 .jl-p--cont { text-indent: 0; }
+/* capa do jornal: manchete enxuta (tarja URGENTE, título e foto) */
+.jn-urgente { display: inline-block; background: var(--vermelho); color: #fff; font-family: "Oswald", var(--titulo); font-weight: 600; text-transform: uppercase; letter-spacing: .12em; font-size: clamp(16px, 2.4vw, 22px); padding: 5px 14px 4px; margin-bottom: 10px; }
+.jn-man h2 { margin: 0 0 16px; }
+.jn-man__img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.jn-lt { align-items: center; }
