@@ -421,36 +421,55 @@ async function buscarFormacao() {
   if (!error) (data || []).forEach((r) => formacaoVistos.add(r.video));
   mostrarFormacao();
 }
+// quem já assistiu um episódio pode tocar nele para rever (continua marcado como assistido)
+let formacaoRevendo = null;
 function mostrarFormacao() {
   const sec = $("formacao");
   const atual = FORMACAO.find((v) => !formacaoVistos.has(v.id));
   if (!atual) { sec.hidden = true; return; }
   sec.hidden = false;
-  const i = FORMACAO.indexOf(atual);
+  const revendo = FORMACAO.find((v) => v.id === formacaoRevendo && formacaoVistos.has(v.id) && v.video);
+  const ep = revendo || atual, i = FORMACAO.indexOf(ep);
   $("formacao-conta").textContent = `${FORMACAO.filter((v) => formacaoVistos.has(v.id)).length} de ${FORMACAO.length} assistidos`;
   $("formacao-eps").innerHTML = "";
   FORMACAO.forEach((v, k) => {
     const li = document.createElement("li");
-    const feito = formacaoVistos.has(v.id);
-    li.className = feito ? "feito" : v === atual ? "atual" : "trancado";
-    li.innerHTML = `<span>${feito ? "✓" : "EP. " + (k + 1)}</span>`;
-    li.append(v.titulo);
+    const feito = formacaoVistos.has(v.id), aberto = v === ep, pode = (feito && v.video) || v === atual;
+    li.className = [feito ? "feito" : v === atual ? "atual" : "trancado", aberto ? "aberto" : ""].join(" ").trim();
+    const el = document.createElement(pode ? "button" : "div");
+    if (pode) {
+      el.type = "button";
+      el.title = feito ? "Assistir de novo" : "Episódio atual";
+      el.addEventListener("click", () => { formacaoRevendo = feito ? v.id : null; mostrarFormacao(); });
+    }
+    el.innerHTML = `<span>${feito ? "✓" : "EP. " + (k + 1)}</span>`;
+    el.append(v.titulo);
+    if (feito && v.video) { const r = document.createElement("small"); r.textContent = aberto ? "vendo" : "rever"; el.append(r); }
+    li.append(el);
     $("formacao-eps").append(li);
   });
-  $("formacao-ep").textContent = `EP. ${i + 1} de ${FORMACAO.length}`;
-  $("formacao-nome").textContent = atual.titulo;
+  $("formacao-ep").textContent = `EP. ${i + 1} de ${FORMACAO.length}` + (revendo ? " · já assistido" : "");
+  $("formacao-nome").textContent = ep.titulo;
   const vid = $("formacao-video"), bt = $("formacao-assisti");
-  if (atual.video) {
+  if (ep.video) {
     $("formacao-breve").hidden = true; vid.hidden = false; $("formacao-rodape").hidden = false;
-    if (vid.dataset.id !== atual.id) { vid.dataset.id = atual.id; vid.poster = atual.capa; vid.src = atual.video; }
-    bt.disabled = true; bt.dataset.id = atual.id; $("formacao-dica").hidden = false;
+    if (vid.dataset.id !== ep.id) { vid.dataset.id = ep.id; vid.poster = ep.capa; vid.src = ep.video; }
+    if (revendo) {
+      bt.disabled = true; bt.dataset.id = ""; bt.textContent = "✓ Já assistido"; $("formacao-dica").hidden = true;
+      $("formacao-voltar").hidden = false;
+    } else {
+      bt.disabled = true; bt.dataset.id = ep.id; bt.textContent = "✓ Assisti"; $("formacao-dica").hidden = false;
+      $("formacao-voltar").hidden = true;
+    }
   } else {
     vid.pause(); vid.removeAttribute("src"); vid.load(); vid.dataset.id = ""; vid.hidden = true;
     $("formacao-breve").hidden = false;
-    $("formacao-breve-texto").textContent = `O episódio ${i + 1}, “${atual.titulo}”, chega aqui em breve. Fique de olho!`;
+    $("formacao-breve-texto").textContent = `O episódio ${i + 1}, “${ep.titulo}”, chega aqui em breve. Fique de olho! ` +
+      (FORMACAO.some((v) => formacaoVistos.has(v.id) && v.video) ? "Enquanto isso, você pode rever os episódios que já assistiu." : "");
     $("formacao-rodape").hidden = true;
   }
 }
+$("formacao-voltar").addEventListener("click", () => { formacaoRevendo = null; mostrarFormacao(); });
 // Formação OBRIGATÓRIA para quem conclui o cadastro a partir de agora (novos militantes): abre sozinha, numa janela
 // que não fecha, até a pessoa assistir a todos os episódios já publicados. Quem já era militante não é obrigado.
 const FORMACAO_OBRIGATORIA_DESDE = "2026-11-18T23:00:00Z";
@@ -477,7 +496,7 @@ function destravarFormacao() {
 $("janela-formacao-obr").addEventListener("cancel", (ev) => { if (formacaoTravada) ev.preventDefault(); });
 $("janela-formacao-obr").addEventListener("close", () => { if (formacaoTravada) setTimeout(() => $("janela-formacao-obr").showModal(), 0); });
 
-function liberarAssisti() { $("formacao-assisti").disabled = false; $("formacao-dica").hidden = true; }
+function liberarAssisti() { if (!$("formacao-assisti").dataset.id) return; $("formacao-assisti").disabled = false; $("formacao-dica").hidden = true; }
 $("formacao-video").addEventListener("ended", liberarAssisti);
 $("formacao-video").addEventListener("timeupdate", (ev) => { const v = ev.target; if (v.duration && v.currentTime >= v.duration - 2) liberarAssisti(); });
 $("formacao-assisti").addEventListener("click", async () => {

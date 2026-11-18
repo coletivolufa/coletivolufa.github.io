@@ -1601,3 +1601,13 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-janela-formacao__topo p { margin: 0; max-width: 680px; font-size: 16px; }
 .mil-janela-formacao .mil-formacao { margin: 0; box-shadow: none; }
 @media (max-width: 700px) { .mil-janela-formacao { box-shadow: 6px 6px 0 var(--amarelo); } .mil-janela-formacao__topo { padding: 20px 16px 14px; } }
+
+/* formação: episódios já assistidos podem ser revistos */
+.mil-formacao__eps li > button, .mil-formacao__eps li > div { display: flex; align-items: center; gap: 8px; font: inherit; color: inherit; background: none; border: 0; padding: 0; white-space: nowrap; }
+.mil-formacao__eps li > button { cursor: pointer; }
+.mil-formacao__eps li > * > small { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--amarelo); margin-left: 2px; }
+.mil-formacao__eps li.feito.aberto { background: var(--amarelo); color: var(--preto); }
+.mil-formacao__eps li.feito.aberto small { color: var(--vermelho); }
+.mil-formacao__eps li.feito:not(.aberto):hover { background: #3a332e; }
+.mil-formacao__eps li.atual:not(.aberto) { background: #2c2622; color: var(--branco); outline: 2px solid var(--amarelo); outline-offset: -2px; }
+.mil-formacao__eps li.atual:not(.aberto) span { background: var(--vermelho); }
