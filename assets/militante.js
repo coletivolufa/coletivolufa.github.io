@@ -405,7 +405,7 @@ $("janela-carteira").addEventListener("click", (ev) => { if (ev.target === $("ja
 // O progresso fica na conta (tabela formacao_progresso, supabase/32-formacao.sql) e, de reserva, no aparelho.
 // Para publicar um episódio novo: preencha "video" e "capa" dele aqui.
 const FORMACAO = [
-  { id: "novos-01", titulo: "Bem-vindo ao Coletivo Lufã!", video: "formacao/videos/novos-ep01.mp4", capa: "formacao/capas/novos-ep01.jpg?v=2" },
+  { id: "novos-01", titulo: "Bem-vindo ao Coletivo Lufã!", video: "formacao/videos/novos-ep01.mp4", capa: "formacao/capas/novos-ep01.jpg?v=3" },
   { id: "novos-02", titulo: "O que é ser um militante ativo?", video: "", capa: "" },
   { id: "novos-03", titulo: "A Área do Militante e a organização dos núcleos", video: "", capa: "" },
 ];
