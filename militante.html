@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=77">
+  <link rel="stylesheet" href="assets/style.css?v=78">
 </head>
 <body data-pagina="militante">
 <main>
@@ -46,19 +46,31 @@
           <div class="mil-engajados__pista"><div class="mil-engajados__fila" id="engajados-fila"></div></div>
         </section>
 
-        <div class="mil-carteira">
-          <div class="minha-carteira">
-            <img id="carteira-img" alt="Sua carteirinha do Coletivo Lufã" hidden>
-            <div id="carteira-vazia" class="vazio" hidden>
-              <p>Você ainda não fez a sua carteirinha.</p>
-              <a class="botao botao--vermelho" href="carteirinha.html">Fazer minha carteirinha</a>
-            </div>
-            <div class="carteira__acoes" id="carteira-acoes" hidden>
-              <a class="botao botao--vermelho" id="carteira-baixar" download="carteirinha-coletivo-lufa.jpg">Baixar</a>
-              <a class="botao botao--claro" href="carteirinha.html">Refazer</a>
+        <!-- formação para novos militantes: some quando a pessoa termina todos os vídeos -->
+        <section class="mil-formacao" id="formacao" hidden aria-labelledby="formacao-titulo">
+          <div class="mil-formacao__topo">
+            <h2 id="formacao-titulo">★ Formação para novos militantes</h2>
+            <p>Assista aos vídeos em ordem. No fim de cada um, toque em <b>Assisti</b> para liberar o próximo.</p>
+            <span class="mil-formacao__conta" id="formacao-conta"></span>
+          </div>
+          <ol class="mil-formacao__eps" id="formacao-eps"></ol>
+          <div class="mil-formacao__palco" id="formacao-palco">
+            <video id="formacao-video" controls playsinline preload="none"></video>
+            <div class="mil-formacao__breve" id="formacao-breve" hidden>
+              <strong>Próximo episódio em breve</strong>
+              <p id="formacao-breve-texto"></p>
             </div>
           </div>
-        </div>
+          <div class="mil-formacao__rodape" id="formacao-rodape">
+            <div><span class="mil-formacao__ep" id="formacao-ep"></span><h3 id="formacao-nome"></h3></div>
+            <div class="mil-formacao__acao">
+              <small id="formacao-dica">O botão libera quando o vídeo terminar.</small>
+              <button class="botao botao--amarelo" type="button" id="formacao-assisti" disabled>✓ Assisti</button>
+            </div>
+          </div>
+        </section>
+
+        <button class="mil-botao-carteira" type="button" id="abrir-carteira" hidden>★ <span id="abrir-carteira-texto">Veja a sua carteirinha de militante</span></button>
 
         <div class="mil-grupo" id="grupo-geral" hidden>
           <div class="mil-grupo__texto"><h2>★ Grupo geral</h2><p>O grupo dos militantes para conversar entre si e organizar o movimento.</p></div>
@@ -130,6 +142,28 @@
     </div>
   </section>
 </main>
+
+<dialog class="pedir-conta mil-janela-carteira" id="janela-carteira" aria-label="Sua carteirinha de militante">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-carteira">×</button>
+  <div class="pedir-conta__corpo minha-carteira">
+    <h2>Sua carteirinha</h2>
+    <img id="carteira-img" alt="Sua carteirinha do Coletivo Lufã" hidden>
+    <div class="carteira__acoes" id="carteira-acoes" hidden>
+      <a class="botao botao--amarelo" id="carteira-baixar" download="carteirinha-coletivo-lufa.jpg">Baixar</a>
+      <a class="botao botao--claro" href="carteirinha.html">Refazer</a>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="pedir-conta mil-janela-formada" id="janela-formada" aria-labelledby="formada-titulo">
+  <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-formada">×</button>
+  <div class="pedir-conta__corpo">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7.3L12 17.8 5.8 21.5l1.6-7.3L2 9.5l7.1-.6z"/></svg>
+    <h2 id="formada-titulo">Formação concluída!</h2>
+    <p id="formada-texto">Você completou a formação inicial. Seja muito bem-vindo(a) ao Coletivo Lufã, camarada! Agora é com a gente: chega mais.</p>
+    <button class="botao botao--amarelo" type="button" id="ok-formada">Vamos à luta!</button>
+  </div>
+</dialog>
 
 <dialog class="pedir-conta mil-janela-camarada" id="janela-camarada" aria-labelledby="camarada-nome">
   <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-camarada">×</button>
@@ -350,6 +384,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=23"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=21"></script>
+<script src="assets/militante.js?v=22"></script>
 </body>
 </html>

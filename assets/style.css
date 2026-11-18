@@ -1546,3 +1546,42 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-setas { display: flex; gap: 8px; }
 .mil-setas button { width: 44px; height: 40px; font-size: 26px; line-height: 1; background: var(--vermelho); color: #fff; border: 0; cursor: pointer; box-shadow: 3px 3px 0 var(--preto); }
 .mil-setas button:disabled { opacity: .3; cursor: default; box-shadow: none; }
+
+/* ---------- Área do Militante: formação para novos militantes ---------- */
+.mil-formacao { background: var(--preto); color: var(--branco); margin: 0 0 30px; box-shadow: 8px 8px 0 var(--vermelho); border-top: 8px solid var(--amarelo); }
+.mil-formacao__topo { padding: 18px 22px 12px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; }
+.mil-formacao__topo h2 { margin: 0; font-size: 32px; line-height: 1; color: var(--amarelo); }
+.mil-formacao__topo p { margin: 0; font-size: 14px; opacity: .9; flex: 1 1 280px; }
+.mil-formacao__conta { font-family: var(--titulo); font-size: 18px; letter-spacing: .08em; background: var(--vermelho); padding: 3px 10px 1px; }
+.mil-formacao__eps { list-style: none; margin: 0; padding: 0 22px 14px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.mil-formacao__eps::-webkit-scrollbar { display: none; }
+.mil-formacao__eps li { flex: none; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; padding: 6px 12px 6px 6px; background: #2c2622; color: #b9ada0; white-space: nowrap; }
+.mil-formacao__eps li span { font-family: var(--titulo); font-size: 15px; letter-spacing: .06em; padding: 2px 7px 0; background: #47403a; color: var(--branco); }
+.mil-formacao__eps li.atual { background: var(--amarelo); color: var(--preto); }
+.mil-formacao__eps li.atual span { background: var(--vermelho); }
+.mil-formacao__eps li.feito { color: var(--branco); }
+.mil-formacao__eps li.feito span { background: #2e7d32; }
+.mil-formacao__palco { background: #000; aspect-ratio: 16 / 9; position: relative; }
+.mil-formacao__palco video { display: block; width: 100%; height: 100%; background: #000; }
+.mil-formacao__breve { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;
+  background: repeating-conic-gradient(from 0deg at 50% 120%, var(--vermelho) 0 6deg, #b81d1b 6deg 12deg); }
+.mil-formacao__breve strong { font-family: var(--titulo); font-size: clamp(30px, 5vw, 52px); color: var(--amarelo); letter-spacing: .04em; }
+.mil-formacao__breve p { margin: 6px 0 0; max-width: 520px; }
+.mil-formacao__rodape { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 20px; padding: 14px 22px 18px; }
+.mil-formacao__rodape h3 { margin: 2px 0 0; font-size: 26px; line-height: 1.05; }
+.mil-formacao__ep { font-family: var(--titulo); font-size: 16px; letter-spacing: .1em; color: var(--amarelo); }
+.mil-formacao__acao { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+.mil-formacao__acao small { font-size: 13px; opacity: .75; }
+.mil-formacao__acao .botao[disabled] { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+.mil-botao-carteira { display: block; width: 100%; margin: 0 0 30px; padding: 18px 22px 14px; border: 3px solid var(--preto); background: var(--amarelo); color: var(--preto);
+  font-family: var(--titulo); font-size: clamp(22px, 3.4vw, 30px); letter-spacing: .06em; text-align: center; cursor: pointer; box-shadow: 6px 6px 0 var(--vermelho); transition: transform .15s, box-shadow .15s; }
+.mil-botao-carteira:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--vermelho); }
+.mil-janela-carteira { width: min(460px, calc(100vw - 32px)); }
+.mil-janela-carteira .pedir-conta__corpo { padding: 30px 26px 28px; }
+.mil-janela-carteira img { max-width: 100%; }
+@media (max-width: 700px) {
+  .mil-formacao { box-shadow: 5px 5px 0 var(--vermelho); }
+  .mil-formacao__topo { padding: 16px 16px 10px; } .mil-formacao__topo h2 { font-size: 26px; }
+  .mil-formacao__eps { padding: 0 16px 12px; } .mil-formacao__rodape { padding: 12px 16px 16px; } .mil-formacao__rodape h3 { font-size: 22px; }
+  .mil-formacao__acao { width: 100%; justify-content: space-between; }
+}

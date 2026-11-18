@@ -372,15 +372,17 @@ function mostrarCabecalho() {
   $("ola-sub").textContent = [textoOcupacao(perfil), perfil.matricula ? "Matrícula Nº " + perfil.matricula : ""].filter(Boolean).join(" · ");
 }
 function mostrarResumo() {} // os dados não aparecem mais na página: só dentro de "Editar cadastro"
+// carteirinha: não aparece mais aberta na página. Um botão abre num pop-up (quem ainda não tem vai para a página de fazer).
 function carregarCarteirinha() {
   const base = (nome) => supa.storage.from("fotos").getPublicUrl(`${perfil.id}/${nome}`).data.publicUrl + "?t=" + Date.now();
-  const img = $("carteira-img");
-  const vazia = () => { img.hidden = true; $("carteira-acoes").hidden = true; $("carteira-vazia").hidden = false; };
+  const img = $("carteira-img"), bt = $("abrir-carteira");
+  const vazia = () => { bt.dataset.tem = ""; $("abrir-carteira-texto").textContent = "Faça a sua carteirinha de militante"; bt.hidden = false; };
   const tentar = (lista) => {
     if (!lista.length) return vazia();
     const url = base(lista[0]);
     img.onload = () => {
-      img.hidden = false; $("carteira-acoes").hidden = false; $("carteira-vazia").hidden = true;
+      img.hidden = false; $("carteira-acoes").hidden = false;
+      bt.dataset.tem = "1"; $("abrir-carteira-texto").textContent = "Veja a sua carteirinha de militante"; bt.hidden = false;
       fetch(url).then((r) => r.blob()).then((b) => { $("carteira-baixar").href = URL.createObjectURL(b); $("carteira-baixar").download = "carteirinha-coletivo-lufa." + lista[0].split(".").pop(); }).catch(() => {});
     };
     img.onerror = () => tentar(lista.slice(1));
@@ -388,6 +390,84 @@ function carregarCarteirinha() {
   };
   tentar(["carteirinha.jpg", "carteirinha.png"]);
 }
+$("abrir-carteira").addEventListener("click", () => {
+  if (!$("abrir-carteira").dataset.tem) { location.href = "carteirinha.html"; return; }
+  $("janela-carteira").showModal(); document.documentElement.classList.add("janela-aberta");
+});
+$("fechar-carteira").addEventListener("click", () => $("janela-carteira").close());
+$("janela-carteira").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
+$("janela-carteira").addEventListener("click", (ev) => { if (ev.target === $("janela-carteira")) $("janela-carteira").close(); });
+
+// ---------- formação para novos militantes ----------
+// Os vídeos são vistos em ordem: o botão "Assisti" libera quando o vídeo termina e passa para o próximo.
+// Quando a pessoa termina todos, aparece a mensagem de boas-vindas e a seção some.
+// O progresso fica na conta (tabela formacao_progresso, supabase/32-formacao.sql) e, de reserva, no aparelho.
+// Para publicar um episódio novo: preencha "video" e "capa" dele aqui.
+const FORMACAO = [
+  { id: "novos-01", titulo: "Bem-vindo ao Coletivo Lufã!", video: "formacao/videos/novos-ep01.mp4", capa: "formacao/capas/novos-ep01.jpg" },
+  { id: "novos-02", titulo: "O que é ser um militante ativo?", video: "", capa: "" },
+  { id: "novos-03", titulo: "A Área do Militante e a organização dos núcleos", video: "", capa: "" },
+];
+let formacaoVistos = new Set();
+const chaveFormacao = () => "formacao-vistos-" + perfil.id;
+function lerFormacaoLocal() { try { return JSON.parse(localStorage.getItem(chaveFormacao()) || "[]"); } catch (e) { return []; } }
+function gravarFormacaoLocal() { try { localStorage.setItem(chaveFormacao(), JSON.stringify([...formacaoVistos])); } catch (e) {} }
+async function carregarFormacao() {
+  lerFormacaoLocal().forEach((id) => formacaoVistos.add(id));
+  const { data, error } = await supa.from("formacao_progresso").select("video").eq("membro", perfil.id);
+  if (!error) (data || []).forEach((r) => formacaoVistos.add(r.video));
+  mostrarFormacao();
+}
+function mostrarFormacao() {
+  const sec = $("formacao");
+  const atual = FORMACAO.find((v) => !formacaoVistos.has(v.id));
+  if (!atual) { sec.hidden = true; return; }
+  sec.hidden = false;
+  const i = FORMACAO.indexOf(atual);
+  $("formacao-conta").textContent = `${FORMACAO.filter((v) => formacaoVistos.has(v.id)).length} de ${FORMACAO.length} assistidos`;
+  $("formacao-eps").innerHTML = "";
+  FORMACAO.forEach((v, k) => {
+    const li = document.createElement("li");
+    const feito = formacaoVistos.has(v.id);
+    li.className = feito ? "feito" : v === atual ? "atual" : "trancado";
+    li.innerHTML = `<span>${feito ? "✓" : "EP. " + (k + 1)}</span>`;
+    li.append(v.titulo);
+    $("formacao-eps").append(li);
+  });
+  $("formacao-ep").textContent = `EP. ${i + 1} de ${FORMACAO.length}`;
+  $("formacao-nome").textContent = atual.titulo;
+  const vid = $("formacao-video"), bt = $("formacao-assisti");
+  if (atual.video) {
+    $("formacao-breve").hidden = true; vid.hidden = false; $("formacao-rodape").hidden = false;
+    if (vid.dataset.id !== atual.id) { vid.dataset.id = atual.id; vid.poster = atual.capa; vid.src = atual.video; }
+    bt.disabled = true; bt.dataset.id = atual.id; $("formacao-dica").hidden = false;
+  } else {
+    vid.pause(); vid.removeAttribute("src"); vid.load(); vid.dataset.id = ""; vid.hidden = true;
+    $("formacao-breve").hidden = false;
+    $("formacao-breve-texto").textContent = `O episódio ${i + 1}, “${atual.titulo}”, chega aqui em breve. Fique de olho!`;
+    $("formacao-rodape").hidden = true;
+  }
+}
+function liberarAssisti() { $("formacao-assisti").disabled = false; $("formacao-dica").hidden = true; }
+$("formacao-video").addEventListener("ended", liberarAssisti);
+$("formacao-video").addEventListener("timeupdate", (ev) => { const v = ev.target; if (v.duration && v.currentTime >= v.duration - 2) liberarAssisti(); });
+$("formacao-assisti").addEventListener("click", async () => {
+  const bt = $("formacao-assisti"), id = bt.dataset.id; if (!id) return;
+  bt.disabled = true;
+  formacaoVistos.add(id); gravarFormacaoLocal();
+  await supa.from("formacao_progresso").upsert({ membro: perfil.id, video: id }, { onConflict: "membro,video", ignoreDuplicates: true });
+  if (FORMACAO.every((v) => formacaoVistos.has(v.id))) {
+    $("formacao").hidden = true;
+    const nome = primeiroNome(perfil.nome);
+    $("formada-texto").textContent = `Você completou a formação inicial${nome ? ", camarada " + nome : ""}! Seja muito bem-vindo(a) ao Coletivo Lufã. Agora a luta é nossa: chega mais!`;
+    $("janela-formada").showModal(); document.documentElement.classList.add("janela-aberta");
+    return;
+  }
+  mostrarFormacao();
+  $("formacao").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+["fechar-formada", "ok-formada"].forEach((id) => $(id).addEventListener("click", () => $("janela-formada").close()));
+$("janela-formada").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
 
 // ---------- seus núcleos ----------
 // setas do carrossel (para quem não consegue arrastar no celular)
@@ -894,7 +974,7 @@ $("form-aviso").addEventListener("submit", async (ev) => {
     return bloquear("Área exclusiva", "A Área do Militante é só para os membros ativos do Coletivo Lufã.", "index.html", "Voltar ao início");
   }
   $("area").hidden = false;
-  mostrarCabecalho(); carregarCarteirinha();
+  mostrarCabecalho(); carregarCarteirinha(); carregarFormacao();
   $("caixa-aviso").hidden = perfil.papel !== "admin";
   $("linha-artigo").hidden = false; // todo militante pode publicar artigos
   carregarRascunhos();
