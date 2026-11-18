@@ -93,3 +93,62 @@ function mensagemErro(e) {
   const mostrar = () => document.querySelectorAll("[data-so-militante]").forEach((a) => (a.hidden = !ativo));
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mostrar); else mostrar();
 })();
+
+// ---------- formação obrigatória para militantes ----------
+// Episódios da "Formação para novos militantes" (Área do Militante). Para publicar um: preencha "video" e "capa".
+const FORMACAO = [
+  { id: "novos-01", titulo: "Bem-vindo ao Coletivo Lufã!", video: "formacao/videos/novos-ep01.mp4", capa: "formacao/capas/novos-ep01.jpg?v=4" },
+  { id: "novos-02", titulo: "O que é ser um militante ativo?", video: "", capa: "" },
+  { id: "novos-03", titulo: "A Área do Militante e a organização dos núcleos", video: "", capa: "" },
+];
+// Lembrete em qualquer página do site: o militante que ainda não assistiu aos episódios publicados vê um pop-up
+// "Complete a formação obrigatória para militantes" com um botão que leva à formação (uma vez por visita ao site).
+(async () => {
+  if (/[?&]embutido=1/.test(location.search)) return;
+  try { if (sessionStorage.getItem("lufa_formacao_lembrete")) return; } catch (_) {}
+  let p = null;
+  try { p = await meuPerfil(); } catch (_) { return; }
+  if (!(p && APROVADO.includes(p.papel) && !ehComum(p))) return;
+  const vistos = () => {
+    const v = new Set();
+    try { JSON.parse(localStorage.getItem("formacao-vistos-" + p.id) || "[]").forEach((x) => v.add(x)); } catch (_) {}
+    return v;
+  };
+  const { data, error } = await supa.from("formacao_progresso").select("video").eq("membro", p.id);
+  const doBanco = error ? [] : (data || []).map((r) => r.video);
+  const faltam = () => { const v = vistos(); doBanco.forEach((x) => v.add(x)); return FORMACAO.filter((e) => e.video && !v.has(e.id)); };
+  if (!faltam().length) return;
+  const naArea = /militante\.html$/.test(location.pathname);
+  const iniciar = () => {
+    document.body.insertAdjacentHTML("beforeend", `
+      <dialog class="pedir-conta lembrete-formacao" id="janela-lembrete-formacao" aria-labelledby="lembrete-formacao-titulo">
+        <button class="ficha__fechar" type="button" aria-label="Fechar" data-fechar-lembrete>×</button>
+        <div class="pedir-conta__corpo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7.3L12 17.8 5.8 21.5l1.6-7.3L2 9.5l7.1-.6z"/></svg>
+          <h2 id="lembrete-formacao-titulo">Complete a formação obrigatória para militantes</h2>
+          <p>Todo militante do Coletivo Lufã assiste à formação inicial. São vídeos curtos, na Área do Militante.</p>
+          <a class="botao botao--amarelo" href="militante.html#formacao" data-ir-formacao>Clique aqui</a>
+        </div>
+      </dialog>`);
+    const j = document.getElementById("janela-lembrete-formacao");
+    j.addEventListener("close", () => { try { sessionStorage.setItem("lufa_formacao_lembrete", "1"); } catch (_) {} document.documentElement.classList.remove("janela-aberta"); });
+    j.querySelector("[data-fechar-lembrete]").addEventListener("click", () => j.close());
+    j.addEventListener("click", (e) => { if (e.target === j) j.close(); });
+    j.querySelector("[data-ir-formacao]").addEventListener("click", (e) => {
+      if (!naArea) return;   // em outra página, o link leva à Área do Militante
+      e.preventDefault(); j.close();
+      const s = document.getElementById("formacao"); if (s && !s.hidden) s.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    // espera outras janelas (cadastro, formação obrigatória, abertura do jornal) fecharem
+    let tentativas = 0;
+    const tentar = () => {
+      const ocupado = document.querySelector("dialog[open]:not(#janela-lembrete-formacao)") || document.getElementById("abertura");
+      if (ocupado) { if (++tentativas < 80) setTimeout(tentar, 1500); return; }
+      if (!faltam().length) return;   // já assistiu enquanto isso (ex.: na janela da formação obrigatória)
+      j.showModal(); document.documentElement.classList.add("janela-aberta");
+      try { sessionStorage.setItem("lufa_formacao_lembrete", "1"); } catch (_) {}   // uma vez por visita ao site
+    };
+    setTimeout(tentar, naArea ? 4000 : 1200);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar); else iniciar();
+})();

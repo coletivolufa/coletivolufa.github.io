@@ -403,23 +403,25 @@ $("janela-carteira").addEventListener("click", (ev) => { if (ev.target === $("ja
 // Os vídeos são vistos em ordem: o botão "Assisti" libera quando o vídeo termina e passa para o próximo.
 // Quando a pessoa termina todos, aparece a mensagem de boas-vindas e a seção some.
 // O progresso fica na conta (tabela formacao_progresso, supabase/32-formacao.sql) e, de reserva, no aparelho.
-// Para publicar um episódio novo: preencha "video" e "capa" dele aqui.
-const FORMACAO = [
-  { id: "novos-01", titulo: "Bem-vindo ao Coletivo Lufã!", video: "formacao/videos/novos-ep01.mp4", capa: "formacao/capas/novos-ep01.jpg?v=4" },
-  { id: "novos-02", titulo: "O que é ser um militante ativo?", video: "", capa: "" },
-  { id: "novos-03", titulo: "A Área do Militante e a organização dos núcleos", video: "", capa: "" },
-];
+// Para publicar um episódio novo: preencha "video" e "capa" dele em FORMACAO (assets/supa.js).
+// a lista dos episódios (FORMACAO) fica em assets/supa.js, porque o lembrete do site inteiro também usa
 let formacaoVistos = new Set();
 const chaveFormacao = () => "formacao-vistos-" + perfil.id;
 function lerFormacaoLocal() { try { return JSON.parse(localStorage.getItem(chaveFormacao()) || "[]"); } catch (e) { return []; } }
 function gravarFormacaoLocal() { try { localStorage.setItem(chaveFormacao(), JSON.stringify([...formacaoVistos])); } catch (e) {} }
 let formacaoPronta = null;
 function carregarFormacao() { formacaoPronta = buscarFormacao(); return formacaoPronta; }
+let formacaoRolou = false;
+function rolarParaFormacao() {
+  if (formacaoRolou || location.hash !== "#formacao" || $("formacao").hidden || formacaoTravada) return;
+  formacaoRolou = true;
+  setTimeout(() => $("formacao").scrollIntoView({ behavior: "smooth", block: "start" }), 300);
+}
 async function buscarFormacao() {
   lerFormacaoLocal().forEach((id) => formacaoVistos.add(id));
   const { data, error } = await supa.from("formacao_progresso").select("video").eq("membro", perfil.id);
   if (!error) (data || []).forEach((r) => formacaoVistos.add(r.video));
-  mostrarFormacao();
+  mostrarFormacao(); rolarParaFormacao();
 }
 // quem já assistiu um episódio pode tocar nele para rever (continua marcado como assistido)
 let formacaoRevendo = null;
