@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=78">
+  <link rel="stylesheet" href="assets/style.css?v=79">
 </head>
 <body data-pagina="militante">
 <main>
@@ -21,6 +21,11 @@
       <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Área do militante</span>
       <h1 id="ola">Área do militante</h1>
       <p id="ola-sub">Exclusiva para os membros ativos do Coletivo Lufã.</p>
+      <div class="mil-cab-grupo" id="grupo-geral" hidden>
+        <a class="botao botao--amarelo mil-grupo__botao" id="grupo-geral-link" target="_blank" rel="noopener" hidden>★ Acesse o grupo geral</a>
+        <span class="mil-grupo__breve" id="grupo-geral-breve" hidden>Grupo geral: link em breve</span>
+        <button type="button" class="mil-nucleo__link" id="grupo-geral-trocar" hidden>Trocar link do grupo</button>
+      </div>
     </div>
     <div class="faixa" aria-hidden="true"><div>
       ★ “Até a vitória, sempre!” — Che Guevara ★ “Até a vitória, sempre!” — Che Guevara ★ “Até a vitória, sempre!” — Che Guevara ★ “Até a vitória, sempre!” — Che Guevara ★ 
@@ -71,13 +76,6 @@
         </section>
 
         <button class="mil-botao-carteira" type="button" id="abrir-carteira" hidden>★ <span id="abrir-carteira-texto">Veja a sua carteirinha de militante</span></button>
-
-        <div class="mil-grupo" id="grupo-geral" hidden>
-          <div class="mil-grupo__texto"><h2>★ Grupo geral</h2><p>O grupo dos militantes para conversar entre si e organizar o movimento.</p></div>
-          <a class="botao botao--amarelo mil-grupo__botao" id="grupo-geral-link" target="_blank" rel="noopener" hidden>Acesse o grupo geral</a>
-          <span class="mil-grupo__breve" id="grupo-geral-breve" hidden>Link em breve</span>
-          <button type="button" class="mil-nucleo__link" id="grupo-geral-trocar" hidden>Trocar link do grupo</button>
-        </div>
 
         <div class="painel mil-avisos">
           <h2>Central de avisos</h2>

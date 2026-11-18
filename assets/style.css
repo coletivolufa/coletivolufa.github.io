@@ -1585,3 +1585,10 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
   .mil-formacao__eps { padding: 0 16px 12px; } .mil-formacao__rodape { padding: 12px 16px 16px; } .mil-formacao__rodape h3 { font-size: 22px; }
   .mil-formacao__acao { width: 100%; justify-content: space-between; }
 }
+
+/* botão do grupo geral no cabeçalho da Área do Militante, embaixo do subtítulo */
+.mil-cab-grupo { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; margin-top: 22px; position: relative; z-index: 3; }
+.mil-cab-grupo .mil-grupo__botao { box-shadow: 5px 5px 0 var(--preto); }
+.mil-cab-grupo .mil-grupo__breve { font-weight: 700; opacity: .9; }
+.mil-cab-grupo .mil-nucleo__link { color: var(--branco); }
+@media (max-width: 520px) { .mil-cab-grupo .mil-grupo__botao { width: 100%; text-align: center; } }
