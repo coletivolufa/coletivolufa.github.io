@@ -358,6 +358,7 @@ $("form-ficha").addEventListener("submit", async (ev) => {
     mostrarCabecalho(); mostrarResumo(); mostrarNucleos();
     avisar("Cadastro concluído! Obrigado, camarada. Agora entre nos grupos dos seus núcleos.", "ok");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    verificarFormacaoObrigatoria();   // novo militante: a formação abre logo depois do cadastro
   } catch (e) {
     const m = String((e && e.message) || "");
     erroFicha(/fichas_cpf_unico|duplicate key/i.test(m) ? "Este CPF já está cadastrado por outra pessoa. Fale com a secretaria." : mensagemErro(e));
@@ -412,7 +413,9 @@ let formacaoVistos = new Set();
 const chaveFormacao = () => "formacao-vistos-" + perfil.id;
 function lerFormacaoLocal() { try { return JSON.parse(localStorage.getItem(chaveFormacao()) || "[]"); } catch (e) { return []; } }
 function gravarFormacaoLocal() { try { localStorage.setItem(chaveFormacao(), JSON.stringify([...formacaoVistos])); } catch (e) {} }
-async function carregarFormacao() {
+let formacaoPronta = null;
+function carregarFormacao() { formacaoPronta = buscarFormacao(); return formacaoPronta; }
+async function buscarFormacao() {
   lerFormacaoLocal().forEach((id) => formacaoVistos.add(id));
   const { data, error } = await supa.from("formacao_progresso").select("video").eq("membro", perfil.id);
   if (!error) (data || []).forEach((r) => formacaoVistos.add(r.video));
@@ -448,6 +451,32 @@ function mostrarFormacao() {
     $("formacao-rodape").hidden = true;
   }
 }
+// Formação OBRIGATÓRIA para quem conclui o cadastro a partir de agora (novos militantes): abre sozinha, numa janela
+// que não fecha, até a pessoa assistir a todos os episódios já publicados. Quem já era militante não é obrigado.
+const FORMACAO_OBRIGATORIA_DESDE = "2026-11-18T23:00:00Z";
+let formacaoTravada = false;
+const formacaoPendentes = () => FORMACAO.filter((v) => v.video && !formacaoVistos.has(v.id));
+async function verificarFormacaoObrigatoria() {
+  if (formacaoPronta) await formacaoPronta;
+  const novo = ficha && ficha.completo_em && ficha.completo_em >= FORMACAO_OBRIGATORIA_DESDE;
+  if (!novo || !formacaoPendentes().length || formacaoTravada) return;
+  formacaoTravada = true;
+  $("formacao-obr-lugar").append($("formacao"));
+  mostrarFormacao();
+  if (!$("janela-formacao-obr").open) $("janela-formacao-obr").showModal();
+  document.documentElement.classList.add("janela-aberta");
+  requestAnimationFrame(() => { $("janela-formacao-obr").scrollTop = 0; });
+}
+function destravarFormacao() {
+  if (!formacaoTravada) return;
+  formacaoTravada = false;
+  $("formacao-casa").after($("formacao"));
+  $("janela-formacao-obr").close();
+  document.documentElement.classList.remove("janela-aberta");
+}
+$("janela-formacao-obr").addEventListener("cancel", (ev) => { if (formacaoTravada) ev.preventDefault(); });
+$("janela-formacao-obr").addEventListener("close", () => { if (formacaoTravada) setTimeout(() => $("janela-formacao-obr").showModal(), 0); });
+
 function liberarAssisti() { $("formacao-assisti").disabled = false; $("formacao-dica").hidden = true; }
 $("formacao-video").addEventListener("ended", liberarAssisti);
 $("formacao-video").addEventListener("timeupdate", (ev) => { const v = ev.target; if (v.duration && v.currentTime >= v.duration - 2) liberarAssisti(); });
@@ -457,6 +486,7 @@ $("formacao-assisti").addEventListener("click", async () => {
   formacaoVistos.add(id); gravarFormacaoLocal();
   await supa.from("formacao_progresso").upsert({ membro: perfil.id, video: id }, { onConflict: "membro,video", ignoreDuplicates: true });
   if (FORMACAO.every((v) => formacaoVistos.has(v.id))) {
+    destravarFormacao();
     $("formacao").hidden = true;
     const nome = primeiroNome(perfil.nome);
     $("formada-texto").textContent = `Você completou a formação inicial${nome ? ", camarada " + nome : ""}! Seja muito bem-vindo(a) ao Coletivo Lufã. Agora a luta é nossa: chega mais!`;
@@ -464,7 +494,14 @@ $("formacao-assisti").addEventListener("click", async () => {
     return;
   }
   mostrarFormacao();
-  $("formacao").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (formacaoTravada && !formacaoPendentes().length) {
+    destravarFormacao();
+    avisar("Você assistiu a toda a formação publicada até agora. A Área do Militante está liberada! Os próximos episódios aparecem aqui quando saírem.", "ok");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  if (formacaoTravada) $("janela-formacao-obr").scrollTo({ top: 0, behavior: "smooth" });
+  else $("formacao").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 ["fechar-formada", "ok-formada"].forEach((id) => $(id).addEventListener("click", () => $("janela-formada").close()));
 $("janela-formada").addEventListener("close", () => document.documentElement.classList.remove("janela-aberta"));
@@ -988,4 +1025,5 @@ $("form-aviso").addEventListener("submit", async (ev) => {
   // cadastro completo = passou pelos 4 passos e tem foto (quem não tem foto precisa colocar agora)
   const completo = ficha && ficha.completo_em && ficha.escolaridade && (ficha.pautas || []).length >= MIN_PAUTAS && ficha.partido && ficha.movimento && perfil.foto;
   if (!completo) abrirFicha(true);
+  else verificarFormacaoObrigatoria();
 })();

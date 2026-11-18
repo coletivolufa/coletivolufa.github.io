@@ -1592,3 +1592,12 @@ html.janela-aberta, html.janela-aberta body { overflow: hidden; overscroll-behav
 .mil-cab-grupo .mil-grupo__breve { font-weight: 700; opacity: .9; }
 .mil-cab-grupo .mil-nucleo__link { color: var(--branco); }
 @media (max-width: 520px) { .mil-cab-grupo .mil-grupo__botao { width: 100%; text-align: center; } }
+
+/* formação obrigatória do novo militante: janela que não fecha até terminar */
+.mil-janela-formacao { border: 0; padding: 0; width: min(980px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; background: var(--vermelho); color: var(--branco); box-shadow: 12px 12px 0 var(--amarelo); }
+.mil-janela-formacao::backdrop { background: rgba(20, 16, 14, .88); }
+.mil-janela-formacao__topo { padding: 26px 26px 18px; }
+.mil-janela-formacao__topo h2 { font-size: clamp(36px, 6vw, 56px); line-height: 1; margin: 10px 0 8px; color: var(--branco); }
+.mil-janela-formacao__topo p { margin: 0; max-width: 680px; font-size: 16px; }
+.mil-janela-formacao .mil-formacao { margin: 0; box-shadow: none; }
+@media (max-width: 700px) { .mil-janela-formacao { box-shadow: 6px 6px 0 var(--amarelo); } .mil-janela-formacao__topo { padding: 20px 16px 14px; } }

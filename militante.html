@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Bebas+Neue&family=Literata:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=79">
+  <link rel="stylesheet" href="assets/style.css?v=80">
 </head>
 <body data-pagina="militante">
 <main>
@@ -51,6 +51,7 @@
           <div class="mil-engajados__pista"><div class="mil-engajados__fila" id="engajados-fila"></div></div>
         </section>
 
+        <span id="formacao-casa" hidden></span>
         <!-- formação para novos militantes: some quando a pessoa termina todos os vídeos -->
         <section class="mil-formacao" id="formacao" hidden aria-labelledby="formacao-titulo">
           <div class="mil-formacao__topo">
@@ -140,6 +141,16 @@
     </div>
   </section>
 </main>
+
+<dialog class="mil-janela-formacao" id="janela-formacao-obr" aria-labelledby="formacao-obr-titulo">
+  <div class="mil-janela-formacao__topo">
+    <span class="rotulo" style="background:var(--amarelo);color:var(--preto)">Bem-vindo(a), camarada!</span>
+    <h2 id="formacao-obr-titulo">Antes de começar: a formação</h2>
+    <p>Todo novo militante assiste à formação inicial. Assista aos vídeos até o fim e toque em <b>Assisti</b> em cada um.
+      A Área do Militante libera quando você terminar.</p>
+  </div>
+  <div id="formacao-obr-lugar"></div>
+</dialog>
 
 <dialog class="pedir-conta mil-janela-carteira" id="janela-carteira" aria-label="Sua carteirinha de militante">
   <button class="ficha__fechar" type="button" aria-label="Fechar" id="fechar-carteira">×</button>
@@ -382,6 +393,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="assets/comum.js?v=23"></script>
 <script src="assets/supa.js?v=8"></script>
-<script src="assets/militante.js?v=22"></script>
+<script src="assets/militante.js?v=23"></script>
 </body>
 </html>
