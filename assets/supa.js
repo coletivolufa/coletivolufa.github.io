@@ -99,7 +99,8 @@ function mensagemErro(e) {
 const FORMACAO = [
   { id: "novos-01", titulo: "Bem-vindo ao Coletivo Lufã!", video: "formacao/videos/novos-ep01.mp4", capa: "formacao/capas/novos-ep01.jpg?v=4" },
   { id: "novos-02", titulo: "O que é ser um militante ativo?", video: "formacao/videos/novos-ep02.mp4", capa: "formacao/capas/novos-ep02.jpg?v=1" },
-  { id: "novos-03", titulo: "A Área do Militante e a organização dos núcleos", video: "", capa: "" },
+  { id: "novos-03", titulo: "A Área do Militante e a organização dos núcleos", video: "formacao/videos/novos-ep03.mp4", capa: "formacao/capas/novos-ep03.jpg?v=1" },
+  { id: "novos-04", titulo: "Ideologia e filosofia dentro do coletivo", video: "", capa: "" },   // em produção
 ];
 // Lembrete em qualquer página do site: o militante que ainda não assistiu aos episódios publicados vê um pop-up
 // "Complete a formação obrigatória para militantes" com um botão que leva à formação (uma vez por visita ao site).
